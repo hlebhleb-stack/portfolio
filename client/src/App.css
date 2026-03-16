@@ -1,0 +1,201 @@
+.page {
+  max-width: 1440px;
+  margin: 0 auto;
+  background: #fff;
+  min-height: 100vh;
+  padding: 0 156px;
+  cursor: none;
+}
+
+/* Custom cursor */
+.custom-cursor {
+  position: fixed;
+  width: 12px;
+  height: 12px;
+  background: #FF8888;
+  pointer-events: none;
+  z-index: 9999;
+  top: 0;
+  left: 0;
+  transform: translate(-50%, -50%);
+}
+
+/* Navigation */
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 60px;
+}
+
+.nav-link {
+  font-size: 25px;
+  line-height: 25px;
+  font-weight: 400;
+  color: #000;
+  cursor: none;
+  opacity: 0.5;
+  transition: opacity 0.3s;
+}
+
+.nav-link:hover {
+  opacity: 1;
+}
+
+/* Hero */
+.hero {
+  margin-top: 130px;
+  text-align: center;
+}
+
+.hero-name {
+  font-size: 50px;
+  font-weight: 550;
+  line-height: 49px;
+  color: #000;
+  margin: 0;
+}
+
+.hero-dot {
+  color: #FF8888;
+}
+
+.hero-role {
+  font-size: 25px;
+  font-weight: 400;
+  line-height: 25px;
+  color: #000;
+  margin-top: 11px;
+}
+
+/* Works Section */
+.works {
+  margin-top: 130px;
+}
+
+.divider {
+  width: 100%;
+  height: 2px;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.work-row {
+  display: flex;
+  align-items: center;
+  padding: 24px 10px;
+  font-size: 25px;
+  font-weight: 400;
+  color: #000;
+  line-height: 25px;
+}
+
+.work-company {
+  flex: 0 0 454px;
+}
+
+.work-role {
+  flex: 0 0 auto;
+}
+
+.work-period {
+  flex: 1;
+  text-align: right;
+}
+
+/* About Section */
+.about {
+  display: flex;
+  gap: 55px;
+  margin-top: 130px;
+  align-items: flex-start;
+}
+
+.about-photo {
+  flex: 0 0 268px;
+  width: 268px;
+  height: 303px;
+}
+
+.about-photo img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.about-info {
+  flex: 0 0 805px;
+  max-width: 805px;
+}
+
+.about-text {
+  font-size: 25px;
+  font-weight: 400;
+  line-height: 30px;
+  color: #000;
+  text-align: justify;
+}
+
+.text-medium {
+  font-weight: 550;
+}
+
+.about-experience {
+  margin-top: 42px;
+}
+
+.divider-short {
+  width: 100%;
+  height: 2px;
+  background: rgba(0, 0, 0, 0.3);
+  margin-top: 42px;
+  margin-bottom: 42px;
+}
+
+.about-description {
+  line-height: 30px;
+}
+
+/* Footer */
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 130px;
+  padding-bottom: 148px;
+}
+
+.social-icons {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
+
+.social-icon {
+  cursor: none;
+  opacity: 0.4;
+  transition: opacity 0.3s;
+}
+
+.social-icon:hover {
+  opacity: 1;
+}
+
+.social-icon img {
+  width: 43px;
+  height: 43px;
+  display: block;
+}
+
+.footer-email {
+  font-size: 25px;
+  font-weight: 400;
+  color: #000;
+  opacity: 0.5;
+  cursor: none;
+  transition: opacity 0.3s;
+}
+
+.footer-email:hover {
+  opacity: 1;
+}
