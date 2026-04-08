@@ -1,47 +1,37 @@
 import React, { useEffect, useRef, useState } from 'react'
+import { Routes, Route, Link, useLocation } from 'react-router-dom'
+import CasePage from './CasePage.jsx'
+import useFadeIn from './useFadeIn.js'
 import './App.css'
 
-function App() {
-  const cursorRef = useRef(null)
-  const [theme, setTheme] = useState('light')
-
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme)
-  }, [theme])
-
-  useEffect(() => {
-    const cursor = cursorRef.current
-    const onMouseMove = (e) => {
-      cursor.style.left = e.clientX + 'px'
-      cursor.style.top = e.clientY + 'px'
-    }
-    window.addEventListener('mousemove', onMouseMove)
-    return () => window.removeEventListener('mousemove', onMouseMove)
-  }, [])
+function HomePage({ theme, setTheme }) {
+  const pageRef = useFadeIn()
 
   const works = [
     {
       company: 'Colb.finance',
       role: 'Visuals for X/Twitter',
       period: 'Sep 2025 — Present',
+      slug: 'colb-finance',
     },
     {
       company: 'Sova Labs',
       role: 'Visuals for X/Twitter',
       period: 'Jan 2026 — Present',
+      slug: 'sova-labs',
     },
     {
       company: 'Re Protocol',
       role: 'Visuals for X/Twitter',
       period: 'Dec 2025 — Jan 2026',
+      slug: 're-protocol',
     },
   ]
 
   return (
-    <div className="page">
-      <div className="custom-cursor" ref={cursorRef} />
+    <div className="page" ref={pageRef}>
       {/* Header */}
-      <header className="header">
+      <header className="header fade-in-up">
         <div className="theme-toggle">
           <button className={`theme-btn${theme === 'light' ? ' active' : ''}`} onClick={() => setTheme('light')}>
             <svg className="theme-icon" width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -64,34 +54,43 @@ function App() {
       </header>
 
       {/* Hero */}
-      <section className="hero">
+      <section className="hero fade-in-up">
         <h1 className="hero-name">Gleb Dihtievsky<span className="hero-dot">.</span></h1>
         <p className="hero-role">Visual Designer</p>
       </section>
 
       {/* Works */}
       <section className="works" id="works">
-        <div className="divider" />
+        <div className="divider fade-in-up" />
         {works.map((work, i) => (
           <React.Fragment key={i}>
-            <div className="work-row">
+            <Link
+              to={`/case/${work.slug}`}
+              className="work-row fade-in-up"
+              style={{ transitionDelay: `${i * 0.08}s` }}
+            >
               <span className="work-company">{work.company}</span>
               <span className="work-role">{work.role}</span>
               <span className="work-period">{work.period}</span>
-            </div>
-            <div className="divider" />
+              <span className="work-arrow">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M5 15L15 5M15 5H8M15 5V12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </span>
+            </Link>
+            <div className="divider fade-in-up" />
           </React.Fragment>
         ))}
       </section>
 
       {/* About */}
       <section className="about" id="about">
-        <div className="about-photo">
+        <div className="about-photo fade-in-up">
           <img src="/assets/photo-portrait.png" alt="Gleb Dihtievsky" />
         </div>
-        <div className="about-info">
+        <div className="about-info fade-in-up" style={{ transitionDelay: '0.15s' }}>
           <p className="about-text">
-            <span className="text-medium">Education:</span> Belarusian State University of Informatics{'\u00A0'} and Radioelectronics
+            <span className="text-medium">Education:</span> Belarusian State University of Informatics and{'\u00A0'}Radioelectronics
           </p>
           <p className="about-text about-experience">
             <span className="text-medium">Experience:</span> 5 years in Ux/Ui
@@ -104,12 +103,12 @@ function App() {
       </section>
 
       {/* Footer */}
-      <footer className="footer" id="links">
+      <footer className="footer fade-in-up" id="links">
         <div className="social-icons">
           <a href="https://www.linkedin.com/in/gleb-dihtievsky/" target="_blank" rel="noopener noreferrer" className="social-icon">
             <img src="/assets/icon-social-3.svg" alt="LinkedIn" />
           </a>
-          <a href="https://t.me/@glebaagleb" target="_blank" rel="noopener noreferrer" className="social-icon">
+          <a href="https://t.me/glebaagleb" target="_blank" rel="noopener noreferrer" className="social-icon">
             <img src="/assets/icon-social-1.svg" alt="Telegram" />
           </a>
           <a href="https://x.com/glebaagleb" target="_blank" rel="noopener noreferrer" className="social-icon">
@@ -121,6 +120,39 @@ function App() {
         </a>
       </footer>
     </div>
+  )
+}
+
+function App() {
+  const cursorRef = useRef(null)
+  const [theme, setTheme] = useState('light')
+  const location = useLocation()
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme)
+  }, [theme])
+
+  useEffect(() => {
+    const cursor = cursorRef.current
+    if (!cursor) return
+    const onMouseMove = (e) => {
+      cursor.style.left = e.clientX + 'px'
+      cursor.style.top = e.clientY + 'px'
+    }
+    window.addEventListener('mousemove', onMouseMove)
+    return () => window.removeEventListener('mousemove', onMouseMove)
+  }, [])
+
+  return (
+    <>
+      <div className="custom-cursor" ref={cursorRef} />
+      <div className="page-transition" key={location.pathname}>
+        <Routes>
+          <Route path="/" element={<HomePage theme={theme} setTheme={setTheme} />} />
+          <Route path="/case/:slug" element={<CasePage theme={theme} setTheme={setTheme} />} />
+        </Routes>
+      </div>
+    </>
   )
 }
 

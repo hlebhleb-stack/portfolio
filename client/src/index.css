@@ -64,3 +64,12 @@ a {
   text-decoration: none;
   cursor: none;
 }
+
+@media (max-width: 768px) {
+  body {
+    cursor: auto;
+  }
+  a {
+    cursor: auto;
+  }
+}
