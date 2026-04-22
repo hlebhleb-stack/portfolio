@@ -15,21 +15,6 @@ const PORT = process.env.PORT || 3001;
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '';
 const CHAT_ID = process.env.TELEGRAM_CHAT_ID || '';
 
-// ========== Telegram Bot ==========
-let bot = null;
-if (BOT_TOKEN) {
-  bot = new TelegramBot(BOT_TOKEN, { polling: false });
-  console.log('Telegram bot initialized');
-} else {
-  console.warn('TELEGRAM_BOT_TOKEN not set — bot disabled');
-}
-
-function sendTelegram(text) {
-  if (bot && CHAT_ID) {
-    bot.sendMessage(CHAT_ID, text, { parse_mode: 'HTML' }).catch(console.error);
-  }
-}
-
 // ========== Analytics Storage ==========
 const DATA_FILE = path.join(__dirname, 'analytics.json');
 
@@ -48,6 +33,70 @@ function saveData(data) {
 // Init file if missing
 if (!fs.existsSync(DATA_FILE)) {
   saveData({ visits: [], contacts: [] });
+}
+
+// ========== Telegram Bot ==========
+let bot = null;
+if (BOT_TOKEN) {
+  bot = new TelegramBot(BOT_TOKEN, { polling: true });
+  console.log('Telegram bot initialized with polling');
+
+  bot.onText(/\/stats/, (msg) => {
+    if (String(msg.chat.id) !== CHAT_ID) return;
+    const data = loadData();
+    const now = new Date();
+    const todayStr = now.toISOString().slice(0, 10);
+    const todayVisits = data.visits.filter(v => v.timestamp.startsWith(todayStr));
+    const uniqueIPs = new Set(todayVisits.map(v => v.ip)).size;
+    const pages = {};
+    todayVisits.forEach(v => { pages[v.page] = (pages[v.page] || 0) + 1; });
+    const devices = { mobile: 0, desktop: 0 };
+    todayVisits.forEach(v => { devices[v.device] = (devices[v.device] || 0) + 1; });
+    const pageList = Object.entries(pages)
+      .sort((a, b) => b[1] - a[1])
+      .map(([p, c]) => `  ${p} — ${c}`)
+      .join('\n') || '  No visits';
+
+    const text =
+      `📊 <b>Stats — ${todayStr}</b>\n\n` +
+      `👀 Views today: <b>${todayVisits.length}</b>\n` +
+      `👤 Unique visitors: <b>${uniqueIPs}</b>\n` +
+      `📱 Mobile: <b>${devices.mobile}</b> | 🖥 Desktop: <b>${devices.desktop}</b>\n\n` +
+      `<b>Pages:</b>\n${pageList}\n\n` +
+      `<b>All time:</b> ${data.visits.length} views`;
+    bot.sendMessage(msg.chat.id, text, { parse_mode: 'HTML' });
+  });
+
+  bot.onText(/\/alltime/, (msg) => {
+    if (String(msg.chat.id) !== CHAT_ID) return;
+    const data = loadData();
+    const days = {};
+    data.visits.forEach(v => {
+      const day = v.timestamp.slice(0, 10);
+      days[day] = (days[day] || 0) + 1;
+    });
+    const dayList = Object.entries(days)
+      .sort((a, b) => b[0].localeCompare(a[0]))
+      .slice(0, 14)
+      .map(([d, c]) => `  ${d} — ${c} views`)
+      .join('\n') || '  No data';
+
+    const text =
+      `📈 <b>All Time Stats</b>\n\n` +
+      `Total views: <b>${data.visits.length}</b>\n` +
+      `Total unique IPs: <b>${new Set(data.visits.map(v => v.ip)).size}</b>\n\n` +
+      `<b>Last 14 days:</b>\n${dayList}`;
+    bot.sendMessage(msg.chat.id, text, { parse_mode: 'HTML' });
+  });
+
+} else {
+  console.warn('TELEGRAM_BOT_TOKEN not set — bot disabled');
+}
+
+function sendTelegram(text) {
+  if (bot && CHAT_ID) {
+    bot.sendMessage(CHAT_ID, text, { parse_mode: 'HTML' }).catch(console.error);
+  }
 }
 
 // ========== Middleware ==========
