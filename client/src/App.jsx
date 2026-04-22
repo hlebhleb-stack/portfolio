@@ -18,66 +18,6 @@ function trackPage(page) {
   }).catch(() => {})
 }
 
-function ContactForm() {
-  const [form, setForm] = useState({ name: '', email: '', message: '' })
-  const [status, setStatus] = useState(null)
-
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    setStatus('sending')
-    try {
-      const res = await fetch(`${API_URL}/api/contact`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
-      })
-      if (res.ok) {
-        setStatus('sent')
-        setForm({ name: '', email: '', message: '' })
-      } else {
-        setStatus('error')
-      }
-    } catch {
-      setStatus('error')
-    }
-  }
-
-  return (
-    <section className="contact" id="contact">
-      <h2 className="contact-title fade-in-up">Contact me</h2>
-      <form className="contact-form fade-in-up" onSubmit={handleSubmit}>
-        <input
-          className="contact-input"
-          type="text"
-          placeholder="Name"
-          value={form.name}
-          onChange={(e) => setForm({ ...form, name: e.target.value })}
-          required
-        />
-        <input
-          className="contact-input"
-          type="email"
-          placeholder="Email"
-          value={form.email}
-          onChange={(e) => setForm({ ...form, email: e.target.value })}
-          required
-        />
-        <textarea
-          className="contact-input contact-textarea"
-          placeholder="Message"
-          value={form.message}
-          onChange={(e) => setForm({ ...form, message: e.target.value })}
-          required
-        />
-        <button className="contact-submit" type="submit" disabled={status === 'sending'}>
-          {status === 'sending' ? 'Sending...' : status === 'sent' ? 'Sent!' : 'Send'}
-        </button>
-        {status === 'error' && <p className="contact-error">Something went wrong, try again</p>}
-      </form>
-    </section>
-  )
-}
-
 function HomePage({ theme, setTheme }) {
   const pageRef = useFadeIn()
 
@@ -126,7 +66,6 @@ function HomePage({ theme, setTheme }) {
         </div>
         <nav className="nav">
           <a href="#works" className="nav-link">works</a>
-          <a href="#contact" className="nav-link">contact</a>
           <a href="#links" className="nav-link">links</a>
         </nav>
       </header>
@@ -168,9 +107,6 @@ function HomePage({ theme, setTheme }) {
           ))}
         </div>
       </section>
-
-      {/* Contact */}
-      <ContactForm />
 
       {/* Footer */}
       <footer className="footer fade-in-up" id="links">
