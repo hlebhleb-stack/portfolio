@@ -55,7 +55,7 @@ function HomePage({ theme, setTheme }) {
       {/* Photo */}
       <div className="photo-portrait fade-in-up">
         <div className="photo-wrapper">
-          <img src="/assets/photo-portrait.png" alt="Gleb Dihtievsky" className="photo-img" />
+          <img src="/assets/photo-portrait.jpg" alt="Gleb Dihtievsky" className="photo-img" />
           <div className="photo-overlay" />
         </div>
       </div>
