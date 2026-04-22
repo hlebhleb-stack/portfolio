@@ -57,6 +57,10 @@ function CasePage({ theme, setTheme }) {
   const caseData = casesData[slug]
   const pageRef = useFadeIn()
   const touchStartX = useRef(0)
+  const touchStartY = useRef(0)
+  const touchStartTime = useRef(0)
+  const touchStartScale = useRef(1)
+  const touchCancelled = useRef(false)
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -72,12 +76,37 @@ function CasePage({ theme, setTheme }) {
   }, [slug])
 
   useEffect(() => {
+    const getScale = () =>
+      (window.visualViewport && window.visualViewport.scale) || 1
     const onTouchStart = (e) => {
+      if (e.touches.length > 1 || getScale() > 1.01) {
+        touchCancelled.current = true
+        return
+      }
+      touchCancelled.current = false
       touchStartX.current = e.touches[0].clientX
+      touchStartY.current = e.touches[0].clientY
+      touchStartTime.current = Date.now()
+      touchStartScale.current = getScale()
+    }
+    const onTouchMove = (e) => {
+      if (e.touches.length > 1 || getScale() > 1.01) {
+        touchCancelled.current = true
+      }
+    }
+    const onGestureStart = () => {
+      touchCancelled.current = true
     }
     const onTouchEnd = (e) => {
+      if (touchCancelled.current) return
+      if (getScale() > 1.01) return
+      if (Math.abs(getScale() - touchStartScale.current) > 0.01) return
+      const duration = Date.now() - touchStartTime.current
+      if (duration > 500) return
       const dx = e.changedTouches[0].clientX - touchStartX.current
+      const dy = e.changedTouches[0].clientY - touchStartY.current
       if (Math.abs(dx) < 80) return
+      if (Math.abs(dy) > Math.abs(dx) * 0.5) return
       const currentIndex = slugs.indexOf(slug)
       if (dx > 0) {
         if (currentIndex === 0) {
@@ -94,10 +123,14 @@ function CasePage({ theme, setTheme }) {
       }
     }
     window.addEventListener('touchstart', onTouchStart)
+    window.addEventListener('touchmove', onTouchMove)
     window.addEventListener('touchend', onTouchEnd)
+    window.addEventListener('gesturestart', onGestureStart)
     return () => {
       window.removeEventListener('touchstart', onTouchStart)
+      window.removeEventListener('touchmove', onTouchMove)
       window.removeEventListener('touchend', onTouchEnd)
+      window.removeEventListener('gesturestart', onGestureStart)
     }
   }, [slug, navigate])
 

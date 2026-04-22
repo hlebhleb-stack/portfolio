@@ -321,11 +321,36 @@
   overflow: hidden;
   background: var(--divider);
   min-height: 200px;
+  position: relative;
+}
+
+.case-gallery-item::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--divider-strong) 50%,
+    transparent 100%
+  );
+  transform: translateX(-100%);
+  animation: shimmer 1.6s ease-in-out infinite;
+  pointer-events: none;
 }
 
 .case-gallery-item.loaded {
   background: transparent;
   min-height: 0;
+}
+
+.case-gallery-item.loaded::before {
+  display: none;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
 }
 
 .case-gallery-item img,
