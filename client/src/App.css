@@ -318,16 +318,29 @@
   break-inside: avoid;
   margin-bottom: 20px;
   overflow: hidden;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: galleryFadeIn 0.5s ease-out forwards;
 }
 
-.case-gallery-item img {
-  width: 100%;
-  display: block;
-}
-
+.case-gallery-item img,
 .case-gallery-item video {
   width: 100%;
   display: block;
+  opacity: 0;
+  transition: opacity 0.4s ease-out;
+}
+
+.case-gallery-item.loaded img,
+.case-gallery-item.loaded video {
+  opacity: 1;
+}
+
+@keyframes galleryFadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .case-not-found {

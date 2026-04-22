@@ -133,7 +133,7 @@ function CasePage({ theme, setTheme }) {
       {/* Gallery */}
       <div className="case-gallery">
         {caseData.items.map((item, i) => (
-          <div key={i} className="case-gallery-item">
+          <div key={i} className="case-gallery-item" style={{ animationDelay: `${i * 0.1}s` }}>
             {item.type === 'video' ? (
               <video
                 src={item.src}
@@ -141,9 +141,15 @@ function CasePage({ theme, setTheme }) {
                 loop
                 muted
                 playsInline
+                onLoadedData={(e) => e.target.parentElement.classList.add('loaded')}
               />
             ) : (
-              <img src={item.src} alt={`${caseData.company} work ${i + 1}`} loading="lazy" />
+              <img
+                src={item.src}
+                alt={`${caseData.company} work ${i + 1}`}
+                loading="lazy"
+                onLoad={(e) => e.target.parentElement.classList.add('loaded')}
+              />
             )}
           </div>
         ))}
