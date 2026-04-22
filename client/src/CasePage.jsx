@@ -133,7 +133,7 @@ function CasePage({ theme, setTheme }) {
       {/* Gallery */}
       <div className="case-gallery">
         {caseData.items.map((item, i) => (
-          <div key={i} className="case-gallery-item" style={{ animationDelay: `${i * 0.1}s` }}>
+          <div key={i} className="case-gallery-item">
             {item.type === 'video' ? (
               <video
                 src={item.src}
