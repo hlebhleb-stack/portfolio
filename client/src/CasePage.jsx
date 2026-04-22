@@ -5,6 +5,7 @@ import useFadeIn from './useFadeIn.js'
 const casesData = {
   'colb-finance': {
     company: 'Colb.finance',
+    url: 'https://x.com/ColbFinance',
     role: 'Visuals for X/Twitter',
     period: 'Sep 2025 — Present',
     items: [
@@ -19,6 +20,7 @@ const casesData = {
   },
   'sova-labs': {
     company: 'Sova Labs',
+    url: 'https://x.com/SovaBTC',
     role: 'Visuals for X/Twitter',
     period: 'Jan 2026 — Present',
     items: [
@@ -33,6 +35,7 @@ const casesData = {
   },
   're-protocol': {
     company: 'Re Protocol',
+    url: 'https://x.com/re',
     role: 'Visuals for X/Twitter',
     period: 'Dec 2025 — Jan 2026',
     items: [],
@@ -117,7 +120,7 @@ function CasePage({ theme, setTheme }) {
 
       {/* Case Hero */}
       <section className="case-hero">
-        <h1 className="case-title">{caseData.company}<span className="hero-dot">.</span></h1>
+        <h1 className="case-title"><a href={caseData.url} target="_blank" rel="noopener noreferrer">{caseData.company}<span className="hero-dot">.</span></a></h1>
         <p className="case-role">{caseData.role}</p>
         <p className="case-period">{caseData.period}</p>
       </section>
