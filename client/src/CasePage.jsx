@@ -2,6 +2,8 @@ import React, { useEffect, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import useFadeIn from './useFadeIn.js'
 
+const API_URL = import.meta.env.VITE_API_URL || ''
+
 const casesData = {
   'colb-finance': {
     company: 'Colb.finance',
@@ -58,6 +60,15 @@ function CasePage({ theme, setTheme }) {
 
   useEffect(() => {
     window.scrollTo(0, 0)
+    fetch(`${API_URL}/api/track`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        page: `/case/${slug}`,
+        referrer: document.referrer,
+        screenWidth: window.innerWidth,
+      }),
+    }).catch(() => {})
   }, [slug])
 
   useEffect(() => {
