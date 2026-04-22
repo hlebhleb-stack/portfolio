@@ -38,7 +38,12 @@ const casesData = {
     url: 'https://x.com/re',
     role: 'Visuals for X/Twitter',
     period: 'Dec 2025 — Jan 2026',
-    items: [],
+    items: [
+      { type: 'video', src: '/assets/works/re-protocol/1.mp4' },
+      { type: 'video', src: '/assets/works/re-protocol/2.mp4' },
+      { type: 'video', src: '/assets/works/re-protocol/3.mp4' },
+      { type: 'video', src: '/assets/works/re-protocol/4.mp4' },
+    ],
   },
 }
 
