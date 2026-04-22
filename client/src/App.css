@@ -185,7 +185,7 @@
 .divider {
   width: 100%;
   height: 1px;
-  background: #FF8888;
+  background: rgba(255, 136, 136, 0.4);
 }
 
 .work-row {
