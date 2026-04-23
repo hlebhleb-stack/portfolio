@@ -308,6 +308,16 @@
   margin-top: 4px;
 }
 
+.case-description {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--text);
+  max-width: 640px;
+  margin: 28px auto 0;
+  text-align: center;
+}
+
 /* Case Gallery — Desktop collage */
 .case-gallery {
   margin-top: 80px;
@@ -467,6 +477,11 @@
     font-size: 15px;
   }
 
+  .case-description {
+    font-size: 15px;
+    margin-top: 24px;
+  }
+
   .case-gallery {
     margin-top: 60px;
     column-gap: 16px;
@@ -575,7 +590,7 @@
   }
 
   .work-row:active {
-    opacity: 0.6;
+    background: rgba(255, 136, 136, 0.12);
   }
 
   .work-company {
@@ -626,6 +641,12 @@
 
   .case-period {
     font-size: 13px;
+  }
+
+  .case-description {
+    font-size: 14px;
+    margin-top: 20px;
+    padding: 0 4px;
   }
 
   /* Single column on mobile */

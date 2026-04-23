@@ -10,6 +10,7 @@ const casesData = {
     url: 'https://x.com/ColbFinance',
     role: 'Visuals for X/Twitter',
     period: 'Sep 2025 — Present',
+    description: 'Full-cycle design for a Swiss fintech project: from high-fidelity web prototyping and technical documentation to brand graphics, motion design, and UI assets for Twitter and Discord.',
     items: [
       { type: 'image', src: '/assets/works/colb-finance/1.png' },
       { type: 'image', src: '/assets/works/colb-finance/2.png' },
@@ -18,6 +19,9 @@ const casesData = {
       { type: 'video', src: '/assets/works/colb-finance/5.mp4' },
       { type: 'video', src: '/assets/works/colb-finance/6.mp4' },
       { type: 'video', src: '/assets/works/colb-finance/7.mp4' },
+      { type: 'video', src: '/assets/works/colb-finance/8.mp4' },
+      { type: 'video', src: '/assets/works/colb-finance/9.mp4' },
+      { type: 'image', src: '/assets/works/colb-finance/9.png' },
     ],
   },
   'sova-labs': {
@@ -25,6 +29,7 @@ const casesData = {
     url: 'https://x.com/SovaBTC',
     role: 'Visuals for X/Twitter',
     period: 'Jan 2026 — Present',
+    description: 'Spearheaded the end-to-end creative direction, including 2D motion design and high-impact marketing graphics. Developed a comprehensive system of reusable design templates to streamline future content production and ensure long-term brand consistency.',
     items: [
       { type: 'video', src: '/assets/works/sova-labs/1.mp4' },
       { type: 'video', src: '/assets/works/sova-labs/2.mp4' },
@@ -33,6 +38,7 @@ const casesData = {
       { type: 'video', src: '/assets/works/sova-labs/4.mp4' },
       { type: 'image', src: '/assets/works/sova-labs/4.png' },
       { type: 'video', src: '/assets/works/sova-labs/5.mp4' },
+      { type: 'image', src: '/assets/works/sova-labs/6.png' },
     ],
   },
   're-protocol': {
@@ -40,11 +46,13 @@ const casesData = {
     url: 'https://x.com/re',
     role: 'Visuals for X/Twitter',
     period: 'Dec 2025 — Jan 2026',
+    description: 'Partnered with a 3D designer to produce high-end explainer and promotional animations for the official X account. Managed the full cycle of video creation to enhance brand presence and community engagement.',
     items: [
       { type: 'video', src: '/assets/works/re-protocol/1.mp4' },
       { type: 'video', src: '/assets/works/re-protocol/2.mp4' },
       { type: 'video', src: '/assets/works/re-protocol/3.mp4' },
       { type: 'video', src: '/assets/works/re-protocol/4.mp4' },
+      { type: 'video', src: '/assets/works/re-protocol/5.mp4' },
     ],
   },
 }
@@ -172,6 +180,9 @@ function CasePage({ theme, setTheme }) {
         <h1 className="case-title"><a href={caseData.url} target="_blank" rel="noopener noreferrer">{caseData.company}<span className="hero-dot">.</span></a></h1>
         <p className="case-role">{caseData.role}</p>
         <p className="case-period">{caseData.period}</p>
+        {caseData.description && (
+          <p className="case-description">{caseData.description}</p>
+        )}
       </section>
 
       {/* Gallery */}
