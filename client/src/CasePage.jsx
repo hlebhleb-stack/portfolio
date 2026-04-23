@@ -60,7 +60,7 @@ const casesData = {
     role: 'Visuals for X/Twitter',
     period: 'Sep 2025 — Present',
     description: 'Full-cycle design for a Swiss fintech project: from high-fidelity web prototyping and technical documentation to brand graphics, motion design, and UI assets for Twitter and Discord.',
-    skills: ['UX/UI', 'Web Prototyping', 'Graphic Design', 'Motion Design', 'Brand Identity', 'Documentation'],
+    skills: ['UX/UI', 'Web Prototyping', 'Motion Design', 'Brand Identity'],
     items: [
       { type: 'image', src: '/assets/works/colb-finance/1.png' },
       { type: 'image', src: '/assets/works/colb-finance/2.png' },
@@ -80,7 +80,7 @@ const casesData = {
     role: 'Visuals for X/Twitter',
     period: 'Jan 2026 — Present',
     description: 'Spearheaded the end-to-end creative direction, including 2D motion design and high-impact marketing graphics. Developed a comprehensive system of reusable design templates to streamline future content production and ensure long-term brand consistency.',
-    skills: ['Creative Direction', '2D Motion Design', 'Graphic Design', 'Design System', 'Marketing Design'],
+    skills: ['Creative Direction', '2D Motion Design', 'Design System', 'Marketing Design'],
     items: [
       { type: 'video', src: '/assets/works/sova-labs/1.mp4' },
       { type: 'video', src: '/assets/works/sova-labs/2.mp4' },
