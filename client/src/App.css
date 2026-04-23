@@ -738,15 +738,11 @@
   .case-skills {
     margin-top: 18px;
     gap: 6px;
-    max-width: 320px;
   }
 
   .case-skill {
     font-size: 14px;
     padding: 7px 12px;
-    flex: 0 0 calc(50% - 3px);
-    text-align: center;
-    white-space: normal;
   }
 
   /* Single column on mobile */
