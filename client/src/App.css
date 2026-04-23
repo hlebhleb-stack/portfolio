@@ -333,6 +333,28 @@
   text-align: center;
 }
 
+.case-skills {
+  list-style: none;
+  padding: 0;
+  margin: 24px auto 0;
+  max-width: 640px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.case-skill {
+  background: #FF8888;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1;
+  padding: 8px 14px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
 /* Case Gallery — Desktop collage */
 .case-gallery {
   margin-top: 80px;
@@ -712,6 +734,16 @@
     font-size: 14px;
     margin: 24px auto 0;
     max-width: 100%;
+  }
+
+  .case-skills {
+    margin-top: 18px;
+    gap: 6px;
+  }
+
+  .case-skill {
+    font-size: 12px;
+    padding: 7px 12px;
   }
 
   /* Single column on mobile */
