@@ -60,7 +60,7 @@ const casesData = {
     role: 'Visuals for X/Twitter',
     period: 'Sep 2025 — Present',
     description: 'Full-cycle design for a Swiss fintech project: from high-fidelity web prototyping and technical documentation to brand graphics, motion design, and UI assets for Twitter and Discord.',
-    skills: ['UX/UI', 'Web Prototyping', 'Motion Design', 'Brand Identity'],
+    skills: ['UX/UI', 'Web Prototyping', 'Brand Identity', 'Motion Design'],
     items: [
       { type: 'image', src: '/assets/works/colb-finance/1.png' },
       { type: 'image', src: '/assets/works/colb-finance/2.png' },
