@@ -42,8 +42,8 @@ function VideoItem({ src, alt }) {
           aria-label="Play video"
           onClick={handlePlay}
         >
-          <svg width="20" height="24" viewBox="0 0 20 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M19 10.268a2 2 0 0 1 0 3.464L3 22.98A2 2 0 0 1 0 21.248V2.752A2 2 0 0 1 3 1.02l16 9.248Z" fill="#fff"/>
+          <svg width="20" height="24" viewBox="0 0 20 24" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="0,0 20,12 0,24" fill="#fff" />
           </svg>
         </button>
       )}

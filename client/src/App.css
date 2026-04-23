@@ -409,7 +409,6 @@
   padding-left: 4px;
   z-index: 2;
   transition: transform 0.2s ease-out, background 0.2s;
-  box-shadow: 0 4px 24px rgba(255, 136, 136, 0.45);
 }
 
 .video-play-btn:hover {
