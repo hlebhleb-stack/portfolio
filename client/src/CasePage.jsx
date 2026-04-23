@@ -130,10 +130,10 @@ function CasePage({ theme, setTheme }) {
         }
       }
     }
-    window.addEventListener('touchstart', onTouchStart)
-    window.addEventListener('touchmove', onTouchMove)
-    window.addEventListener('touchend', onTouchEnd)
-    window.addEventListener('gesturestart', onGestureStart)
+    window.addEventListener('touchstart', onTouchStart, { passive: true })
+    window.addEventListener('touchmove', onTouchMove, { passive: true })
+    window.addEventListener('touchend', onTouchEnd, { passive: true })
+    window.addEventListener('gesturestart', onGestureStart, { passive: true })
     return () => {
       window.removeEventListener('touchstart', onTouchStart)
       window.removeEventListener('touchmove', onTouchMove)

@@ -57,10 +57,13 @@ body {
 
 @media (max-width: 768px) {
   html {
-    overflow-x: hidden;
+    scroll-behavior: auto;
+    overflow-x: clip;
   }
   body {
-    overflow-x: hidden;
+    overflow-x: clip;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: auto;
   }
 }
 
