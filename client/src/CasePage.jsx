@@ -1,6 +1,55 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import useFadeIn from './useFadeIn.js'
+
+function VideoItem({ src, alt }) {
+  const videoRef = useRef(null)
+  const [playing, setPlaying] = useState(false)
+
+  const handlePlay = (e) => {
+    e.stopPropagation()
+    const v = videoRef.current
+    if (!v) return
+    v.muted = false
+    v.volume = 1
+    const p = v.play()
+    if (p && typeof p.catch === 'function') {
+      p.catch(() => {})
+    }
+  }
+
+  return (
+    <>
+      <video
+        ref={videoRef}
+        src={src}
+        loop
+        playsInline
+        preload="auto"
+        aria-label={alt}
+        onLoadedData={(e) => e.target.parentElement.classList.add('loaded')}
+        onLoadedMetadata={(e) => e.target.parentElement.classList.add('loaded')}
+        onPlay={() => setPlaying(true)}
+        onPause={() => setPlaying(false)}
+        controls={playing}
+        controlsList="nodownload noplaybackrate"
+        disablePictureInPicture
+      />
+      {!playing && (
+        <button
+          type="button"
+          className="video-play-btn"
+          aria-label="Play video"
+          onClick={handlePlay}
+        >
+          <svg width="20" height="24" viewBox="0 0 20 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M19 10.268a2 2 0 0 1 0 3.464L3 22.98A2 2 0 0 1 0 21.248V2.752A2 2 0 0 1 3 1.02l16 9.248Z" fill="#fff"/>
+          </svg>
+        </button>
+      )}
+    </>
+  )
+}
 
 const API_URL = import.meta.env.VITE_API_URL || ''
 
@@ -190,14 +239,7 @@ function CasePage({ theme, setTheme }) {
         {caseData.items.map((item, i) => (
           <div key={i} className="case-gallery-item">
             {item.type === 'video' ? (
-              <video
-                src={item.src}
-                autoPlay
-                loop
-                muted
-                playsInline
-                onLoadedData={(e) => e.target.parentElement.classList.add('loaded')}
-              />
+              <VideoItem src={item.src} alt={`${caseData.company} work ${i + 1}`} />
             ) : (
               <img
                 src={item.src}

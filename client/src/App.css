@@ -391,6 +391,49 @@
   opacity: 1;
 }
 
+.video-play-btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: #FF8888;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: none;
+  padding: 0;
+  padding-left: 4px;
+  z-index: 2;
+  transition: transform 0.2s ease-out, background 0.2s;
+  box-shadow: 0 4px 24px rgba(255, 136, 136, 0.45);
+}
+
+.video-play-btn:hover {
+  transform: translate(-50%, -50%) scale(1.08);
+  background: #ff9e9e;
+}
+
+.video-play-btn svg {
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .video-play-btn {
+    width: 60px;
+    height: 60px;
+    cursor: pointer;
+  }
+
+  .video-play-btn svg {
+    width: 17px;
+    height: 20px;
+  }
+}
+
 .case-not-found {
   text-align: center;
   margin-top: 200px;
