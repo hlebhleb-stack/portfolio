@@ -737,16 +737,18 @@
 
   .case-skills {
     margin-top: 18px;
-    gap: 6px;
+    gap: 6px 8px;
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    max-width: 340px;
+    grid-template-columns: auto auto;
+    justify-content: center;
+    max-width: none;
   }
 
   .case-skill {
     font-size: 14px;
     padding: 7px 12px;
-    white-space: normal;
+    white-space: nowrap;
+    justify-self: center;
   }
 
   /* Single column on mobile */
