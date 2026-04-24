@@ -276,8 +276,8 @@
 }
 
 .social-icon img {
-  width: 43px;
-  height: 43px;
+  width: 36px;
+  height: 36px;
   display: block;
   transition: filter 0.3s;
 }
@@ -598,8 +598,8 @@
   }
 
   .social-icon img {
-    width: 36px;
-    height: 36px;
+    width: 30px;
+    height: 30px;
   }
 
   .case-hero {
@@ -771,8 +771,8 @@
   }
 
   .social-icon img {
-    width: 36px;
-    height: 36px;
+    width: 30px;
+    height: 30px;
   }
 
   .footer-email,
