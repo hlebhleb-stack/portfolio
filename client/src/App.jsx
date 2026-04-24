@@ -19,16 +19,50 @@ function trackPage(page) {
   }).catch(() => {})
 }
 
+function renderBioHighlighted(text, highlights) {
+  if (!text) return null
+  const ranges = []
+  for (const term of highlights) {
+    let from = 0
+    while (from < text.length) {
+      const idx = text.indexOf(term, from)
+      if (idx === -1) break
+      ranges.push([idx, idx + term.length])
+      from = idx + term.length
+    }
+  }
+  ranges.sort((a, b) => a[0] - b[0])
+  const parts = []
+  let cursor = 0
+  ranges.forEach(([start, end], i) => {
+    if (start >= text.length) return
+    const clampedEnd = Math.min(end, text.length)
+    if (cursor < start) {
+      parts.push(<span key={`m${i}`}>{text.slice(cursor, start)}</span>)
+    }
+    parts.push(
+      <span key={`h${i}`} className="hero-bio-highlight">
+        {text.slice(start, clampedEnd)}
+      </span>
+    )
+    cursor = clampedEnd
+  })
+  if (cursor < text.length) {
+    parts.push(<span key="tail">{text.slice(cursor)}</span>)
+  }
+  return parts
+}
+
 function HomePage({ theme, setTheme, lang, setLang }) {
   const pageRef = useFadeIn()
   const t = translations[lang]
-  const fullName = t.fullName
+  const bio = t.heroBio
   const [typed, setTyped] = useState('')
   const [typingDone, setTypingDone] = useState(false)
-  const [animatingName, setAnimatingName] = useState(fullName)
+  const [animatingBio, setAnimatingBio] = useState(bio)
 
-  if (animatingName !== fullName) {
-    setAnimatingName(fullName)
+  if (animatingBio !== bio) {
+    setAnimatingBio(bio)
     setTyped('')
     setTypingDone(false)
   }
@@ -39,20 +73,20 @@ function HomePage({ theme, setTheme, lang, setLang }) {
 
   useEffect(() => {
     const startDelay = 250
-    const charInterval = 55
+    const charInterval = 22
     let i = 0
     const start = setTimeout(() => {
       const id = setInterval(() => {
         i += 1
-        setTyped(animatingName.slice(0, i))
-        if (i >= animatingName.length) {
+        setTyped(animatingBio.slice(0, i))
+        if (i >= animatingBio.length) {
           clearInterval(id)
-          setTimeout(() => setTypingDone(true), 700)
+          setTimeout(() => setTypingDone(true), 500)
         }
       }, charInterval)
     }, startDelay)
     return () => clearTimeout(start)
-  }, [animatingName])
+  }, [animatingBio])
 
   const works = [
     { company: 'Colb.finance', slug: 'colb-finance' },
@@ -102,17 +136,16 @@ function HomePage({ theme, setTheme, lang, setLang }) {
 
       {/* Hero */}
       <section className="hero fade-in-up">
-        <h1 className="hero-name">
-          <span className="hero-name-text">{typed}</span>
+        <p className="hero-bio">
+          <span className="hero-bio-text">
+            {renderBioHighlighted(typed, t.heroBioHighlights || [])}
+          </span>
           {!typingDone && <span className="hero-caret" aria-hidden="true" />}
-          {typingDone && <span className="hero-dot">.</span>}
-        </h1>
-        <p className="hero-role">{t.heroRole}</p>
+        </p>
       </section>
 
       {/* Experience */}
       <section className="experience" id="works">
-        <h2 className="experience-title fade-in-up">{t.experience}</h2>
         <div className="works">
           <div className="divider fade-in-up" />
           {works.map((work, i) => (
@@ -151,7 +184,6 @@ function HomePage({ theme, setTheme, lang, setLang }) {
             glebaaagleb@gmail.com
           </a>
         </div>
-        <div className="footer-copy">{t.copy}</div>
       </footer>
     </div>
   )

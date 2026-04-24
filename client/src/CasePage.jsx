@@ -4,51 +4,18 @@ import useFadeIn from './useFadeIn.js'
 import { translations, LANGS } from './translations.jsx'
 
 function VideoItem({ src, alt }) {
-  const videoRef = useRef(null)
-  const [playing, setPlaying] = useState(false)
-
-  const handlePlay = (e) => {
-    e.stopPropagation()
-    const v = videoRef.current
-    if (!v) return
-    v.muted = false
-    v.volume = 1
-    const p = v.play()
-    if (p && typeof p.catch === 'function') {
-      p.catch(() => {})
-    }
-  }
-
   return (
-    <>
-      <video
-        ref={videoRef}
-        src={src}
-        loop
-        playsInline
-        preload="auto"
-        aria-label={alt}
-        onLoadedData={(e) => e.target.parentElement.classList.add('loaded')}
-        onLoadedMetadata={(e) => e.target.parentElement.classList.add('loaded')}
-        onPlay={() => setPlaying(true)}
-        onPause={() => setPlaying(false)}
-        controls={playing}
-        controlsList="nodownload noplaybackrate"
-        disablePictureInPicture
-      />
-      {!playing && (
-        <button
-          type="button"
-          className="video-play-btn"
-          aria-label="Play video"
-          onClick={handlePlay}
-        >
-          <svg width="20" height="24" viewBox="0 0 20 24" xmlns="http://www.w3.org/2000/svg">
-            <polygon points="0,0 20,12 0,24" fill="#fff" />
-          </svg>
-        </button>
-      )}
-    </>
+    <video
+      src={src}
+      autoPlay
+      loop
+      muted
+      playsInline
+      preload="auto"
+      aria-label={alt}
+      onLoadedData={(e) => e.target.parentElement.classList.add('loaded')}
+      onLoadedMetadata={(e) => e.target.parentElement.classList.add('loaded')}
+    />
   )
 }
 
@@ -195,7 +162,7 @@ function CasePage({ theme, setTheme, lang, setLang }) {
     return (
       <div className="page">
         <div className="case-not-found">
-          <h2>{t.notFound}</h2>
+          <p>{t.notFound}</p>
         </div>
       </div>
     )
@@ -235,7 +202,7 @@ function CasePage({ theme, setTheme, lang, setLang }) {
 
       {/* Case Hero */}
       <section className="case-hero">
-        <h1 className="case-title"><a href={caseData.url} target="_blank" rel="noopener noreferrer">{caseData.company}<span className="hero-dot">.</span></a></h1>
+        <p className="case-title"><a href={caseData.url} target="_blank" rel="noopener noreferrer">{caseData.company}<span className="hero-dot">.</span></a></p>
         {caseTranslation?.description && (
           <p className="case-description">{caseTranslation.description}</p>
         )}
@@ -323,7 +290,6 @@ function CasePage({ theme, setTheme, lang, setLang }) {
             glebaaagleb@gmail.com
           </a>
         </div>
-        <div className="footer-copy">{t.copy}</div>
       </footer>
     </div>
   )

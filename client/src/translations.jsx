@@ -14,6 +14,8 @@ const threeDLink = (label) => (
 export const translations = {
   en: {
     fullName: 'Gleb Dihtievsky',
+    heroBio: 'Gleb designs visual experiences. Focused on motion, brand, and UI. Currently creating vibes at Colb Finance.',
+    heroBioHighlights: ['Gleb', 'Colb Finance'],
     heroRole: 'Visual Designer',
     experience: 'Experience',
     workRole: 'Visuals for X/Twitter',
@@ -49,6 +51,8 @@ export const translations = {
   },
   ru: {
     fullName: 'Глеб Дихтиевский',
+    heroBio: 'Глеб создаёт визуальные впечатления. Фокус на моушн, бренде и UI. Сейчас делает вайбы в Colb Finance.',
+    heroBioHighlights: ['Глеб', 'Colb Finance'],
     heroRole: 'Визуальный дизайнер',
     experience: 'Опыт работы',
     workRole: 'Визуалы для X/Twitter',
@@ -84,6 +88,8 @@ export const translations = {
   },
   de: {
     fullName: 'Gleb Dihtievsky',
+    heroBio: 'Gleb gestaltet visuelle Erlebnisse. Fokus auf Motion, Brand und UI. Erschafft gerade Vibes bei Colb Finance.',
+    heroBioHighlights: ['Gleb', 'Colb Finance'],
     heroRole: 'Visueller Designer',
     experience: 'Erfahrung',
     workRole: 'Visuals für X/Twitter',
