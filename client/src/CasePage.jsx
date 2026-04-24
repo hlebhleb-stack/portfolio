@@ -257,17 +257,6 @@ function CasePage({ theme, setTheme, lang, setLang }) {
       {/* Footer */}
       <footer className="footer">
         <div className="footer-main">
-          <div className="social-icons">
-            <a href="https://www.linkedin.com/in/gleb-dihtievsky/" target="_blank" rel="noopener noreferrer" className="social-icon">
-              <img src="/assets/icon-social-3.svg" alt="LinkedIn" />
-            </a>
-            <a href="https://t.me/glebaagleb" target="_blank" rel="noopener noreferrer" className="social-icon">
-              <img src="/assets/icon-social-1.svg" alt="Telegram" />
-            </a>
-            <a href="https://x.com/glebaagleb" target="_blank" rel="noopener noreferrer" className="social-icon">
-              <img src="/assets/icon-social-2.svg" alt="X" />
-            </a>
-          </div>
           <a href="/assets/cv.pdf" target="_blank" rel="noopener noreferrer" className="footer-cv">{t.cv}</a>
           <a href="mailto:glebaaagleb@gmail.com" className="footer-email">
             glebaaagleb@gmail.com
