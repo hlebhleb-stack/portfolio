@@ -108,23 +108,23 @@ function HomePage({ theme, setTheme, lang, setLang }) {
         <HeaderMenu theme={theme} setTheme={setTheme} lang={lang} />
       </header>
 
-      {/* Photo */}
-      <div className="photo-portrait fade-in-up">
-        <div className="photo-wrapper">
-          <img src="/assets/photo-portrait.jpg" alt="Gleb Dihtievsky" className="photo-img" />
-          <div className="photo-overlay" />
+      {/* Hero block */}
+      <div className="hero-block">
+        <div className="photo-portrait fade-in-up">
+          <div className="photo-wrapper">
+            <img src="/assets/photo-portrait.jpg" alt="Gleb Dihtievsky" className="photo-img" />
+            <div className="photo-overlay" />
+          </div>
         </div>
+        <section className="hero fade-in-up">
+          <p className="hero-bio">
+            <span className="hero-bio-text">
+              {renderBioHighlighted(typed, t.heroBioHighlights || [])}
+            </span>
+            {!typingDone && <span className="hero-caret" aria-hidden="true" />}
+          </p>
+        </section>
       </div>
-
-      {/* Hero */}
-      <section className="hero fade-in-up">
-        <p className="hero-bio">
-          <span className="hero-bio-text">
-            {renderBioHighlighted(typed, t.heroBioHighlights || [])}
-          </span>
-          {!typingDone && <span className="hero-caret" aria-hidden="true" />}
-        </p>
-      </section>
 
       {/* Footer */}
       <footer className="footer fade-in-up" id="links">

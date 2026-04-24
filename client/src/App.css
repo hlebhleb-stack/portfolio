@@ -78,20 +78,6 @@
 }
 
 /* ========== Header menu (+) ========== */
-.menu-backdrop {
-  position: fixed;
-  inset: 0;
-  background: var(--bg);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.25s ease-out;
-  z-index: 40;
-}
-
-.menu-backdrop.visible {
-  opacity: 1;
-}
-
 .header-menu {
   position: relative;
   z-index: 60;
@@ -135,7 +121,7 @@
 
 .menu-panel {
   position: absolute;
-  top: calc(100% + 16px);
+  top: calc(100% + 12px);
   right: 0;
   min-width: 140px;
   display: flex;
@@ -143,12 +129,14 @@
   gap: 14px;
   text-align: right;
   z-index: 50;
-  animation: menu-enter 0.18s ease-out both;
+  background: var(--bg);
+  padding: 14px 16px;
+  animation: menu-enter 0.25s ease-out both;
 }
 
 @keyframes menu-enter {
-  from { opacity: 0; transform: translateY(-4px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .menu-group-title {
@@ -209,6 +197,11 @@
 
 .nav-link:hover {
   color: var(--text);
+}
+
+/* ========== Hero block ========== */
+.hero-block {
+  display: contents;
 }
 
 /* ========== Photo Portrait ========== */
@@ -572,10 +565,18 @@
     gap: 8px;
   }
 
-  /* On mobile: first screen shows only header + bio. */
+  /* On mobile: first screen = header + vertically centered photo + bio.
+     Experience/footer appears only after scroll. */
+  .hero-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 70px);
+  }
+
   .photo-portrait {
     margin-top: 0;
-    padding-top: 22vh;
   }
 
   .photo-wrapper {
@@ -583,11 +584,8 @@
     height: 93px;
   }
 
-  /* Hero */
   .hero {
     margin-top: 14px;
-    min-height: calc(100vh - 22vh - 93px - 80px);
-    align-items: flex-start;
   }
 
   .hero-bio {
