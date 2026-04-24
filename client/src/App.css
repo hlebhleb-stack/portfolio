@@ -358,11 +358,40 @@
   text-align: center;
 }
 
+/* Case Filter */
+.case-filter {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-top: 80px;
+}
+
+.case-filter-btn {
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--text-muted);
+  cursor: none;
+  transition: color 0.3s;
+  padding: 0;
+}
+
+.case-filter-btn:hover,
+.case-filter-btn.active {
+  color: var(--text);
+}
+
 /* Case Gallery — Desktop collage */
 .case-gallery {
   margin-top: 80px;
   column-count: 2;
   column-gap: 20px;
+}
+
+.case-filter + .case-gallery {
+  margin-top: 32px;
 }
 
 .case-gallery-item {

@@ -116,6 +116,11 @@ function CasePage({ theme, setTheme }) {
   const navigate = useNavigate()
   const caseData = casesData[slug]
   const pageRef = useFadeIn()
+  const [filter, setFilter] = useState('all')
+
+  useEffect(() => {
+    setFilter('all')
+  }, [slug])
   const touchStartX = useRef(0)
   const touchStartY = useRef(0)
   const touchStartTime = useRef(0)
@@ -248,22 +253,56 @@ function CasePage({ theme, setTheme }) {
         )}
       </section>
 
+      {/* Filter */}
+      {(() => {
+        const videoCount = caseData.items.filter((it) => it.type === 'video').length
+        const imageCount = caseData.items.length - videoCount
+        if (videoCount === 0 || imageCount === 0) return null
+        return (
+          <div className="case-filter">
+            <button
+              className={`case-filter-btn${filter === 'all' ? ' active' : ''}`}
+              onClick={() => setFilter('all')}
+              type="button"
+            >
+              All
+            </button>
+            <button
+              className={`case-filter-btn${filter === 'video' ? ' active' : ''}`}
+              onClick={() => setFilter('video')}
+              type="button"
+            >
+              Videos
+            </button>
+            <button
+              className={`case-filter-btn${filter === 'image' ? ' active' : ''}`}
+              onClick={() => setFilter('image')}
+              type="button"
+            >
+              Banners
+            </button>
+          </div>
+        )
+      })()}
+
       {/* Gallery */}
       <div className="case-gallery">
-        {caseData.items.map((item, i) => (
-          <div key={i} className="case-gallery-item">
-            {item.type === 'video' ? (
-              <VideoItem src={item.src} alt={`${caseData.company} work ${i + 1}`} />
-            ) : (
-              <img
-                src={item.src}
-                alt={`${caseData.company} work ${i + 1}`}
-                loading="lazy"
-                onLoad={(e) => e.target.parentElement.classList.add('loaded')}
-              />
-            )}
-          </div>
-        ))}
+        {caseData.items
+          .filter((item) => filter === 'all' || item.type === filter)
+          .map((item, i) => (
+            <div key={`${filter}-${item.src}`} className="case-gallery-item">
+              {item.type === 'video' ? (
+                <VideoItem src={item.src} alt={`${caseData.company} work ${i + 1}`} />
+              ) : (
+                <img
+                  src={item.src}
+                  alt={`${caseData.company} work ${i + 1}`}
+                  loading="lazy"
+                  onLoad={(e) => e.target.parentElement.classList.add('loaded')}
+                />
+              )}
+            </div>
+          ))}
       </div>
 
       {/* Footer */}
