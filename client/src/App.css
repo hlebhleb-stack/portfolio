@@ -335,7 +335,7 @@
 
 /* ========== Case Page ========== */
 .case-hero {
-  margin-top: 80px;
+  margin-top: 140px;
   text-align: center;
 }
 
@@ -634,7 +634,7 @@
   }
 
   .case-hero {
-    margin-top: 60px;
+    margin-top: 100px;
   }
 
   .case-title {
@@ -818,7 +818,7 @@
 
   /* Case page mobile */
   .case-hero {
-    margin-top: 48px;
+    margin-top: 64px;
   }
 
   .case-title {
