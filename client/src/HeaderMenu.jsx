@@ -62,23 +62,18 @@ export default function HeaderMenu({ theme, setTheme, lang }) {
             >
               {t.menu.home}
             </NavLink>
-            <div className="menu-group">
-              <ul className="menu-group-list">
-                {MENU_CASES.map((c) => (
-                  <li key={c.slug}>
-                    <NavLink
-                      to={`/case/${c.slug}`}
-                      className={({ isActive }) =>
-                        `menu-item${isActive ? ' is-active' : ''}`
-                      }
-                      onClick={() => setOpen(false)}
-                    >
-                      {c.label}
-                    </NavLink>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            {MENU_CASES.map((c) => (
+              <NavLink
+                key={c.slug}
+                to={`/case/${c.slug}`}
+                className={({ isActive }) =>
+                  `menu-item${isActive ? ' is-active' : ''}`
+                }
+                onClick={() => setOpen(false)}
+              >
+                {c.label}
+              </NavLink>
+            ))}
             <button
               type="button"
               className="menu-item menu-theme-toggle"

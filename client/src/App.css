@@ -141,31 +141,20 @@
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 14px;
+  gap: 10px;
   text-align: right;
   z-index: 50;
   animation: menu-enter 0.18s ease-out both;
 }
 
+.menu-theme-toggle {
+  margin-top: 14px;
+  line-height: 0;
+}
+
 @keyframes menu-enter {
   from { opacity: 0; }
   to { opacity: 1; }
-}
-
-.menu-group {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-}
-
-.menu-group-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 4px;
 }
 
 .menu-item {
@@ -192,9 +181,6 @@
   outline: none;
 }
 
-.menu-theme-toggle {
-  line-height: 0;
-}
 
 .theme-circle {
   display: inline-block;
