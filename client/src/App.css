@@ -337,9 +337,8 @@
   list-style: none;
   padding: 0;
   margin: 24px auto 0;
-  max-width: 340px;
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   justify-content: center;
   gap: 8px;
 }
@@ -352,6 +351,7 @@
   line-height: 1;
   padding: 8px 14px;
   white-space: nowrap;
+  text-align: center;
 }
 
 /* Case Gallery — Desktop collage */
@@ -738,11 +738,15 @@
   .case-skills {
     margin-top: 18px;
     gap: 6px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    max-width: 340px;
   }
 
   .case-skill {
     font-size: 14px;
     padding: 7px 12px;
+    white-space: normal;
   }
 
   /* Single column on mobile */
