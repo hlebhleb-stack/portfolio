@@ -237,8 +237,11 @@ function CasePage({ theme, setTheme }) {
         )}
         {caseData.skills && caseData.skills.length > 0 && (
           <ul className="case-skills">
-            {caseData.skills.map((skill) => (
-              <li key={skill} className="case-skill">{skill}</li>
+            {caseData.skills.map((skill, i) => (
+              <React.Fragment key={skill}>
+                {i > 0 && i % 2 === 0 && <li className="case-skills-break" aria-hidden="true" />}
+                <li className="case-skill">{skill}</li>
+              </React.Fragment>
             ))}
           </ul>
         )}
