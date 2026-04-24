@@ -52,6 +52,13 @@ export default function HeaderMenu({ theme, setTheme, lang }) {
 
         {open && (
           <div className="menu-panel">
+            <Link
+              to="/"
+              className="menu-item menu-item-flat"
+              onClick={() => setOpen(false)}
+            >
+              {t.menu.home}
+            </Link>
             <div className="menu-group">
               <div className="menu-group-title">{t.menu.works}</div>
               <ul className="menu-group-list">
