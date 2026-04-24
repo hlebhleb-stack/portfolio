@@ -208,7 +208,7 @@
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
   width: 100%;
-  padding: 25px 10px;
+  padding: 25px 0;
   font-size: 16px;
   font-weight: 400;
   color: var(--text);
@@ -584,7 +584,7 @@
 
   .work-row {
     font-size: 15px;
-    padding: 20px 10px;
+    padding: 20px 0;
   }
 
   .footer {
