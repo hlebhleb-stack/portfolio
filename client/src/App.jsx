@@ -90,7 +90,7 @@ function HomePage({ theme, setTheme, lang, setLang }) {
   }, [animatingBio])
 
   return (
-    <div className="page" ref={pageRef}>
+    <div className="page page-home" ref={pageRef}>
       {/* Header */}
       <header className="header">
         <div className="lang-toggle">

@@ -577,9 +577,12 @@
     gap: 8px;
   }
 
-  /* On mobile: everything fits in one screen — no scroll. */
-  .page {
-    min-height: 100vh;
+  /* On mobile the home page fits in one screen — no scroll.
+     Case pages still scroll normally. */
+  .page-home {
+    min-height: 100dvh;
+    height: 100dvh;
+    overflow: hidden;
   }
 
   .hero-block {
