@@ -237,11 +237,12 @@ function CasePage({ theme, setTheme }) {
         )}
         {caseData.skills && caseData.skills.length > 0 && (
           <ul className="case-skills">
-            {caseData.skills.map((skill, i) => (
-              <React.Fragment key={skill}>
-                {i > 0 && i % 2 === 0 && <li className="case-skills-break" aria-hidden="true" />}
-                <li className="case-skill">{skill}</li>
-              </React.Fragment>
+            {Array.from({ length: Math.ceil(caseData.skills.length / 2) }, (_, ri) => (
+              <li key={ri} className="case-skills-row">
+                {caseData.skills.slice(ri * 2, ri * 2 + 2).map((skill) => (
+                  <span key={skill} className="case-skill">{skill}</span>
+                ))}
+              </li>
             ))}
           </ul>
         )}

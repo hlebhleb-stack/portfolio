@@ -343,6 +343,10 @@
   gap: 8px;
 }
 
+.case-skills-row {
+  display: contents;
+}
+
 .case-skill {
   background: #FF8888;
   color: #fff;
@@ -352,10 +356,6 @@
   padding: 8px 14px;
   white-space: nowrap;
   text-align: center;
-}
-
-.case-skills-break {
-  display: none;
 }
 
 /* Case Gallery — Desktop collage */
@@ -742,22 +742,20 @@
   .case-skills {
     margin-top: 18px;
     gap: 8px;
-    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .case-skills-row {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
   }
 
   .case-skill {
     font-size: 14px;
     padding: 7px 12px;
     white-space: nowrap;
-  }
-
-  .case-skills-break {
-    display: block;
-    flex-basis: 100%;
-    height: 0;
-    padding: 0;
-    margin: 0;
-    list-style: none;
   }
 
   /* Single column on mobile */
