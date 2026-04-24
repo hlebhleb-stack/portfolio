@@ -199,37 +199,16 @@
 }
 
 .menu-theme-toggle {
-  color: var(--text);
   line-height: 0;
 }
 
-.theme-icon-wrap {
-  position: relative;
+.theme-circle {
   display: inline-block;
-  width: 14px;
-  height: 14px;
-}
-
-.theme-icon-svg {
-  position: absolute;
-  inset: 0;
-  transition: opacity 0.25s ease-out;
-}
-
-.theme-icon-moon {
-  opacity: 1;
-}
-
-.theme-icon-sun {
-  opacity: 0;
-}
-
-.theme-icon-wrap.is-dark .theme-icon-moon {
-  opacity: 0;
-}
-
-.theme-icon-wrap.is-dark .theme-icon-sun {
-  opacity: 1;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--text);
+  transition: background 0.3s ease-out;
 }
 
 /* Navigation */
