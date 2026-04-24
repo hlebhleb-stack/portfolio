@@ -117,10 +117,11 @@ function CasePage({ theme, setTheme }) {
   const caseData = casesData[slug]
   const pageRef = useFadeIn()
   const [filter, setFilter] = useState('all')
-
-  useEffect(() => {
+  const [lastSlug, setLastSlug] = useState(slug)
+  if (slug !== lastSlug) {
+    setLastSlug(slug)
     setFilter('all')
-  }, [slug])
+  }
   const touchStartX = useRef(0)
   const touchStartY = useRef(0)
   const touchStartTime = useRef(0)
