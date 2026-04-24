@@ -190,6 +190,15 @@ function CasePage({ theme, setTheme, lang, setLang }) {
 
       {/* Case Hero */}
       <section className="case-hero">
+        <a
+          href={caseData.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="case-link"
+        >
+          {caseData.company}
+          <span className="case-link-arrow" aria-hidden="true">↗</span>
+        </a>
         {caseTranslation?.description && (
           <p className="case-description">{caseTranslation.description}</p>
         )}

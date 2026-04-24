@@ -334,6 +334,30 @@
   text-align: left;
 }
 
+.case-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--text-muted);
+  transition: color 0.2s;
+  margin-bottom: 12px;
+}
+
+.case-link:hover {
+  color: var(--text);
+}
+
+.case-link-arrow {
+  font-size: 10px;
+  line-height: 1;
+  transition: transform 0.2s;
+}
+
+.case-link:hover .case-link-arrow {
+  transform: translate(2px, -2px);
+}
+
 .case-description {
   font-size: 13px;
   font-weight: 400;
