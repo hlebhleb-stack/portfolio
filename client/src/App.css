@@ -152,13 +152,6 @@
   to { opacity: 1; }
 }
 
-.menu-group-title {
-  font-size: 11px;
-  color: var(--text);
-  margin-bottom: 6px;
-  font-weight: 400;
-}
-
 .menu-group {
   display: flex;
   flex-direction: column;
@@ -193,7 +186,8 @@
 }
 
 .menu-item:hover,
-.menu-item:focus-visible {
+.menu-item:focus-visible,
+.menu-item.is-active {
   color: var(--text);
   outline: none;
 }

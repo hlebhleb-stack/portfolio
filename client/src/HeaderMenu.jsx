@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import { translations } from './translations.jsx'
 
 const MENU_CASES = [
@@ -52,25 +52,29 @@ export default function HeaderMenu({ theme, setTheme, lang }) {
 
         {open && (
           <div className="menu-panel">
-            <Link
+            <NavLink
               to="/"
-              className="menu-item menu-item-flat"
+              end
+              className={({ isActive }) =>
+                `menu-item${isActive ? ' is-active' : ''}`
+              }
               onClick={() => setOpen(false)}
             >
               {t.menu.home}
-            </Link>
+            </NavLink>
             <div className="menu-group">
-              <div className="menu-group-title">{t.menu.works}</div>
               <ul className="menu-group-list">
                 {MENU_CASES.map((c) => (
                   <li key={c.slug}>
-                    <Link
+                    <NavLink
                       to={`/case/${c.slug}`}
-                      className="menu-item"
+                      className={({ isActive }) =>
+                        `menu-item${isActive ? ' is-active' : ''}`
+                      }
                       onClick={() => setOpen(false)}
                     >
                       {c.label}
-                    </Link>
+                    </NavLink>
                   </li>
                 ))}
               </ul>
