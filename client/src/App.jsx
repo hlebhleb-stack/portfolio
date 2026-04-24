@@ -20,9 +20,29 @@ function trackPage(page) {
 
 function HomePage({ theme, setTheme }) {
   const pageRef = useFadeIn()
+  const fullName = 'Gleb Dihtievsky'
+  const [typed, setTyped] = useState('')
+  const [typingDone, setTypingDone] = useState(false)
 
   useEffect(() => {
     trackPage('/')
+  }, [])
+
+  useEffect(() => {
+    const startDelay = 250
+    const charInterval = 55
+    let i = 0
+    const start = setTimeout(() => {
+      const id = setInterval(() => {
+        i += 1
+        setTyped(fullName.slice(0, i))
+        if (i >= fullName.length) {
+          clearInterval(id)
+          setTimeout(() => setTypingDone(true), 700)
+        }
+      }, charInterval)
+    }, startDelay)
+    return () => clearTimeout(start)
   }, [])
 
   const works = [
@@ -81,7 +101,9 @@ function HomePage({ theme, setTheme }) {
       {/* Hero */}
       <section className="hero fade-in-up">
         <h1 className="hero-name">
-          <span className="hero-name-text">Gleb Dihtievsky</span><span className="hero-dot">.</span>
+          <span className="hero-name-text">{typed}</span>
+          {!typingDone && <span className="hero-caret" aria-hidden="true" />}
+          {typingDone && <span className="hero-dot">.</span>}
         </h1>
         <p className="hero-role">Visual Designer</p>
       </section>
