@@ -91,7 +91,7 @@
 .nav {
   display: flex;
   align-items: center;
-  gap: 50px;
+  gap: 24px;
 }
 
 .nav-link {
@@ -510,7 +510,7 @@
   }
 
   .nav {
-    gap: 36px;
+    gap: 16px;
   }
 
   .theme-toggle {
@@ -656,7 +656,7 @@
   }
 
   .nav {
-    gap: 24px;
+    gap: 20px;
   }
 
   .nav-link {
