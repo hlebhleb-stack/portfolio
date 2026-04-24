@@ -22,6 +22,7 @@ export const translations = {
     cv: 'CV',
     copy: '© 2026 Gleb Dihtievsky. All rights reserved.',
     filter: { all: 'All', videos: 'Videos', banners: 'Banners' },
+    menu: { works: 'works', switchTheme: 'switch theme' },
     notFound: 'Case not found',
     periods: {
       'colb-finance': 'Sep 2025 — Present',
@@ -59,6 +60,7 @@ export const translations = {
     cv: 'Резюме',
     copy: '© 2026 Глеб Дихтиевский. Все права защищены.',
     filter: { all: 'Все', videos: 'Видео', banners: 'Баннеры' },
+    menu: { works: 'работы', switchTheme: 'сменить тему' },
     notFound: 'Кейс не найден',
     periods: {
       'colb-finance': 'Сен 2025 — наст. время',
@@ -96,6 +98,7 @@ export const translations = {
     cv: 'Lebenslauf',
     copy: '© 2026 Gleb Dihtievsky. Alle Rechte vorbehalten.',
     filter: { all: 'Alle', videos: 'Videos', banners: 'Banner' },
+    menu: { works: 'Arbeiten', switchTheme: 'Theme wechseln' },
     notFound: 'Fall nicht gefunden',
     periods: {
       'colb-finance': 'Sep 2025 — heute',
