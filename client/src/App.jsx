@@ -84,10 +84,6 @@ function HomePage({ theme, setTheme }) {
             Dark
           </button>
         </div>
-        <nav className="nav">
-          <a href="#works" className="nav-link">works</a>
-          <a href="#links" className="nav-link">links</a>
-        </nav>
       </header>
 
       {/* Photo */}

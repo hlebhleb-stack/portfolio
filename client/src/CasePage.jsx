@@ -241,9 +241,6 @@ function CasePage({ theme, setTheme }) {
             Dark
           </button>
         </div>
-        <nav className="nav">
-          <span className="nav-link" onClick={() => navigate('/')} role="button" tabIndex={0}>home</span>
-        </nav>
       </header>
 
       {/* Case Hero */}
