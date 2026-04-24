@@ -737,7 +737,7 @@
 
   .case-skills {
     margin-top: 18px;
-    gap: 6px 8px;
+    gap: 8px;
     display: grid;
     grid-template-columns: auto auto;
     justify-content: center;
