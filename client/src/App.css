@@ -349,13 +349,15 @@
 }
 
 .case-description-link {
-  color: #FF8888;
-  text-decoration: none;
-  transition: opacity 0.2s;
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--text-muted);
+  text-underline-offset: 3px;
+  transition: text-decoration-color 0.2s;
 }
 
 .case-description-link:hover {
-  opacity: 0.7;
+  text-decoration-color: var(--text);
 }
 
 .case-skills {
