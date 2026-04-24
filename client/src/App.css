@@ -78,6 +78,20 @@
 }
 
 /* ========== Header menu (+) ========== */
+.menu-backdrop {
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease-out;
+  z-index: 40;
+}
+
+.menu-backdrop.visible {
+  opacity: 1;
+}
+
 .header-menu {
   position: relative;
   z-index: 60;
@@ -129,9 +143,7 @@
   gap: 14px;
   text-align: right;
   z-index: 50;
-  background: var(--bg);
-  padding: 14px 16px;
-  animation: menu-enter 0.25s ease-out both;
+  animation: menu-enter 0.18s ease-out both;
 }
 
 @keyframes menu-enter {
@@ -565,14 +577,18 @@
     gap: 8px;
   }
 
-  /* On mobile: first screen = header + vertically centered photo + bio.
-     Experience/footer appears only after scroll. */
+  /* On mobile: everything fits in one screen — no scroll. */
+  .page {
+    min-height: 100vh;
+  }
+
   .hero-block {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: calc(100vh - 70px);
+    flex: 1 1 auto;
+    min-height: 0;
   }
 
   .photo-portrait {
@@ -595,8 +611,8 @@
 
   /* Footer */
   .footer {
-    padding-top: 80px;
-    padding-bottom: 28px;
+    padding-top: 24px;
+    padding-bottom: 24px;
   }
 
   .footer-email,
