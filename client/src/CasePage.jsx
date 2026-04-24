@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import useFadeIn from './useFadeIn.js'
+import { translations, LANGS } from './translations.jsx'
 
 function VideoItem({ src, alt }) {
   const videoRef = useRef(null)
@@ -57,10 +58,6 @@ const casesData = {
   'colb-finance': {
     company: 'Colb.finance',
     url: 'https://x.com/ColbFinance',
-    role: 'Visuals for X/Twitter',
-    period: 'Sep 2025 — Present',
-    description: 'Full-cycle design for a Swiss fintech project: from high-fidelity web prototyping and technical documentation to brand graphics, motion design, and UI assets for Twitter and Discord.',
-    skills: ['UX/UI', 'Web Prototyping', 'Brand Identity', 'Motion Design'],
     items: [
       { type: 'image', src: '/assets/works/colb-finance/1.png' },
       { type: 'image', src: '/assets/works/colb-finance/2.png' },
@@ -77,10 +74,6 @@ const casesData = {
   'sova-labs': {
     company: 'Sova Labs',
     url: 'https://x.com/SovaBTC',
-    role: 'Visuals for X/Twitter',
-    period: 'Jan 2026 — Present',
-    description: 'Spearheaded the end-to-end creative direction, including 2D motion design and high-impact marketing graphics. Developed a comprehensive system of reusable design templates to streamline future content production and ensure long-term brand consistency.',
-    skills: ['Creative Direction', '2D Motion Design', 'Design System', 'Marketing Design'],
     items: [
       { type: 'video', src: '/assets/works/sova-labs/1.mp4' },
       { type: 'video', src: '/assets/works/sova-labs/2.mp4' },
@@ -95,23 +88,6 @@ const casesData = {
   're-protocol': {
     company: 'Re Protocol',
     url: 'https://x.com/re',
-    role: 'Visuals for X/Twitter',
-    period: 'Dec 2025 — Jan 2026',
-    description: (
-      <>
-        Partnered with a{' '}
-        <a
-          href="https://x.com/puselol"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="case-description-link"
-        >
-          3D designer
-        </a>
-        {' '}to produce high-end explainer and promotional animations for the official X account. Managed the full cycle of video creation to enhance brand presence and community engagement.
-      </>
-    ),
-    skills: ['Creative Direction', 'Motion Design', '3D Animation', 'Video Production'],
     items: [
       { type: 'video', src: '/assets/works/re-protocol/1.mp4' },
       { type: 'video', src: '/assets/works/re-protocol/2.mp4' },
@@ -124,10 +100,12 @@ const casesData = {
 
 const slugs = Object.keys(casesData)
 
-function CasePage({ theme, setTheme }) {
+function CasePage({ theme, setTheme, lang, setLang }) {
   const { slug } = useParams()
   const navigate = useNavigate()
   const caseData = casesData[slug]
+  const t = translations[lang]
+  const caseTranslation = caseData ? t.cases[slug] : null
   const pageRef = useFadeIn()
   const [filter, setFilter] = useState('all')
   const [lastSlug, setLastSlug] = useState(slug)
@@ -217,7 +195,7 @@ function CasePage({ theme, setTheme }) {
     return (
       <div className="page">
         <div className="case-not-found">
-          <h2>Case not found</h2>
+          <h2>{t.notFound}</h2>
         </div>
       </div>
     )
@@ -227,6 +205,18 @@ function CasePage({ theme, setTheme }) {
     <div className="page" ref={pageRef}>
       {/* Header */}
       <header className="header">
+        <div className="lang-toggle">
+          {LANGS.map((l) => (
+            <button
+              key={l.code}
+              type="button"
+              className={`lang-btn${lang === l.code ? ' active' : ''}`}
+              onClick={() => setLang(l.code)}
+            >
+              {l.label}
+            </button>
+          ))}
+        </div>
         <div className="theme-toggle">
           <button className={`theme-btn${theme === 'light' ? ' active' : ''}`} onClick={() => setTheme('light')}>
             <svg className="theme-icon" width="12" height="12" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -246,14 +236,14 @@ function CasePage({ theme, setTheme }) {
       {/* Case Hero */}
       <section className="case-hero">
         <h1 className="case-title"><a href={caseData.url} target="_blank" rel="noopener noreferrer">{caseData.company}<span className="hero-dot">.</span></a></h1>
-        {caseData.description && (
-          <p className="case-description">{caseData.description}</p>
+        {caseTranslation?.description && (
+          <p className="case-description">{caseTranslation.description}</p>
         )}
-        {caseData.skills && caseData.skills.length > 0 && (
+        {caseTranslation?.skills && caseTranslation.skills.length > 0 && (
           <ul className="case-skills">
-            {Array.from({ length: Math.ceil(caseData.skills.length / 2) }, (_, ri) => (
+            {Array.from({ length: Math.ceil(caseTranslation.skills.length / 2) }, (_, ri) => (
               <li key={ri} className="case-skills-row">
-                {caseData.skills.slice(ri * 2, ri * 2 + 2).map((skill) => (
+                {caseTranslation.skills.slice(ri * 2, ri * 2 + 2).map((skill) => (
                   <span key={skill} className="case-skill">{skill}</span>
                 ))}
               </li>
@@ -274,21 +264,21 @@ function CasePage({ theme, setTheme }) {
               onClick={() => setFilter('all')}
               type="button"
             >
-              All
+              {t.filter.all}
             </button>
             <button
               className={`case-filter-btn${filter === 'video' ? ' active' : ''}`}
               onClick={() => setFilter('video')}
               type="button"
             >
-              Videos
+              {t.filter.videos}
             </button>
             <button
               className={`case-filter-btn${filter === 'image' ? ' active' : ''}`}
               onClick={() => setFilter('image')}
               type="button"
             >
-              Banners
+              {t.filter.banners}
             </button>
           </div>
         )
@@ -328,12 +318,12 @@ function CasePage({ theme, setTheme }) {
               <img src="/assets/icon-social-2.svg" alt="X" />
             </a>
           </div>
-          <a href="/assets/cv.pdf" target="_blank" rel="noopener noreferrer" className="footer-cv">CV</a>
+          <a href="/assets/cv.pdf" target="_blank" rel="noopener noreferrer" className="footer-cv">{t.cv}</a>
           <a href="mailto:glebaaagleb@gmail.com" className="footer-email">
             glebaaagleb@gmail.com
           </a>
         </div>
-        <div className="footer-copy">© 2026 Gleb Dihtievsky. All rights reserved.</div>
+        <div className="footer-copy">{t.copy}</div>
       </footer>
     </div>
   )

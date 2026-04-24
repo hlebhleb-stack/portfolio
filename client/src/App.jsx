@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Routes, Route, Link, useLocation } from 'react-router-dom'
 import CasePage from './CasePage.jsx'
 import useFadeIn from './useFadeIn.js'
+import { translations, LANGS } from './translations.jsx'
 import './App.css'
 
 const API_URL = import.meta.env.VITE_API_URL || ''
@@ -18,8 +19,9 @@ function trackPage(page) {
   }).catch(() => {})
 }
 
-function HomePage({ theme, setTheme }) {
+function HomePage({ theme, setTheme, lang, setLang }) {
   const pageRef = useFadeIn()
+  const t = translations[lang]
   const fullName = 'Gleb Dihtievsky'
   const [typed, setTyped] = useState('')
   const [typingDone, setTypingDone] = useState(false)
@@ -46,30 +48,27 @@ function HomePage({ theme, setTheme }) {
   }, [])
 
   const works = [
-    {
-      company: 'Colb.finance',
-      role: 'Visuals for X/Twitter',
-      period: 'Sep 2025 — Present',
-      slug: 'colb-finance',
-    },
-    {
-      company: 'Sova Labs',
-      role: 'Visuals for X/Twitter',
-      period: 'Jan 2026 — Present',
-      slug: 'sova-labs',
-    },
-    {
-      company: 'Re Protocol',
-      role: 'Visuals for X/Twitter',
-      period: 'Dec 2025 — Jan 2026',
-      slug: 're-protocol',
-    },
+    { company: 'Colb.finance', slug: 'colb-finance' },
+    { company: 'Sova Labs', slug: 'sova-labs' },
+    { company: 'Re Protocol', slug: 're-protocol' },
   ]
 
   return (
     <div className="page" ref={pageRef}>
       {/* Header */}
       <header className="header">
+        <div className="lang-toggle">
+          {LANGS.map((l) => (
+            <button
+              key={l.code}
+              type="button"
+              className={`lang-btn${lang === l.code ? ' active' : ''}`}
+              onClick={() => setLang(l.code)}
+            >
+              {l.label}
+            </button>
+          ))}
+        </div>
         <div className="theme-toggle">
           <button className={`theme-btn${theme === 'light' ? ' active' : ''}`} onClick={() => setTheme('light')}>
             <svg className="theme-icon" width="12" height="12" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -101,12 +100,12 @@ function HomePage({ theme, setTheme }) {
           {!typingDone && <span className="hero-caret" aria-hidden="true" />}
           {typingDone && <span className="hero-dot">.</span>}
         </h1>
-        <p className="hero-role">Visual Designer</p>
+        <p className="hero-role">{t.heroRole}</p>
       </section>
 
       {/* Experience */}
       <section className="experience" id="works">
-        <h2 className="experience-title fade-in-up">Experience</h2>
+        <h2 className="experience-title fade-in-up">{t.experience}</h2>
         <div className="works">
           <div className="divider fade-in-up" />
           {works.map((work, i) => (
@@ -117,8 +116,8 @@ function HomePage({ theme, setTheme }) {
                 style={{ transitionDelay: `${i * 0.08}s` }}
               >
                 <span className="work-company">{work.company}</span>
-                <span className="work-role">{work.role}</span>
-                <span className="work-period">{work.period}</span>
+                <span className="work-role">{t.workRole}</span>
+                <span className="work-period">{t.periods[work.slug]}</span>
               </Link>
               <div className="divider fade-in-up" />
             </React.Fragment>
@@ -140,12 +139,12 @@ function HomePage({ theme, setTheme }) {
               <img src="/assets/icon-social-2.svg" alt="X" />
             </a>
           </div>
-          <a href="/assets/cv.pdf" target="_blank" rel="noopener noreferrer" className="footer-cv">CV</a>
+          <a href="/assets/cv.pdf" target="_blank" rel="noopener noreferrer" className="footer-cv">{t.cv}</a>
           <a href="mailto:glebaaagleb@gmail.com" className="footer-email">
             glebaaagleb@gmail.com
           </a>
         </div>
-        <div className="footer-copy">© 2026 Gleb Dihtievsky. All rights reserved.</div>
+        <div className="footer-copy">{t.copy}</div>
       </footer>
     </div>
   )
@@ -154,11 +153,24 @@ function HomePage({ theme, setTheme }) {
 function App() {
   const cursorRef = useRef(null)
   const [theme, setTheme] = useState('light')
+  const [lang, setLangState] = useState(() => {
+    if (typeof window === 'undefined') return 'en'
+    const stored = window.localStorage.getItem('lang')
+    return translations[stored] ? stored : 'en'
+  })
+  const setLang = (l) => {
+    setLangState(l)
+    try { window.localStorage.setItem('lang', l) } catch { /* ignore */ }
+  }
   const location = useLocation()
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
   }, [theme])
+
+  useEffect(() => {
+    document.documentElement.setAttribute('lang', lang)
+  }, [lang])
 
   useEffect(() => {
     const cursor = cursorRef.current
@@ -176,8 +188,8 @@ function App() {
       <div className="custom-cursor" ref={cursorRef} />
       <div className="page-transition" key={location.pathname}>
         <Routes>
-          <Route path="/" element={<HomePage theme={theme} setTheme={setTheme} />} />
-          <Route path="/case/:slug" element={<CasePage theme={theme} setTheme={setTheme} />} />
+          <Route path="/" element={<HomePage theme={theme} setTheme={setTheme} lang={lang} setLang={setLang} />} />
+          <Route path="/case/:slug" element={<CasePage theme={theme} setTheme={setTheme} lang={lang} setLang={setLang} />} />
         </Routes>
       </div>
     </>
