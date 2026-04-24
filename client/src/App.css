@@ -787,6 +787,10 @@
     white-space: nowrap;
   }
 
+  .case-filter-btn {
+    font-size: 14px;
+  }
+
   /* Single column on mobile */
   .case-gallery {
     column-count: 1;
