@@ -22,9 +22,16 @@ function trackPage(page) {
 function HomePage({ theme, setTheme, lang, setLang }) {
   const pageRef = useFadeIn()
   const t = translations[lang]
-  const fullName = 'Gleb Dihtievsky'
+  const fullName = t.fullName
   const [typed, setTyped] = useState('')
   const [typingDone, setTypingDone] = useState(false)
+  const [animatingName, setAnimatingName] = useState(fullName)
+
+  if (animatingName !== fullName) {
+    setAnimatingName(fullName)
+    setTyped('')
+    setTypingDone(false)
+  }
 
   useEffect(() => {
     trackPage('/')
@@ -37,15 +44,15 @@ function HomePage({ theme, setTheme, lang, setLang }) {
     const start = setTimeout(() => {
       const id = setInterval(() => {
         i += 1
-        setTyped(fullName.slice(0, i))
-        if (i >= fullName.length) {
+        setTyped(animatingName.slice(0, i))
+        if (i >= animatingName.length) {
           clearInterval(id)
           setTimeout(() => setTypingDone(true), 700)
         }
       }, charInterval)
     }, startDelay)
     return () => clearTimeout(start)
-  }, [])
+  }, [animatingName])
 
   const works = [
     { company: 'Colb.finance', slug: 'colb-finance' },

@@ -13,6 +13,7 @@ const threeDLink = (label) => (
 
 export const translations = {
   en: {
+    fullName: 'Gleb Dihtievsky',
     heroRole: 'Visual Designer',
     experience: 'Experience',
     workRole: 'Visuals for X/Twitter',
@@ -47,6 +48,7 @@ export const translations = {
     },
   },
   ru: {
+    fullName: 'Глеб Дихтиевский',
     heroRole: 'Визуальный дизайнер',
     experience: 'Опыт работы',
     workRole: 'Визуалы для X/Twitter',
@@ -81,6 +83,7 @@ export const translations = {
     },
   },
   de: {
+    fullName: 'Gleb Dihtievsky',
     heroRole: 'Visueller Designer',
     experience: 'Erfahrung',
     workRole: 'Visuals für X/Twitter',
@@ -117,7 +120,7 @@ export const translations = {
 }
 
 export const LANGS = [
-  { code: 'en', label: 'EN' },
-  { code: 'ru', label: 'RU' },
-  { code: 'de', label: 'DE' },
+  { code: 'en', label: 'En' },
+  { code: 'ru', label: 'Ru' },
+  { code: 'de', label: 'De' },
 ]
