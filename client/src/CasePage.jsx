@@ -97,7 +97,20 @@ const casesData = {
     url: 'https://x.com/re',
     role: 'Visuals for X/Twitter',
     period: 'Dec 2025 — Jan 2026',
-    description: 'Partnered with a 3D designer to produce high-end explainer and promotional animations for the official X account. Managed the full cycle of video creation to enhance brand presence and community engagement.',
+    description: (
+      <>
+        Partnered with a{' '}
+        <a
+          href="https://x.com/puselol"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="case-description-link"
+        >
+          3D designer
+        </a>
+        {' '}to produce high-end explainer and promotional animations for the official X account. Managed the full cycle of video creation to enhance brand presence and community engagement.
+      </>
+    ),
     skills: ['Creative Direction', 'Motion Design', '3D Animation', 'Video Production'],
     items: [
       { type: 'video', src: '/assets/works/re-protocol/1.mp4' },
