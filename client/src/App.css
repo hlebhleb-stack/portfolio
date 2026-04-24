@@ -593,6 +593,14 @@
     margin-top: 24px;
   }
 
+  .case-skill {
+    font-size: 15px;
+  }
+
+  .case-filter-btn {
+    font-size: 15px;
+  }
+
   .case-gallery {
     margin-top: 60px;
     column-gap: 16px;
