@@ -235,8 +235,6 @@ function CasePage({ theme, setTheme }) {
       {/* Case Hero */}
       <section className="case-hero">
         <h1 className="case-title"><a href={caseData.url} target="_blank" rel="noopener noreferrer">{caseData.company}<span className="hero-dot">.</span></a></h1>
-        <p className="case-role">{caseData.role}</p>
-        <p className="case-period">{caseData.period}</p>
         {caseData.description && (
           <p className="case-description">{caseData.description}</p>
         )}
