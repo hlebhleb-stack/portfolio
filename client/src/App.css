@@ -975,8 +975,9 @@
   }
 
   .footer-main {
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
+    justify-content: space-between;
     gap: 20px;
   }
 
