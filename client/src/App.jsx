@@ -61,9 +61,9 @@ function HomePage({ theme, setTheme, lang, setLang }) {
   ]
 
   return (
-    <div className="page" ref={pageRef}>
-      {/* Header */}
-      <header className="header">
+    <div className="home-page" ref={pageRef}>
+      {/* Header (fixed) */}
+      <header className="header home-header">
         <div className="lang-toggle">
           {LANGS.map((l) => (
             <button
@@ -92,66 +92,68 @@ function HomePage({ theme, setTheme, lang, setLang }) {
         </div>
       </header>
 
-      {/* Photo */}
-      <div className="photo-portrait fade-in-up">
-        <div className="photo-wrapper">
-          <img src="/assets/photo-portrait.jpg" alt="Gleb Dihtievsky" className="photo-img" />
-          <div className="photo-overlay" />
-        </div>
-      </div>
+      {/* Snap-scroll sections */}
+      <main className="home-sections">
+        {/* Section 1 — photo + hero */}
+        <section className="home-section home-section-photo">
+          <div className="photo-portrait">
+            <div className="photo-wrapper">
+              <img src="/assets/photo-portrait.jpg" alt="Gleb Dihtievsky" className="photo-img" />
+              <div className="photo-overlay" />
+            </div>
+          </div>
+          <div className="hero">
+            <h1 className="hero-name">
+              <span className="hero-name-text">{typed}</span>
+              {!typingDone && <span className="hero-caret" aria-hidden="true" />}
+              {typingDone && <span className="hero-dot">.</span>}
+            </h1>
+            <p className="hero-role">{t.heroRole}</p>
+          </div>
+        </section>
 
-      {/* Hero */}
-      <section className="hero fade-in-up">
-        <h1 className="hero-name">
-          <span className="hero-name-text">{typed}</span>
-          {!typingDone && <span className="hero-caret" aria-hidden="true" />}
-          {typingDone && <span className="hero-dot">.</span>}
-        </h1>
-        <p className="hero-role">{t.heroRole}</p>
-      </section>
+        {/* Section 2 — works (no title) */}
+        <section className="home-section home-section-works" id="works">
+          <div className="works">
+            <div className="divider" />
+            {works.map((work, i) => (
+              <React.Fragment key={i}>
+                <Link
+                  to={`/case/${work.slug}`}
+                  className="work-row"
+                >
+                  <span className="work-company">{work.company}</span>
+                  <span className="work-role">{t.workRole}</span>
+                  <span className="work-period">{t.periods[work.slug]}</span>
+                </Link>
+                <div className="divider" />
+              </React.Fragment>
+            ))}
+          </div>
+        </section>
 
-      {/* Experience */}
-      <section className="experience" id="works">
-        <h2 className="experience-title fade-in-up">{t.experience}</h2>
-        <div className="works">
-          <div className="divider fade-in-up" />
-          {works.map((work, i) => (
-            <React.Fragment key={i}>
-              <Link
-                to={`/case/${work.slug}`}
-                className="work-row fade-in-up"
-                style={{ transitionDelay: `${i * 0.08}s` }}
-              >
-                <span className="work-company">{work.company}</span>
-                <span className="work-role">{t.workRole}</span>
-                <span className="work-period">{t.periods[work.slug]}</span>
-              </Link>
-              <div className="divider fade-in-up" />
-            </React.Fragment>
-          ))}
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="footer fade-in-up" id="links">
-        <div className="footer-main">
-          <div className="social-icons">
-            <a href="https://www.linkedin.com/in/gleb-dihtievsky/" target="_blank" rel="noopener noreferrer" className="social-icon">
-              <img src="/assets/icon-social-3.svg" alt="LinkedIn" />
+        {/* Section 3 — socials */}
+        <section className="home-section home-section-socials" id="links">
+          <div className="home-socials">
+            <a href="https://t.me/glebaagleb" target="_blank" rel="noopener noreferrer" className="home-social">
+              <img src="/assets/socials/tg.svg" alt="Telegram" />
             </a>
-            <a href="https://t.me/glebaagleb" target="_blank" rel="noopener noreferrer" className="social-icon">
-              <img src="/assets/icon-social-1.svg" alt="Telegram" />
+            <a href="https://www.linkedin.com/in/gleb-dihtievsky/" target="_blank" rel="noopener noreferrer" className="home-social">
+              <img src="/assets/socials/linkedin.svg" alt="LinkedIn" />
             </a>
-            <a href="https://x.com/glebaagleb" target="_blank" rel="noopener noreferrer" className="social-icon">
-              <img src="/assets/icon-social-2.svg" alt="X" />
+            <a href="https://x.com/glebaagleb" target="_blank" rel="noopener noreferrer" className="home-social">
+              <img src="/assets/socials/x.svg" alt="X" />
             </a>
           </div>
-          <a href="/assets/cv.pdf" target="_blank" rel="noopener noreferrer" className="footer-cv">{t.cv}</a>
-          <a href="mailto:glebaaagleb@gmail.com" className="footer-email">
-            glebaaagleb@gmail.com
-          </a>
-        </div>
-        <div className="footer-copy">{t.copy}</div>
+        </section>
+      </main>
+
+      {/* Footer (fixed) */}
+      <footer className="footer home-footer">
+        <a href="/assets/cv.pdf" target="_blank" rel="noopener noreferrer" className="footer-cv">{t.cv}</a>
+        <a href="mailto:glebaaagleb@gmail.com" className="footer-email">
+          glebaaagleb@gmail.com
+        </a>
       </footer>
     </div>
   )
