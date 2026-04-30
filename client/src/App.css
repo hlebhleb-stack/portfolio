@@ -432,9 +432,34 @@
 }
 
 .home-social img {
-  width: 96px;
-  height: 96px;
+  width: 72px;
+  height: 72px;
   display: block;
+}
+
+.home-page::before,
+.home-page::after {
+  content: '';
+  position: fixed;
+  left: 0;
+  right: 0;
+  height: 140px;
+  pointer-events: none;
+  z-index: 5;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.home-page::before {
+  top: 0;
+  mask-image: linear-gradient(to bottom, black 30%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 30%, transparent 100%);
+}
+
+.home-page::after {
+  bottom: 0;
+  mask-image: linear-gradient(to top, black 30%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to top, black 30%, transparent 100%);
 }
 
 /* ========== Case Page ========== */
@@ -665,11 +690,15 @@
     padding: 120px 60px;
   }
   .home-social img {
-    width: 80px;
-    height: 80px;
+    width: 60px;
+    height: 60px;
   }
   .home-section-socials .home-socials {
-    gap: 36px;
+    gap: 32px;
+  }
+  .home-page::before,
+  .home-page::after {
+    height: 110px;
   }
 
   .page {
@@ -810,11 +839,15 @@
     cursor: pointer;
   }
   .home-social img {
-    width: 64px;
-    height: 64px;
+    width: 48px;
+    height: 48px;
   }
   .home-section-socials .home-socials {
-    gap: 24px;
+    gap: 20px;
+  }
+  .home-page::before,
+  .home-page::after {
+    height: 90px;
   }
 
   .page {
