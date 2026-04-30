@@ -63,7 +63,7 @@
   background: none;
   border: none;
   font-family: inherit;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 400;
   color: var(--text-muted);
   cursor: none;
@@ -89,7 +89,7 @@
   background: none;
   border: none;
   font-family: inherit;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 400;
   color: var(--text-muted);
   cursor: none;
@@ -118,7 +118,7 @@
 }
 
 .nav-link {
-  font-size: 16px;
+  font-size: 14px;
   line-height: normal;
   font-weight: 400;
   color: var(--text-muted);
@@ -166,7 +166,7 @@
 }
 
 .hero-name {
-  font-size: 30px;
+  font-size: 26px;
   font-weight: 550;
   line-height: normal;
   color: var(--text);
@@ -193,7 +193,7 @@
 }
 
 .hero-role {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 400;
   line-height: normal;
   color: var(--text);
@@ -206,7 +206,7 @@
 }
 
 .experience-title {
-  font-size: 30px;
+  font-size: 26px;
   font-weight: 550;
   line-height: normal;
   color: var(--text);
@@ -232,7 +232,7 @@
   align-items: center;
   width: 100%;
   padding: 25px 0;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 400;
   color: var(--text);
   line-height: normal;
@@ -276,7 +276,7 @@
 .footer-copy {
   margin-top: 40px;
   text-align: center;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 400;
   color: var(--text-muted);
   letter-spacing: 0.02em;
@@ -310,7 +310,7 @@
 }
 
 .footer-cv {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 400;
   color: var(--text-muted);
   cursor: none;
@@ -322,7 +322,7 @@
 }
 
 .footer-email {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 400;
   color: var(--text-muted);
   cursor: none;
@@ -471,7 +471,7 @@
 }
 
 .case-title {
-  font-size: 30px;
+  font-size: 26px;
   font-weight: 550;
   line-height: normal;
   color: var(--text);
@@ -479,21 +479,21 @@
 }
 
 .case-role {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 400;
   color: var(--text-muted);
   margin-top: 8px;
 }
 
 .case-period {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 400;
   color: var(--text-muted);
   margin-top: 4px;
 }
 
 .case-description {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 400;
   line-height: 1.5;
   color: var(--text);
@@ -531,7 +531,7 @@
 .case-skill {
   background: #FF8888;
   color: #fff;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 400;
   line-height: 1;
   padding: 8px 14px;
@@ -551,7 +551,7 @@
   background: none;
   border: none;
   font-family: inherit;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 400;
   color: var(--text-muted);
   cursor: none;
@@ -674,7 +674,7 @@
 }
 
 .case-not-found h2 {
-  font-size: 30px;
+  font-size: 26px;
   font-weight: 550;
   color: var(--text);
   margin-bottom: 20px;
@@ -720,11 +720,11 @@
   }
 
   .theme-btn {
-    font-size: 15px;
+    font-size: 13px;
   }
 
   .lang-btn {
-    font-size: 15px;
+    font-size: 13px;
   }
 
   .lang-toggle {
@@ -732,7 +732,7 @@
   }
 
   .nav-link {
-    font-size: 15px;
+    font-size: 13px;
   }
 
   .photo-portrait {
@@ -749,11 +749,11 @@
   }
 
   .hero-name {
-    font-size: 28px;
+    font-size: 24px;
   }
 
   .hero-role {
-    font-size: 15px;
+    font-size: 13px;
   }
 
   .experience {
@@ -761,12 +761,12 @@
   }
 
   .experience-title {
-    font-size: 28px;
+    font-size: 24px;
     margin-bottom: 50px;
   }
 
   .work-row {
-    font-size: 15px;
+    font-size: 13px;
     padding: 20px 0;
   }
 
@@ -777,7 +777,7 @@
 
   .footer-email,
   .footer-cv {
-    font-size: 15px;
+    font-size: 13px;
   }
 
   .social-icon img {
@@ -790,25 +790,25 @@
   }
 
   .case-title {
-    font-size: 28px;
+    font-size: 24px;
   }
 
   .case-role,
   .case-period {
-    font-size: 15px;
+    font-size: 13px;
   }
 
   .case-description {
-    font-size: 15px;
+    font-size: 13px;
     margin-top: 24px;
   }
 
   .case-skill {
-    font-size: 15px;
+    font-size: 13px;
   }
 
   .case-filter-btn {
-    font-size: 15px;
+    font-size: 13px;
   }
 
   .case-gallery {
@@ -884,7 +884,7 @@
   }
 
   .lang-btn {
-    font-size: 14px;
+    font-size: 12px;
   }
 
   .lang-toggle {
@@ -896,7 +896,7 @@
   }
 
   .theme-btn {
-    font-size: 14px;
+    font-size: 12px;
   }
 
   .nav {
@@ -904,7 +904,7 @@
   }
 
   .nav-link {
-    font-size: 14px;
+    font-size: 12px;
   }
 
   /* Photo */
@@ -923,11 +923,11 @@
   }
 
   .hero-name {
-    font-size: 24px;
+    font-size: 22px;
   }
 
   .hero-role {
-    font-size: 14px;
+    font-size: 12px;
   }
 
   /* Experience */
@@ -936,7 +936,7 @@
   }
 
   .experience-title {
-    font-size: 24px;
+    font-size: 22px;
     margin-bottom: 30px;
   }
 
@@ -945,7 +945,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 14px 0;
-    font-size: 14px;
+    font-size: 12px;
   }
 
   .work-row:hover {
@@ -967,7 +967,7 @@
   .work-period {
     text-align: right;
     color: var(--text-muted);
-    font-size: 13px;
+    font-size: 12px;
   }
 
   /* Footer */
@@ -985,7 +985,7 @@
 
   .footer-copy {
     margin-top: 28px;
-    font-size: 12px;
+    font-size: 11px;
   }
 
   .social-icon img {
@@ -995,7 +995,7 @@
 
   .footer-email,
   .footer-cv {
-    font-size: 14px;
+    font-size: 12px;
   }
 
   /* Case page mobile */
@@ -1004,19 +1004,19 @@
   }
 
   .case-title {
-    font-size: 24px;
+    font-size: 22px;
   }
 
   .case-role {
-    font-size: 14px;
+    font-size: 12px;
   }
 
   .case-period {
-    font-size: 13px;
+    font-size: 12px;
   }
 
   .case-description {
-    font-size: 14px;
+    font-size: 12px;
     margin: 24px auto 0;
     max-width: 100%;
   }
@@ -1035,13 +1035,13 @@
   }
 
   .case-skill {
-    font-size: 14px;
+    font-size: 12px;
     padding: 7px 12px;
     white-space: nowrap;
   }
 
   .case-filter-btn {
-    font-size: 14px;
+    font-size: 12px;
   }
 
   /* Single column on mobile */
@@ -1067,18 +1067,18 @@
   }
 
   .hero-name {
-    font-size: 22px;
+    font-size: 20px;
   }
 
   .hero-role {
-    font-size: 13px;
+    font-size: 12px;
   }
 
   .experience-title {
-    font-size: 22px;
+    font-size: 20px;
   }
 
   .case-title {
-    font-size: 22px;
+    font-size: 20px;
   }
 }
