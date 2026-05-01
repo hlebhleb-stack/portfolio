@@ -19,24 +19,144 @@ const DEDUPE_MIN = 30; // same session+page within N minutes counts once
 const BOT_UA = /(bot|crawler|spider|crawling|preview|fetch|monitor|pingdom|uptime|headlesschrome|googlebot|bingbot|yandex|facebookexternalhit|slurp|duckduckbot|baiduspider|telegrambot|whatsapp|curl|wget|python|node-fetch|axios|postman)/i;
 
 // ========== Storage ==========
+// Primary: GitHub Gist (survives Render free-tier restarts)
+// Fallback: local file (works locally / on persistent-disk hosts)
 const DATA_FILE = path.join(__dirname, 'analytics.json');
+const GITHUB_TOKEN = process.env.GITHUB_TOKEN || '';
+const GIST_ID = process.env.GIST_ID || '';
+const GIST_FILENAME = process.env.GIST_FILENAME || 'analytics.json';
+const GIST_ENABLED = !!(GITHUB_TOKEN && GIST_ID);
 
-function loadData() {
+function emptyData() {
+  return { visits: [], contacts: [] };
+}
+
+function normalize(d) {
+  if (!d || typeof d !== 'object') return emptyData();
+  if (!Array.isArray(d.visits)) d.visits = [];
+  if (!Array.isArray(d.contacts)) d.contacts = [];
+  return d;
+}
+
+let state = emptyData();
+
+function readLocal() {
   try {
-    const d = JSON.parse(fs.readFileSync(DATA_FILE, 'utf-8'));
-    if (!Array.isArray(d.visits)) d.visits = [];
-    if (!Array.isArray(d.contacts)) d.contacts = [];
-    return d;
+    return normalize(JSON.parse(fs.readFileSync(DATA_FILE, 'utf-8')));
   } catch {
-    return { visits: [], contacts: [] };
+    return emptyData();
   }
 }
 
-function saveData(data) {
-  fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
+function writeLocal(data) {
+  try { fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2)); }
+  catch (e) { console.error('Local write failed:', e.message); }
 }
 
-if (!fs.existsSync(DATA_FILE)) saveData({ visits: [], contacts: [] });
+async function readGist() {
+  const r = await fetch(`https://api.github.com/gists/${GIST_ID}`, {
+    headers: {
+      Authorization: `Bearer ${GITHUB_TOKEN}`,
+      'User-Agent': 'portfolio-analytics',
+      Accept: 'application/vnd.github+json',
+    },
+  });
+  if (!r.ok) throw new Error(`Gist GET ${r.status}`);
+  const g = await r.json();
+  const file = g.files?.[GIST_FILENAME] || Object.values(g.files || {})[0];
+  if (!file) return emptyData();
+  // Truncated content → fetch raw_url
+  let content = file.content;
+  if (file.truncated && file.raw_url) {
+    const raw = await fetch(file.raw_url);
+    content = await raw.text();
+  }
+  try { return normalize(JSON.parse(content)); } catch { return emptyData(); }
+}
+
+async function writeGist(data) {
+  const r = await fetch(`https://api.github.com/gists/${GIST_ID}`, {
+    method: 'PATCH',
+    headers: {
+      Authorization: `Bearer ${GITHUB_TOKEN}`,
+      'User-Agent': 'portfolio-analytics',
+      Accept: 'application/vnd.github+json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      files: { [GIST_FILENAME]: { content: JSON.stringify(data, null, 2) } },
+    }),
+  });
+  if (!r.ok) throw new Error(`Gist PATCH ${r.status}`);
+}
+
+let gistTimer = null;
+let gistPending = false;
+let gistInFlight = false;
+const GIST_DEBOUNCE_MS = 15000;
+
+function scheduleGistSync() {
+  if (!GIST_ENABLED) return;
+  gistPending = true;
+  if (gistTimer || gistInFlight) return;
+  gistTimer = setTimeout(flushGist, GIST_DEBOUNCE_MS);
+}
+
+async function flushGist() {
+  gistTimer = null;
+  if (gistInFlight || !gistPending) return;
+  gistInFlight = true;
+  gistPending = false;
+  try {
+    await writeGist(state);
+  } catch (e) {
+    console.error('Gist sync failed:', e.message);
+    gistPending = true; // retry next tick
+    gistTimer = setTimeout(flushGist, 60000);
+  } finally {
+    gistInFlight = false;
+    if (gistPending && !gistTimer) gistTimer = setTimeout(flushGist, GIST_DEBOUNCE_MS);
+  }
+}
+
+function loadData() {
+  return state;
+}
+
+function saveData(data) {
+  state = normalize(data);
+  writeLocal(state);
+  scheduleGistSync();
+}
+
+async function initStorage() {
+  if (GIST_ENABLED) {
+    try {
+      state = await readGist();
+      writeLocal(state);
+      console.log(`Storage: Gist ${GIST_ID} loaded (${state.visits.length} visits, ${state.contacts.length} contacts)`);
+      return;
+    } catch (e) {
+      console.error('Gist load failed, falling back to local file:', e.message);
+    }
+  }
+  state = readLocal();
+  if (!fs.existsSync(DATA_FILE)) writeLocal(state);
+  console.log(`Storage: local file (${state.visits.length} visits, ${state.contacts.length} contacts)`);
+}
+
+// Flush pending gist writes on shutdown
+async function gracefulShutdown() {
+  console.log('Shutting down, flushing gist...');
+  if (gistTimer) { clearTimeout(gistTimer); gistTimer = null; }
+  if (gistPending && GIST_ENABLED) {
+    try { await writeGist(state); console.log('Gist flushed'); }
+    catch (e) { console.error('Final flush failed:', e.message); }
+  }
+  process.exit(0);
+}
+process.on('SIGTERM', gracefulShutdown);
+process.on('SIGINT', gracefulShutdown);
 
 // ========== Date helpers ==========
 function todayStr(offset = 0) {
@@ -358,6 +478,8 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/dist/index.html'));
 });
 
-app.listen(PORT, () => {
-  console.log(`Server on :${PORT} (TZ offset ${TZ}h)`);
+initStorage().then(() => {
+  app.listen(PORT, () => {
+    console.log(`Server on :${PORT} (TZ offset ${TZ}h)`);
+  });
 });
