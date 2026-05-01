@@ -288,19 +288,21 @@ function summary(period) {
   const desktop = visits.length - mobile;
   const pages = topCounts(visits.map(v => v.page), 8);
   const langs = topCounts(visits.map(v => v.lang).filter(Boolean), 5);
+  const geo = geoBreakdown(visits, 8);
 
-  let out = `<b>${escapeHtml(rangeLabel(period))}</b>\n\n`;
-  out += `<pre>${escapeHtml(table([
+  const blocks = [];
+  blocks.push(table([
     ['Views', visits.length],
     ['Sessions', sessions],
     ['Mobile', mobile],
     ['Desktop', desktop],
-  ]))}</pre>\n\n`;
-  const geo = geoBreakdown(visits, 8);
-  if (pages.length) out += section('Pages', table(pages)) + '\n\n';
-  if (geo.length) out += section('Geo', table(geo)) + '\n\n';
-  if (langs.length) out += section('Languages', table(langs));
-  return out.trim();
+  ]));
+  if (pages.length) blocks.push(padRightNbsp('  PAGES', MIN_ROW_WIDTH) + '\n' + table(pages));
+  if (geo.length)   blocks.push(padRightNbsp('  GEO', MIN_ROW_WIDTH) + '\n' + table(geo));
+  if (langs.length) blocks.push(padRightNbsp('  LANGUAGES', MIN_ROW_WIDTH) + '\n' + table(langs));
+
+  const body = blocks.join('\n\n');
+  return `<b>${escapeHtml(rangeLabel(period))}</b>\n<pre>${escapeHtml(body)}</pre>`;
 }
 
 function helpText() {
