@@ -21,10 +21,16 @@ function buildItems(rootDir) {
       .filter(f => ASSET_RE.test(f))
       .sort(naturalCompare)
     if (!files.length) continue
-    result[slug] = files.map(f => ({
-      type: VIDEO_RE.test(f) ? 'video' : 'image',
-      src: `/assets/works/${slug}/${f}`,
-    }))
+    const videos = []
+    const images = []
+    for (const f of files) {
+      const item = {
+        type: VIDEO_RE.test(f) ? 'video' : 'image',
+        src: `/assets/works/${slug}/${f}`,
+      }
+      ;(item.type === 'video' ? videos : images).push(item)
+    }
+    result[slug] = [...videos, ...images]
   }
   return result
 }
