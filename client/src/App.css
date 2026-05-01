@@ -128,8 +128,13 @@
 }
 
 .theme-icon {
-  width: 12px;
-  height: 12px;
+  width: 14px;
+  height: 14px;
+}
+
+.theme-icon-sun {
+  width: 17px;
+  height: 17px;
 }
 
 /* Navigation */
