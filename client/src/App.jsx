@@ -21,12 +21,38 @@ function trackPage(page) {
 
 function HomePage({ theme, setTheme, lang, setLang }) {
   const pageRef = useFadeIn()
+  const sectionsRef = useRef(null)
   const t = translations[lang]
   const fullName = t.fullName
   const [typed, setTyped] = useState('')
   const [typingDone, setTypingDone] = useState(false)
   const [animatingName, setAnimatingName] = useState(fullName)
   const [hoveredSocial, setHoveredSocial] = useState(null)
+
+  useEffect(() => {
+    const el = sectionsRef.current
+    if (!el) return
+    const saved = sessionStorage.getItem('homeScrollY')
+    if (saved !== null) {
+      const prev = el.style.scrollBehavior
+      el.style.scrollBehavior = 'auto'
+      el.scrollTop = parseFloat(saved)
+      el.style.scrollBehavior = prev
+    }
+    let raf = 0
+    const onScroll = () => {
+      if (raf) return
+      raf = requestAnimationFrame(() => {
+        raf = 0
+        sessionStorage.setItem('homeScrollY', String(el.scrollTop))
+      })
+    }
+    el.addEventListener('scroll', onScroll, { passive: true })
+    return () => {
+      el.removeEventListener('scroll', onScroll)
+      if (raf) cancelAnimationFrame(raf)
+    }
+  }, [])
 
   useEffect(() => {
     const clear = () => setHoveredSocial(null)
@@ -105,7 +131,7 @@ function HomePage({ theme, setTheme, lang, setLang }) {
       </header>
 
       {/* Snap-scroll sections */}
-      <main className="home-sections">
+      <main className="home-sections" ref={sectionsRef}>
         {/* Section 1 — photo + hero */}
         <section className="home-section home-section-photo">
           <div className="photo-portrait">
