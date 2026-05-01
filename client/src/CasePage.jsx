@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import useFadeIn from './useFadeIn.js'
 import { translations, LANGS } from './translations.jsx'
+import generatedItems from './caseItems.generated.json'
 
 function VideoItem({ src, alt }) {
   const videoRef = useRef(null)
@@ -60,49 +61,18 @@ function VideoItem({ src, alt }) {
 
 const API_URL = import.meta.env.VITE_API_URL || ''
 
-const casesData = {
-  'colb-finance': {
-    company: 'Colb.finance',
-    url: 'https://x.com/ColbFinance',
-    items: [
-      { type: 'image', src: '/assets/works/colb-finance/1.png' },
-      { type: 'image', src: '/assets/works/colb-finance/2.png' },
-      { type: 'video', src: '/assets/works/colb-finance/3.mp4' },
-      { type: 'video', src: '/assets/works/colb-finance/4.mp4' },
-      { type: 'video', src: '/assets/works/colb-finance/5.mp4' },
-      { type: 'video', src: '/assets/works/colb-finance/6.mp4' },
-      { type: 'video', src: '/assets/works/colb-finance/7.mp4' },
-      { type: 'video', src: '/assets/works/colb-finance/8.mp4' },
-      { type: 'video', src: '/assets/works/colb-finance/9.mp4' },
-      { type: 'image', src: '/assets/works/colb-finance/9.png' },
-    ],
-  },
-  'sova-labs': {
-    company: 'Sova Labs',
-    url: 'https://x.com/SovaBTC',
-    items: [
-      { type: 'video', src: '/assets/works/sova-labs/1.mp4' },
-      { type: 'video', src: '/assets/works/sova-labs/2.mp4' },
-      { type: 'image', src: '/assets/works/sova-labs/2.png' },
-      { type: 'video', src: '/assets/works/sova-labs/3.mp4' },
-      { type: 'video', src: '/assets/works/sova-labs/4.mp4' },
-      { type: 'image', src: '/assets/works/sova-labs/4.png' },
-      { type: 'video', src: '/assets/works/sova-labs/5.mp4' },
-      { type: 'image', src: '/assets/works/sova-labs/6.png' },
-    ],
-  },
-  're-protocol': {
-    company: 'Re Protocol',
-    url: 'https://x.com/re',
-    items: [
-      { type: 'video', src: '/assets/works/re-protocol/1.mp4' },
-      { type: 'video', src: '/assets/works/re-protocol/2.mp4' },
-      { type: 'video', src: '/assets/works/re-protocol/3.mp4' },
-      { type: 'video', src: '/assets/works/re-protocol/4.mp4' },
-      { type: 'video', src: '/assets/works/re-protocol/5.mp4' },
-    ],
-  },
+const caseMeta = {
+  'colb-finance': { company: 'Colb.finance', url: 'https://x.com/ColbFinance' },
+  'sova-labs':    { company: 'Sova Labs',    url: 'https://x.com/SovaBTC' },
+  're-protocol':  { company: 'Re Protocol',  url: 'https://x.com/re' },
 }
+
+const casesData = Object.fromEntries(
+  Object.entries(caseMeta).map(([slug, meta]) => [
+    slug,
+    { ...meta, items: generatedItems[slug] || [] },
+  ])
+)
 
 const slugs = Object.keys(casesData)
 
