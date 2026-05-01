@@ -82,12 +82,17 @@ function padLeft(s, n) {
   return s.length >= n ? s : ' '.repeat(n - s.length) + s;
 }
 
+const MIN_ROW_WIDTH = 38;
+
 function table(rows) {
-  if (!rows.length) return '  —';
+  if (!rows.length) return pad('  —', MIN_ROW_WIDTH);
   const labelW = Math.min(28, Math.max(...rows.map(r => String(r[0]).length)));
   const valW = Math.max(...rows.map(r => String(r[1]).length));
   return rows
-    .map(([k, v]) => `  ${pad(String(k).slice(0, labelW), labelW)}  ${padLeft(v, valW)}`)
+    .map(([k, v]) => {
+      const line = `  ${pad(String(k).slice(0, labelW), labelW)}  ${padLeft(v, valW)}`;
+      return pad(line, MIN_ROW_WIDTH);
+    })
     .join('\n');
 }
 
@@ -355,5 +360,4 @@ app.get('*', (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Server on :${PORT} (TZ offset ${TZ}h)`);
-  if (bot && CHAT_ID) sendTelegram('<b>Server up</b>\nSend /help for commands.');
 });
