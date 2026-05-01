@@ -321,6 +321,22 @@ if (BOT_TOKEN) {
 
   bot.on('polling_error', e => console.error('Polling error:', e.message));
 
+  bot.setMyCommands([
+    { command: 'today',     description: 'Today summary' },
+    { command: 'yesterday', description: 'Yesterday summary' },
+    { command: 'week',      description: 'Last 7 days' },
+    { command: 'month',     description: 'Last 30 days' },
+    { command: 'all',       description: 'All time' },
+    { command: 'pages',     description: 'Top pages' },
+    { command: 'langs',     description: 'Language split' },
+    { command: 'devices',   description: 'Device split' },
+    { command: 'referrers', description: 'Top referrers' },
+    { command: 'contacts',  description: 'Last 10 messages' },
+    { command: 'export',    description: 'Send analytics.json' },
+    { command: 'clear',     description: 'Wipe all data (confirm)' },
+    { command: 'help',      description: 'Show command list' },
+  ]).catch(e => console.error('setMyCommands failed:', e.message));
+
   bot.onText(/^\/(start|help)\b/, msg => { if (authed(msg)) reply(msg.chat.id, helpText()); });
   bot.onText(/^\/today\b/, msg => { if (authed(msg)) reply(msg.chat.id, summary('today')); });
   bot.onText(/^\/yesterday\b/, msg => { if (authed(msg)) reply(msg.chat.id, summary('yesterday')); });
