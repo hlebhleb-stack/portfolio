@@ -325,8 +325,7 @@ function helpText() {
     '  /devices [p] device split',
     '  /referrers [p]  top referrers',
     '  /export      send analytics.json',
-    '  /reset       wipe stats, keep contacts',
-    '  /clear       wipe everything (confirm)',
+    '  /clear       wipe all data (confirm)',
     '  /help        this list',
     '</pre>',
     '<i>p = today | yesterday | week | month | all (default: all)</i>',
@@ -341,7 +340,7 @@ function parsePeriod(text) {
 
 // ========== Bot ==========
 let bot = null;
-let pendingConfirm = null; // 'clear' | 'reset' | null
+let pendingClear = false;
 let pendingTimer = null;
 
 function authed(msg) {
@@ -371,8 +370,7 @@ if (BOT_TOKEN) {
     { command: 'devices',   description: 'Device split' },
     { command: 'referrers', description: 'Top referrers' },
     { command: 'export',    description: 'Send analytics.json' },
-    { command: 'reset',     description: 'Wipe stats only (keeps contacts)' },
-    { command: 'clear',     description: 'Wipe all data (visits + contacts)' },
+    { command: 'clear',     description: 'Wipe all data (confirm)' },
     { command: 'help',      description: 'Show command list' },
   ]).catch(e => console.error('setMyCommands failed:', e.message));
 
@@ -434,36 +432,21 @@ if (BOT_TOKEN) {
       .catch(err => reply(msg.chat.id, `<b>Export failed</b>\n<pre>${escapeHtml(err.message)}</pre>`));
   });
 
-  function arm(action, chatId, prompt) {
-    pendingConfirm = action;
-    if (pendingTimer) clearTimeout(pendingTimer);
-    pendingTimer = setTimeout(() => { pendingConfirm = null; }, 60000);
-    reply(chatId, prompt);
-  }
-
   bot.onText(/^\/clear\b/, msg => {
     if (!authed(msg)) return;
-    arm('clear', msg.chat.id, '<b>Confirm wipe of ALL data</b>\nVisits + contacts. Reply <code>/yes</code> within 60s.');
-  });
-
-  bot.onText(/^\/reset\b/, msg => {
-    if (!authed(msg)) return;
-    arm('reset', msg.chat.id, '<b>Confirm reset of stats</b>\nVisits will be wiped, contacts kept. Reply <code>/yes</code> within 60s.');
+    pendingClear = true;
+    if (pendingTimer) clearTimeout(pendingTimer);
+    pendingTimer = setTimeout(() => { pendingClear = false; }, 60000);
+    reply(msg.chat.id, '<b>Confirm wipe</b>\nReply <code>/yes</code> within 60s to wipe all analytics.');
   });
 
   bot.onText(/^\/yes\b/, msg => {
     if (!authed(msg)) return;
-    if (!pendingConfirm) return reply(msg.chat.id, 'Nothing to confirm.');
-    const data = loadData();
-    if (pendingConfirm === 'clear') {
-      saveData({ visits: [], contacts: [] });
-      reply(msg.chat.id, '<b>Cleared</b>\nAll visits and contacts wiped.');
-    } else if (pendingConfirm === 'reset') {
-      saveData({ visits: [], contacts: data.contacts });
-      reply(msg.chat.id, '<b>Stats reset</b>\nVisits wiped, contacts kept.');
-    }
-    pendingConfirm = null;
+    if (!pendingClear) return reply(msg.chat.id, 'Nothing to confirm.');
+    saveData({ visits: [], contacts: [] });
+    pendingClear = false;
     if (pendingTimer) { clearTimeout(pendingTimer); pendingTimer = null; }
+    reply(msg.chat.id, '<b>Cleared</b>');
   });
 } else {
   console.warn('TELEGRAM_BOT_TOKEN not set — bot disabled');
