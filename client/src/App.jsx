@@ -26,6 +26,18 @@ function HomePage({ theme, setTheme, lang, setLang }) {
   const [typed, setTyped] = useState('')
   const [typingDone, setTypingDone] = useState(false)
   const [animatingName, setAnimatingName] = useState(fullName)
+  const [hoveredSocial, setHoveredSocial] = useState(null)
+
+  useEffect(() => {
+    const clear = () => setHoveredSocial(null)
+    const onVis = () => { if (document.hidden) clear() }
+    window.addEventListener('blur', clear)
+    document.addEventListener('visibilitychange', onVis)
+    return () => {
+      window.removeEventListener('blur', clear)
+      document.removeEventListener('visibilitychange', onVis)
+    }
+  }, [])
 
   if (animatingName !== fullName) {
     setAnimatingName(fullName)
@@ -135,15 +147,24 @@ function HomePage({ theme, setTheme, lang, setLang }) {
         {/* Section 3 — socials */}
         <section className="home-section home-section-socials" id="links">
           <div className="home-socials">
-            <a href="https://t.me/glebaagleb" target="_blank" rel="noopener noreferrer" className="home-social">
-              <img src="/assets/socials/tg.svg" alt="Telegram" />
-            </a>
-            <a href="https://www.linkedin.com/in/gleb-dihtievsky/" target="_blank" rel="noopener noreferrer" className="home-social">
-              <img src="/assets/socials/linkedin.svg" alt="LinkedIn" />
-            </a>
-            <a href="https://x.com/glebaagleb" target="_blank" rel="noopener noreferrer" className="home-social">
-              <img src="/assets/socials/x.svg" alt="X" />
-            </a>
+            {[
+              { id: 'tg', href: 'https://t.me/glebaagleb', src: '/assets/socials/tg.svg', alt: 'Telegram' },
+              { id: 'linkedin', href: 'https://www.linkedin.com/in/gleb-dihtievsky/', src: '/assets/socials/linkedin.svg', alt: 'LinkedIn' },
+              { id: 'x', href: 'https://x.com/glebaagleb', src: '/assets/socials/x.svg', alt: 'X' },
+            ].map((s) => (
+              <a
+                key={s.id}
+                href={s.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`home-social${hoveredSocial === s.id ? ' is-hover' : ''}`}
+                onMouseEnter={() => setHoveredSocial(s.id)}
+                onMouseLeave={() => setHoveredSocial(null)}
+                onClick={() => setHoveredSocial(null)}
+              >
+                <img src={s.src} alt={s.alt} />
+              </a>
+            ))}
           </div>
         </section>
       </main>
