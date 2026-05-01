@@ -79,7 +79,7 @@
 
 .theme-toggle {
   display: flex;
-  gap: 24px;
+  gap: 12px;
 }
 
 .theme-btn {
@@ -718,7 +718,7 @@
   }
 
   .theme-toggle {
-    gap: 16px;
+    gap: 10px;
   }
 
   .theme-btn {
@@ -894,7 +894,7 @@
   }
 
   .theme-toggle {
-    gap: 20px;
+    gap: 8px;
   }
 
   .theme-btn {
