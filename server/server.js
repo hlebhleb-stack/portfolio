@@ -203,15 +203,21 @@ function padLeft(s, n) {
 }
 
 const MIN_ROW_WIDTH = 38;
+const NBSP = ' '; // Telegram preserves NBSP in <pre>; trims trailing regular spaces
+
+function padRightNbsp(s, n) {
+  s = String(s);
+  return s.length >= n ? s : s + NBSP.repeat(n - s.length);
+}
 
 function table(rows) {
-  if (!rows.length) return pad('  —', MIN_ROW_WIDTH);
+  if (!rows.length) return padRightNbsp('  —', MIN_ROW_WIDTH);
   const labelW = Math.min(28, Math.max(...rows.map(r => String(r[0]).length)));
   const valW = Math.max(...rows.map(r => String(r[1]).length));
   return rows
     .map(([k, v]) => {
       const line = `  ${pad(String(k).slice(0, labelW), labelW)}  ${padLeft(v, valW)}`;
-      return pad(line, MIN_ROW_WIDTH);
+      return padRightNbsp(line, MIN_ROW_WIDTH);
     })
     .join('\n');
 }
