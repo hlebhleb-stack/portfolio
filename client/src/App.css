@@ -28,7 +28,7 @@
   min-height: 100vh;
   padding: 0 156px;
   cursor: none;
-  transition: background 0.3s, color 0.3s;
+  transition: background 0.15s, color 0.15s;
   display: flex;
   flex-direction: column;
 }
@@ -92,7 +92,7 @@
   justify-content: center;
   color: var(--text-muted);
   cursor: none;
-  transition: color 0.3s;
+  transition: color 0.15s;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
 }
@@ -374,7 +374,7 @@
   overflow: hidden;
   background: var(--bg);
   cursor: none;
-  transition: background 0.3s, color 0.3s;
+  transition: background 0.15s, color 0.15s;
 }
 
 .home-page .home-header {
