@@ -8,13 +8,30 @@ function VideoItem({ src, alt }) {
   const videoRef = useRef(null)
   const [muted, setMuted] = useState(true)
 
+  useEffect(() => {
+    const onOtherUnmuted = (e) => {
+      const v = videoRef.current
+      if (!v) return
+      if (e.detail?.source === v) return
+      if (!v.muted) {
+        v.muted = true
+        setMuted(true)
+      }
+    }
+    window.addEventListener('video-unmuted', onOtherUnmuted)
+    return () => window.removeEventListener('video-unmuted', onOtherUnmuted)
+  }, [])
+
   const toggleMute = (e) => {
     e.stopPropagation()
     const v = videoRef.current
     if (!v) return
     const next = !v.muted
     v.muted = next
-    if (!next) v.volume = 1
+    if (!next) {
+      v.volume = 1
+      window.dispatchEvent(new CustomEvent('video-unmuted', { detail: { source: v } }))
+    }
     setMuted(next)
     const p = v.play()
     if (p && typeof p.catch === 'function') p.catch(() => {})
