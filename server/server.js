@@ -287,7 +287,6 @@ function helpText() {
     '  /langs [p]   language split',
     '  /devices [p] device split',
     '  /referrers [p]  top referrers',
-    '  /contacts    last 10 messages',
     '  /export      send analytics.json',
     '  /reset       wipe stats, keep contacts',
     '  /clear       wipe everything (confirm)',
@@ -333,7 +332,6 @@ if (BOT_TOKEN) {
     { command: 'langs',     description: 'Language split' },
     { command: 'devices',   description: 'Device split' },
     { command: 'referrers', description: 'Top referrers' },
-    { command: 'contacts',  description: 'Last 10 messages' },
     { command: 'export',    description: 'Send analytics.json' },
     { command: 'reset',     description: 'Wipe stats only (keeps contacts)' },
     { command: 'clear',     description: 'Wipe all data (visits + contacts)' },
@@ -382,25 +380,6 @@ if (BOT_TOKEN) {
       20
     );
     reply(msg.chat.id, `<b>Referrers · ${escapeHtml(rangeLabel(period))}</b>\n<pre>${escapeHtml(table(rows.length ? rows : [['—', 0]]))}</pre>`);
-  });
-
-  bot.onText(/^\/contacts\b/, msg => {
-    if (!authed(msg)) return;
-    const data = loadData();
-    const last = data.contacts.slice(-10).reverse();
-    if (!last.length) {
-      const empty = padRightNbsp('  No messages yet.', MIN_ROW_WIDTH);
-      return reply(msg.chat.id, `<b>Contacts</b>\n<pre>${empty}</pre>`);
-    }
-    const body = last.map(c => {
-      const when = c.timestamp.slice(0, 16).replace('T', ' ');
-      return [
-        padRightNbsp(when, MIN_ROW_WIDTH),
-        padRightNbsp(`  ${c.name} · ${c.email}`, MIN_ROW_WIDTH),
-        padRightNbsp(`  ${(c.message || '').slice(0, 200)}`, MIN_ROW_WIDTH),
-      ].join('\n');
-    }).join('\n\n');
-    reply(msg.chat.id, `<b>Contacts · last ${last.length}</b>\n<pre>${escapeHtml(body)}</pre>`);
   });
 
   bot.onText(/^\/export\b/, msg => {
