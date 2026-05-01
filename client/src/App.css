@@ -85,13 +85,16 @@
 .theme-toggle-btn {
   background: none;
   border: none;
-  padding: 0;
+  padding: 8px;
+  margin: -8px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--text-muted);
   cursor: none;
   transition: color 0.3s;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 .theme-toggle-btn:hover {
@@ -101,6 +104,8 @@
 @media (max-width: 768px) {
   .theme-toggle-btn {
     cursor: pointer;
+    padding: 12px;
+    margin: -12px;
   }
 }
 
