@@ -407,7 +407,7 @@
   margin-top: 0;
 }
 .home-section-photo .hero {
-  margin-top: 24px;
+  margin-top: 16px;
 }
 
 .home-section-works .works {
@@ -747,7 +747,7 @@
   }
 
   .hero {
-    margin-top: 20px;
+    margin-top: 14px;
   }
 
   .hero-name {
@@ -921,7 +921,7 @@
 
   /* Hero */
   .hero {
-    margin-top: 16px;
+    margin-top: 10px;
   }
 
   .hero-name {
