@@ -466,6 +466,25 @@
   -webkit-mask-image: linear-gradient(to top, black 30%, transparent 100%);
 }
 
+/* Desktop: extend home edge fades so the solid band reaches header/footer
+   line and the transparency continues into the content. */
+@media (min-width: 1025px) {
+  .home-page::before,
+  .home-page::after {
+    height: 220px;
+  }
+  .home-page::before {
+    background: linear-gradient(to bottom, var(--bg) 0%, var(--bg) 90px, transparent 220px);
+    mask-image: linear-gradient(to bottom, black 90px, transparent 220px);
+    -webkit-mask-image: linear-gradient(to bottom, black 90px, transparent 220px);
+  }
+  .home-page::after {
+    background: linear-gradient(to top, var(--bg) 0%, var(--bg) 90px, transparent 220px);
+    mask-image: linear-gradient(to top, black 90px, transparent 220px);
+    -webkit-mask-image: linear-gradient(to top, black 90px, transparent 220px);
+  }
+}
+
 /* ========== Case Page ========== */
 .case-hero {
   margin-top: 140px;
