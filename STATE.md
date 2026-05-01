@@ -2,7 +2,10 @@
 
 Snapshot of where the portfolio is right now so you can pick up later without re-exploring.
 
-**Git checkpoint tag:** `checkpoint-2026-05-01-icon-theme-toggle`
+**Git checkpoint tag:** `checkpoint-2026-05-01-analytics-bot-rewrite`
+Previous: `checkpoint-2026-05-01-icon-theme-toggle`, `checkpoint-2026-04-30-home-3sections`.
+
+**Older tag:** `checkpoint-2026-05-01-icon-theme-toggle`
 **Live:** https://www.glebaagleb.com (Vercel auto-deploy from `main`)
 **Repo:** github.com/hlebhleb-stack/portfolio
 
@@ -10,12 +13,10 @@ Snapshot of where the portfolio is right now so you can pick up later without re
 
 ```bash
 git fetch --tags
-git checkout checkpoint-2026-05-01-icon-theme-toggle
+git checkout checkpoint-2026-05-01-analytics-bot-rewrite
 # or, to make main this state again:
-git switch main && git reset --hard checkpoint-2026-05-01-icon-theme-toggle && git push --force-with-lease origin main
+git switch main && git reset --hard checkpoint-2026-05-01-analytics-bot-rewrite && git push --force-with-lease origin main
 ```
-
-Previous checkpoint: `checkpoint-2026-04-30-home-3sections`.
 
 ## What's on the site now
 
@@ -80,6 +81,33 @@ CI runs eslint + build + image optimization on push to `main`. Lint rule `react-
 ## Untracked drafts (don't commit)
 
 `*.drawio`, root `package-lock.json`, `server/analytics.json`, `client/README.md`, `socials icons/`, `ellipse.svg`, `client/public/assets/works/re-protocol/honeybee_1f41d.png`. Stage paths explicitly — never `git add -A`.
+
+## Server / Telegram analytics bot
+
+`server/server.js` — Express + node-telegram-bot-api + node-cron.
+
+**Endpoints**
+- `POST /api/track` — accepts `{ page, referrer, screenWidth, lang, sessionId }`. Filters bot user agents. Dedupes identical `sessionId+page` within 30 minutes so SPA route changes / reloads don't inflate counts. Stores into `analytics.json`.
+- `POST /api/contact` — name/email/message → saved + sent to TG.
+- `GET /api/stats` — minimal JSON for self.
+
+**Telegram commands** (only respond to `TELEGRAM_CHAT_ID`)
+- `/today`, `/yesterday`, `/week`, `/month`, `/all` — period summaries (views, sessions, mobile/desktop, top pages, top languages, top referrers).
+- `/pages [period]`, `/langs [period]`, `/devices [period]`, `/referrers [period]` — single breakdown for the chosen period (default `all`).
+- `/contacts` — last 10 contact form messages.
+- `/export` — sends `analytics.json` as a file.
+- `/clear` then `/yes` (within 60s) — wipes all analytics.
+- `/help` (also `/start`) — command list.
+
+**Style**: no emojis, `<b>Title</b>` + monospace `<pre>` tables. Matches site's minimalist look.
+
+**Crons** (server time)
+- Daily digest at 21:00 — calls `summary('today')`.
+- Weekly digest Mondays 09:00 — calls `summary('week')`.
+
+**Env vars**: `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`, optional `PORT` (default 3001).
+
+**Frontend tracking**: `App.jsx` defines `trackPage(page, lang)` which generates a per-tab UUID stored in `sessionStorage` as `sid` and POSTs to `/api/track`. HomePage tracks once on mount with the initial language. CasePage tracks on `slug` change using a ref so language switches don't re-track.
 
 ## Possible next steps (if resuming)
 
