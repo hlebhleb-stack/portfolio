@@ -14,13 +14,19 @@ const PORT = process.env.PORT || 3001;
 // ========== Config ==========
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '';
 const CHAT_ID = process.env.TELEGRAM_CHAT_ID || '';
+const TZ = process.env.TZ_OFFSET_HOURS ? Number(process.env.TZ_OFFSET_HOURS) : 0;
+const DEDUPE_MIN = 30; // same session+page within N minutes counts once
+const BOT_UA = /(bot|crawler|spider|crawling|preview|fetch|monitor|pingdom|uptime|headlesschrome|googlebot|bingbot|yandex|facebookexternalhit|slurp|duckduckbot|baiduspider|telegrambot|whatsapp|curl|wget|python|node-fetch|axios|postman)/i;
 
-// ========== Analytics Storage ==========
+// ========== Storage ==========
 const DATA_FILE = path.join(__dirname, 'analytics.json');
 
 function loadData() {
   try {
-    return JSON.parse(fs.readFileSync(DATA_FILE, 'utf-8'));
+    const d = JSON.parse(fs.readFileSync(DATA_FILE, 'utf-8'));
+    if (!Array.isArray(d.visits)) d.visits = [];
+    if (!Array.isArray(d.contacts)) d.contacts = [];
+    return d;
   } catch {
     return { visits: [], contacts: [] };
   }
@@ -30,73 +36,241 @@ function saveData(data) {
   fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
 }
 
-// Init file if missing
-if (!fs.existsSync(DATA_FILE)) {
-  saveData({ visits: [], contacts: [] });
+if (!fs.existsSync(DATA_FILE)) saveData({ visits: [], contacts: [] });
+
+// ========== Date helpers ==========
+function todayStr(offset = 0) {
+  const d = new Date(Date.now() + offset * 86400000);
+  return d.toISOString().slice(0, 10);
 }
 
-// ========== Telegram Bot ==========
+function inLastDays(ts, days) {
+  const cutoff = Date.now() - days * 86400000;
+  return new Date(ts).getTime() >= cutoff;
+}
+
+function rangeLabel(period) {
+  if (period === 'today') return `Today · ${todayStr()}`;
+  if (period === 'yesterday') return `Yesterday · ${todayStr(-1)}`;
+  if (period === 'week') return 'Last 7 days';
+  if (period === 'month') return 'Last 30 days';
+  return 'All time';
+}
+
+function filterByPeriod(visits, period) {
+  if (period === 'today') {
+    const t = todayStr();
+    return visits.filter(v => v.timestamp.startsWith(t));
+  }
+  if (period === 'yesterday') {
+    const y = todayStr(-1);
+    return visits.filter(v => v.timestamp.startsWith(y));
+  }
+  if (period === 'week') return visits.filter(v => inLastDays(v.timestamp, 7));
+  if (period === 'month') return visits.filter(v => inLastDays(v.timestamp, 30));
+  return visits;
+}
+
+// ========== Formatting ==========
+function pad(s, n) {
+  s = String(s);
+  return s.length >= n ? s : s + ' '.repeat(n - s.length);
+}
+
+function padLeft(s, n) {
+  s = String(s);
+  return s.length >= n ? s : ' '.repeat(n - s.length) + s;
+}
+
+function table(rows) {
+  if (!rows.length) return '  —';
+  const labelW = Math.min(28, Math.max(...rows.map(r => String(r[0]).length)));
+  const valW = Math.max(...rows.map(r => String(r[1]).length));
+  return rows
+    .map(([k, v]) => `  ${pad(String(k).slice(0, labelW), labelW)}  ${padLeft(v, valW)}`)
+    .join('\n');
+}
+
+function topCounts(items, limit = 10) {
+  const counts = {};
+  for (const it of items) {
+    const key = it || '—';
+    counts[key] = (counts[key] || 0) + 1;
+  }
+  return Object.entries(counts)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, limit);
+}
+
+function uniqueSessions(visits) {
+  return new Set(visits.map(v => v.sessionId || v.ip || '')).size;
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+}
+
+function section(title, body) {
+  return `<b>${escapeHtml(title)}</b>\n<pre>${escapeHtml(body)}</pre>`;
+}
+
+// ========== Reports ==========
+function summary(period) {
+  const data = loadData();
+  const visits = filterByPeriod(data.visits, period);
+  const sessions = uniqueSessions(visits);
+  const mobile = visits.filter(v => v.device === 'mobile').length;
+  const desktop = visits.length - mobile;
+  const pages = topCounts(visits.map(v => v.page), 8);
+  const langs = topCounts(visits.map(v => v.lang).filter(Boolean), 5);
+  const referrers = topCounts(
+    visits.map(v => v.referrer)
+      .filter(r => r && !r.includes('glebaagleb.com'))
+      .map(r => { try { return new URL(r).hostname; } catch { return r; } }),
+    5
+  );
+
+  let out = `<b>${escapeHtml(rangeLabel(period))}</b>\n\n`;
+  out += `<pre>${escapeHtml(table([
+    ['Views', visits.length],
+    ['Sessions', sessions],
+    ['Mobile', mobile],
+    ['Desktop', desktop],
+  ]))}</pre>\n\n`;
+  if (pages.length) out += section('Pages', table(pages)) + '\n\n';
+  if (langs.length) out += section('Languages', table(langs)) + '\n\n';
+  if (referrers.length) out += section('Referrers', table(referrers));
+  return out.trim();
+}
+
+function helpText() {
+  return [
+    '<b>Commands</b>',
+    '<pre>',
+    '  /today       today summary',
+    '  /yesterday   yesterday summary',
+    '  /week        last 7 days',
+    '  /month       last 30 days',
+    '  /all         all time',
+    '  /pages [p]   top pages',
+    '  /langs [p]   language split',
+    '  /devices [p] device split',
+    '  /referrers [p]  top referrers',
+    '  /contacts    last 10 messages',
+    '  /export      send analytics.json',
+    '  /clear       wipe all data (confirm)',
+    '  /help        this list',
+    '</pre>',
+    '<i>p = today | yesterday | week | month | all (default: all)</i>',
+  ].join('\n');
+}
+
+function parsePeriod(text) {
+  const m = (text || '').trim().split(/\s+/)[1];
+  if (['today', 'yesterday', 'week', 'month', 'all'].includes(m)) return m;
+  return 'all';
+}
+
+// ========== Bot ==========
 let bot = null;
+let pendingClear = false;
+
+function authed(msg) {
+  return CHAT_ID && String(msg.chat.id) === CHAT_ID;
+}
+
+function reply(chatId, html) {
+  return bot.sendMessage(chatId, html, { parse_mode: 'HTML', disable_web_page_preview: true })
+    .catch(err => console.error('TG send error:', err.message));
+}
+
 if (BOT_TOKEN) {
   bot = new TelegramBot(BOT_TOKEN, { polling: true });
-  console.log('Telegram bot initialized with polling');
+  console.log('Telegram bot initialized');
 
-  bot.onText(/\/stats/, (msg) => {
-    if (String(msg.chat.id) !== CHAT_ID) return;
-    const data = loadData();
-    const now = new Date();
-    const todayStr = now.toISOString().slice(0, 10);
-    const todayVisits = data.visits.filter(v => v.timestamp.startsWith(todayStr));
-    const uniqueIPs = new Set(todayVisits.map(v => v.ip)).size;
-    const pages = {};
-    todayVisits.forEach(v => { pages[v.page] = (pages[v.page] || 0) + 1; });
-    const devices = { mobile: 0, desktop: 0 };
-    todayVisits.forEach(v => { devices[v.device] = (devices[v.device] || 0) + 1; });
-    const pageList = Object.entries(pages)
-      .sort((a, b) => b[1] - a[1])
-      .map(([p, c]) => `  ${p} — ${c}`)
-      .join('\n') || '  No visits';
+  bot.on('polling_error', e => console.error('Polling error:', e.message));
 
-    const text =
-      `📊 <b>Stats — ${todayStr}</b>\n\n` +
-      `👀 Views today: <b>${todayVisits.length}</b>\n` +
-      `👤 Unique visitors: <b>${uniqueIPs}</b>\n` +
-      `📱 Mobile: <b>${devices.mobile}</b> | 🖥 Desktop: <b>${devices.desktop}</b>\n\n` +
-      `<b>Pages:</b>\n${pageList}\n\n` +
-      `<b>All time:</b> ${data.visits.length} views`;
-    bot.sendMessage(msg.chat.id, text, { parse_mode: 'HTML' });
+  bot.onText(/^\/(start|help)\b/, msg => { if (authed(msg)) reply(msg.chat.id, helpText()); });
+  bot.onText(/^\/today\b/, msg => { if (authed(msg)) reply(msg.chat.id, summary('today')); });
+  bot.onText(/^\/yesterday\b/, msg => { if (authed(msg)) reply(msg.chat.id, summary('yesterday')); });
+  bot.onText(/^\/week\b/, msg => { if (authed(msg)) reply(msg.chat.id, summary('week')); });
+  bot.onText(/^\/month\b/, msg => { if (authed(msg)) reply(msg.chat.id, summary('month')); });
+  bot.onText(/^\/all\b/, msg => { if (authed(msg)) reply(msg.chat.id, summary('all')); });
+
+  bot.onText(/^\/pages\b/, msg => {
+    if (!authed(msg)) return;
+    const period = parsePeriod(msg.text);
+    const visits = filterByPeriod(loadData().visits, period);
+    const rows = topCounts(visits.map(v => v.page), 20);
+    reply(msg.chat.id, `<b>Pages · ${escapeHtml(rangeLabel(period))}</b>\n<pre>${escapeHtml(table(rows))}</pre>`);
   });
 
-  bot.onText(/\/alltime/, (msg) => {
-    if (String(msg.chat.id) !== CHAT_ID) return;
-    const data = loadData();
-    const days = {};
-    data.visits.forEach(v => {
-      const day = v.timestamp.slice(0, 10);
-      days[day] = (days[day] || 0) + 1;
-    });
-    const dayList = Object.entries(days)
-      .sort((a, b) => b[0].localeCompare(a[0]))
-      .slice(0, 14)
-      .map(([d, c]) => `  ${d} — ${c} views`)
-      .join('\n') || '  No data';
-
-    const text =
-      `📈 <b>All Time Stats</b>\n\n` +
-      `Total views: <b>${data.visits.length}</b>\n` +
-      `Total unique IPs: <b>${new Set(data.visits.map(v => v.ip)).size}</b>\n\n` +
-      `<b>Last 14 days:</b>\n${dayList}`;
-    bot.sendMessage(msg.chat.id, text, { parse_mode: 'HTML' });
+  bot.onText(/^\/langs\b/, msg => {
+    if (!authed(msg)) return;
+    const period = parsePeriod(msg.text);
+    const visits = filterByPeriod(loadData().visits, period);
+    const rows = topCounts(visits.map(v => v.lang).filter(Boolean), 10);
+    reply(msg.chat.id, `<b>Languages · ${escapeHtml(rangeLabel(period))}</b>\n<pre>${escapeHtml(table(rows))}</pre>`);
   });
 
+  bot.onText(/^\/devices\b/, msg => {
+    if (!authed(msg)) return;
+    const period = parsePeriod(msg.text);
+    const visits = filterByPeriod(loadData().visits, period);
+    const rows = topCounts(visits.map(v => v.device), 5);
+    reply(msg.chat.id, `<b>Devices · ${escapeHtml(rangeLabel(period))}</b>\n<pre>${escapeHtml(table(rows))}</pre>`);
+  });
+
+  bot.onText(/^\/referrers\b/, msg => {
+    if (!authed(msg)) return;
+    const period = parsePeriod(msg.text);
+    const visits = filterByPeriod(loadData().visits, period);
+    const rows = topCounts(
+      visits.map(v => v.referrer)
+        .filter(r => r && !r.includes('glebaagleb.com'))
+        .map(r => { try { return new URL(r).hostname; } catch { return r; } }),
+      20
+    );
+    reply(msg.chat.id, `<b>Referrers · ${escapeHtml(rangeLabel(period))}</b>\n<pre>${escapeHtml(table(rows.length ? rows : [['—', 0]]))}</pre>`);
+  });
+
+  bot.onText(/^\/contacts\b/, msg => {
+    if (!authed(msg)) return;
+    const data = loadData();
+    const last = data.contacts.slice(-10).reverse();
+    if (!last.length) return reply(msg.chat.id, '<b>Contacts</b>\n<pre>  —</pre>');
+    const body = last.map(c =>
+      `${c.timestamp.slice(0, 16).replace('T', ' ')}\n  ${c.name} · ${c.email}\n  ${(c.message || '').slice(0, 200)}`
+    ).join('\n\n');
+    reply(msg.chat.id, `<b>Contacts · last ${last.length}</b>\n<pre>${escapeHtml(body)}</pre>`);
+  });
+
+  bot.onText(/^\/export\b/, msg => {
+    if (!authed(msg)) return;
+    bot.sendDocument(msg.chat.id, DATA_FILE, {}, { filename: 'analytics.json', contentType: 'application/json' })
+      .catch(err => reply(msg.chat.id, `<b>Export failed</b>\n<pre>${escapeHtml(err.message)}</pre>`));
+  });
+
+  bot.onText(/^\/clear\b/, msg => {
+    if (!authed(msg)) return;
+    pendingClear = true;
+    reply(msg.chat.id, '<b>Confirm</b>\nReply <code>/yes</code> within 60s to wipe all analytics.');
+    setTimeout(() => { pendingClear = false; }, 60000);
+  });
+
+  bot.onText(/^\/yes\b/, msg => {
+    if (!authed(msg)) return;
+    if (!pendingClear) return reply(msg.chat.id, 'Nothing to confirm.');
+    saveData({ visits: [], contacts: [] });
+    pendingClear = false;
+    reply(msg.chat.id, '<b>Cleared</b>');
+  });
 } else {
   console.warn('TELEGRAM_BOT_TOKEN not set — bot disabled');
 }
 
-function sendTelegram(text) {
-  if (bot && CHAT_ID) {
-    bot.sendMessage(CHAT_ID, text, { parse_mode: 'HTML' }).catch(console.error);
-  }
+function sendTelegram(html) {
+  if (bot && CHAT_ID) reply(CHAT_ID, html);
 }
 
 // ========== Middleware ==========
@@ -104,140 +278,82 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../client/dist')));
 
-// ========== API: Track Page View ==========
+// ========== Track ==========
 app.post('/api/track', (req, res) => {
-  const { page, referrer, screenWidth } = req.body;
+  const ua = req.headers['user-agent'] || '';
+  if (BOT_UA.test(ua)) return res.json({ ok: true, ignored: 'bot' });
+
+  const { page, referrer, screenWidth, lang, sessionId } = req.body || {};
+  const ip = (req.headers['x-forwarded-for'] || req.ip || '').toString().split(',')[0].trim();
   const data = loadData();
 
-  const visit = {
+  // Dedupe: same sessionId+page within DEDUPE_MIN minutes counts once
+  const key = sessionId || ip;
+  const cutoff = Date.now() - DEDUPE_MIN * 60000;
+  const dupe = data.visits.find(v =>
+    (v.sessionId || v.ip) === key &&
+    v.page === page &&
+    new Date(v.timestamp).getTime() >= cutoff
+  );
+  if (dupe) return res.json({ ok: true, ignored: 'dedupe' });
+
+  data.visits.push({
     page: page || '/',
     referrer: referrer || '',
-    screenWidth: screenWidth || 0,
-    device: (screenWidth || 0) <= 768 ? 'mobile' : 'desktop',
-    ip: req.headers['x-forwarded-for'] || req.ip,
-    userAgent: req.headers['user-agent'] || '',
+    screenWidth: Number(screenWidth) || 0,
+    device: (Number(screenWidth) || 0) <= 768 ? 'mobile' : 'desktop',
+    lang: lang || '',
+    sessionId: sessionId || '',
+    ip,
+    userAgent: ua,
     timestamp: new Date().toISOString(),
-  };
-
-  data.visits.push(visit);
+  });
   saveData(data);
-
   res.json({ ok: true });
 });
 
-// ========== API: Contact Form ==========
+// ========== Contact ==========
 app.post('/api/contact', (req, res) => {
-  const { name, email, message } = req.body;
-
-  if (!name || !email || !message) {
-    return res.status(400).json({ error: 'All fields required' });
-  }
-
+  const { name, email, message } = req.body || {};
+  if (!name || !email || !message) return res.status(400).json({ error: 'All fields required' });
   const data = loadData();
-  const contact = {
-    name,
-    email,
-    message,
-    timestamp: new Date().toISOString(),
-  };
-  data.contacts.push(contact);
+  data.contacts.push({ name, email, message, timestamp: new Date().toISOString() });
   saveData(data);
-
-  // Send to Telegram
-  const text =
-    `📩 <b>New message from portfolio</b>\n\n` +
-    `<b>Name:</b> ${name}\n` +
-    `<b>Email:</b> ${email}\n` +
-    `<b>Message:</b>\n${message}`;
-  sendTelegram(text);
-
+  sendTelegram(
+    `<b>New message</b>\n<pre>${escapeHtml(`From: ${name} <${email}>\n\n${message}`)}</pre>`
+  );
   res.json({ ok: true });
 });
 
-// ========== API: Stats (for you) ==========
+// ========== Stats JSON ==========
 app.get('/api/stats', (req, res) => {
   const data = loadData();
-  const now = new Date();
-  const todayStr = now.toISOString().slice(0, 10);
-
-  const todayVisits = data.visits.filter(v => v.timestamp.startsWith(todayStr));
-  const totalVisits = data.visits.length;
-  const totalContacts = data.contacts.length;
-
-  // Unique IPs today
-  const uniqueToday = new Set(todayVisits.map(v => v.ip)).size;
-
-  // Page breakdown today
-  const pages = {};
-  todayVisits.forEach(v => {
-    pages[v.page] = (pages[v.page] || 0) + 1;
-  });
-
-  // Device breakdown today
-  const devices = { mobile: 0, desktop: 0 };
-  todayVisits.forEach(v => {
-    devices[v.device] = (devices[v.device] || 0) + 1;
-  });
-
+  const today = filterByPeriod(data.visits, 'today');
   res.json({
-    today: {
-      views: todayVisits.length,
-      unique: uniqueToday,
-      pages,
-      devices,
-    },
-    total: {
-      views: totalVisits,
-      contacts: totalContacts,
-    },
+    today: { views: today.length, sessions: uniqueSessions(today) },
+    total: { views: data.visits.length, contacts: data.contacts.length },
   });
 });
 
-// ========== Daily Report Cron ==========
-// Every day at 21:00 (server time)
+// ========== Crons ==========
+// Daily digest — 21:00 server time
 cron.schedule('0 21 * * *', () => {
-  const data = loadData();
-  const now = new Date();
-  const todayStr = now.toISOString().slice(0, 10);
-
-  const todayVisits = data.visits.filter(v => v.timestamp.startsWith(todayStr));
-  const uniqueIPs = new Set(todayVisits.map(v => v.ip)).size;
-
-  const pages = {};
-  todayVisits.forEach(v => {
-    pages[v.page] = (pages[v.page] || 0) + 1;
-  });
-
-  const devices = { mobile: 0, desktop: 0 };
-  todayVisits.forEach(v => {
-    devices[v.device] = (devices[v.device] || 0) + 1;
-  });
-
-  const pageList = Object.entries(pages)
-    .sort((a, b) => b[1] - a[1])
-    .map(([p, c]) => `  ${p} — ${c}`)
-    .join('\n') || '  No visits';
-
-  const text =
-    `📊 <b>Daily Report — ${todayStr}</b>\n\n` +
-    `👀 Views: <b>${todayVisits.length}</b>\n` +
-    `👤 Unique visitors: <b>${uniqueIPs}</b>\n` +
-    `📱 Mobile: <b>${devices.mobile}</b> | 🖥 Desktop: <b>${devices.desktop}</b>\n\n` +
-    `<b>Pages:</b>\n${pageList}\n\n` +
-    `<b>Total all time:</b> ${data.visits.length} views, ${data.contacts.length} messages`;
-
-  sendTelegram(text);
-  console.log(`Daily report sent: ${todayStr}`);
+  sendTelegram(summary('today'));
+  console.log('Daily digest sent');
 });
 
-// ========== SPA Fallback ==========
+// Weekly digest — Monday 09:00 server time
+cron.schedule('0 9 * * 1', () => {
+  sendTelegram('<b>Weekly digest</b>\n\n' + summary('week'));
+  console.log('Weekly digest sent');
+});
+
+// ========== SPA fallback ==========
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/dist/index.html'));
 });
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  if (bot && CHAT_ID) {
-    sendTelegram('🟢 Portfolio server started');
-  }
+  console.log(`Server on :${PORT} (TZ offset ${TZ}h)`);
+  if (bot && CHAT_ID) sendTelegram('<b>Server up</b>\nSend /help for commands.');
 });

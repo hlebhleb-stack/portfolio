@@ -7,7 +7,21 @@ import './App.css'
 
 const API_URL = import.meta.env.VITE_API_URL || ''
 
-function trackPage(page) {
+function getSessionId() {
+  try {
+    let id = sessionStorage.getItem('sid')
+    if (!id) {
+      id = (crypto.randomUUID && crypto.randomUUID()) ||
+        Math.random().toString(36).slice(2) + Date.now().toString(36)
+      sessionStorage.setItem('sid', id)
+    }
+    return id
+  } catch {
+    return ''
+  }
+}
+
+function trackPage(page, lang) {
   fetch(`${API_URL}/api/track`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -15,6 +29,8 @@ function trackPage(page) {
       page,
       referrer: document.referrer,
       screenWidth: window.innerWidth,
+      lang: lang || (typeof document !== 'undefined' ? document.documentElement.lang : ''),
+      sessionId: getSessionId(),
     }),
   }).catch(() => {})
 }
@@ -71,8 +87,9 @@ function HomePage({ theme, setTheme, lang, setLang }) {
     setTypingDone(false)
   }
 
+  const initialLangRef = useRef(lang)
   useEffect(() => {
-    trackPage('/')
+    trackPage('/', initialLangRef.current)
   }, [])
 
   useEffect(() => {

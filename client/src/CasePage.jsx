@@ -119,8 +119,19 @@ function CasePage({ theme, setTheme, lang, setLang }) {
   const touchStartScale = useRef(1)
   const touchCancelled = useRef(false)
 
+  const langRef = useRef(lang)
+  useEffect(() => { langRef.current = lang }, [lang])
   useEffect(() => {
     window.scrollTo(0, 0)
+    let sid = ''
+    try {
+      sid = sessionStorage.getItem('sid') || ''
+      if (!sid) {
+        sid = (crypto.randomUUID && crypto.randomUUID()) ||
+          Math.random().toString(36).slice(2) + Date.now().toString(36)
+        sessionStorage.setItem('sid', sid)
+      }
+    } catch { /* ignore */ }
     fetch(`${API_URL}/api/track`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -128,6 +139,8 @@ function CasePage({ theme, setTheme, lang, setLang }) {
         page: `/case/${slug}`,
         referrer: document.referrer,
         screenWidth: window.innerWidth,
+        lang: langRef.current,
+        sessionId: sid,
       }),
     }).catch(() => {})
   }, [slug])
