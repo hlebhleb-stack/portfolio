@@ -6,6 +6,7 @@ import fs from 'fs';
 import { fileURLToPath } from 'url';
 import TelegramBot from 'node-telegram-bot-api';
 import cron from 'node-cron';
+import geoip from 'geoip-lite';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -237,6 +238,39 @@ function uniqueSessions(visits) {
   return new Set(visits.map(v => v.sessionId || v.ip || '')).size;
 }
 
+const COUNTRY_NAMES = {
+  US: 'United States', RU: 'Russia', UA: 'Ukraine', BY: 'Belarus', KZ: 'Kazakhstan',
+  DE: 'Germany', GB: 'United Kingdom', FR: 'France', ES: 'Spain', IT: 'Italy',
+  NL: 'Netherlands', PL: 'Poland', CZ: 'Czech Republic', AT: 'Austria', CH: 'Switzerland',
+  SE: 'Sweden', NO: 'Norway', FI: 'Finland', DK: 'Denmark', PT: 'Portugal',
+  CA: 'Canada', MX: 'Mexico', BR: 'Brazil', AR: 'Argentina', CL: 'Chile',
+  JP: 'Japan', CN: 'China', KR: 'South Korea', IN: 'India', TH: 'Thailand',
+  VN: 'Vietnam', SG: 'Singapore', AU: 'Australia', NZ: 'New Zealand',
+  TR: 'Turkey', IL: 'Israel', AE: 'UAE', SA: 'Saudi Arabia',
+  GE: 'Georgia', AM: 'Armenia', AZ: 'Azerbaijan', UZ: 'Uzbekistan',
+  RO: 'Romania', BG: 'Bulgaria', HU: 'Hungary', GR: 'Greece', IE: 'Ireland',
+  BE: 'Belgium', LU: 'Luxembourg', LT: 'Lithuania', LV: 'Latvia', EE: 'Estonia',
+  RS: 'Serbia', HR: 'Croatia', SI: 'Slovenia', SK: 'Slovakia', MD: 'Moldova',
+};
+
+function lookupCountry(ip) {
+  if (!ip) return null;
+  // Strip port from IPv4 addresses if present
+  const clean = ip.replace(/^::ffff:/, '').split(':')[0];
+  if (!clean || clean === '127.0.0.1' || clean.startsWith('10.') ||
+      clean.startsWith('192.168.') || clean.startsWith('172.')) return null;
+  try {
+    const r = geoip.lookup(clean);
+    return r?.country || null;
+  } catch { return null; }
+}
+
+function geoBreakdown(visits, limit = 20) {
+  const codes = visits.map(v => v.country || lookupCountry(v.ip)).filter(Boolean);
+  const top = topCounts(codes, limit);
+  return top.map(([code, n]) => [`${code}  ${COUNTRY_NAMES[code] || ''}`.trim(), n]);
+}
+
 function escapeHtml(s) {
   return String(s).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
 }
@@ -268,7 +302,9 @@ function summary(period) {
     ['Mobile', mobile],
     ['Desktop', desktop],
   ]))}</pre>\n\n`;
+  const geo = geoBreakdown(visits, 8);
   if (pages.length) out += section('Pages', table(pages)) + '\n\n';
+  if (geo.length) out += section('Geo', table(geo)) + '\n\n';
   if (langs.length) out += section('Languages', table(langs)) + '\n\n';
   if (referrers.length) out += section('Referrers', table(referrers));
   return out.trim();
@@ -284,6 +320,7 @@ function helpText() {
     '  /month       last 30 days',
     '  /all         all time',
     '  /pages [p]   top pages',
+    '  /geo [p]     visitor countries',
     '  /langs [p]   language split',
     '  /devices [p] device split',
     '  /referrers [p]  top referrers',
@@ -329,6 +366,7 @@ if (BOT_TOKEN) {
     { command: 'month',     description: 'Last 30 days' },
     { command: 'all',       description: 'All time' },
     { command: 'pages',     description: 'Top pages' },
+    { command: 'geo',       description: 'Visitor countries' },
     { command: 'langs',     description: 'Language split' },
     { command: 'devices',   description: 'Device split' },
     { command: 'referrers', description: 'Top referrers' },
@@ -367,6 +405,14 @@ if (BOT_TOKEN) {
     const visits = filterByPeriod(loadData().visits, period);
     const rows = topCounts(visits.map(v => v.device), 5);
     reply(msg.chat.id, `<b>Devices · ${escapeHtml(rangeLabel(period))}</b>\n<pre>${escapeHtml(table(rows))}</pre>`);
+  });
+
+  bot.onText(/^\/geo\b/, msg => {
+    if (!authed(msg)) return;
+    const period = parsePeriod(msg.text);
+    const visits = filterByPeriod(loadData().visits, period);
+    const rows = geoBreakdown(visits, 30);
+    reply(msg.chat.id, `<b>Geo · ${escapeHtml(rangeLabel(period))}</b>\n<pre>${escapeHtml(table(rows))}</pre>`);
   });
 
   bot.onText(/^\/referrers\b/, msg => {
@@ -459,6 +505,7 @@ app.post('/api/track', (req, res) => {
     lang: lang || '',
     sessionId: sessionId || '',
     ip,
+    country: lookupCountry(ip) || '',
     userAgent: ua,
     timestamp: new Date().toISOString(),
   });
