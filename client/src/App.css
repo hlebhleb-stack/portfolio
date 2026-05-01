@@ -500,7 +500,7 @@
   line-height: 1.5;
   color: var(--text);
   max-width: 640px;
-  margin: 32px auto 0;
+  margin: 40px auto 0;
   text-align: center;
 }
 
@@ -519,7 +519,7 @@
 .case-skills {
   list-style: none;
   padding: 0;
-  margin: 32px auto 0;
+  margin: 20px auto 0;
   display: flex;
   flex-wrap: nowrap;
   justify-content: center;
@@ -546,7 +546,7 @@
   display: flex;
   justify-content: center;
   gap: 24px;
-  margin-top: 32px;
+  margin-top: 40px;
 }
 
 .case-filter-btn {
@@ -802,7 +802,13 @@
 
   .case-description {
     font-size: 13px;
-    margin-top: 24px;
+    margin-top: 32px;
+  }
+  .case-skills {
+    margin-top: 16px;
+  }
+  .case-filter {
+    margin-top: 32px;
   }
 
   .case-skill {
@@ -1019,12 +1025,12 @@
 
   .case-description {
     font-size: 12px;
-    margin: 24px auto 0;
+    margin: 28px auto 0;
     max-width: 100%;
   }
 
   .case-skills {
-    margin-top: 24px;
+    margin-top: 14px;
     gap: 8px;
     flex-direction: column;
     align-items: center;
@@ -1044,6 +1050,10 @@
 
   .case-filter-btn {
     font-size: 12px;
+  }
+
+  .case-filter {
+    margin-top: 28px;
   }
 
   /* Single column on mobile */
