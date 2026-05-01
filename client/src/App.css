@@ -888,12 +888,6 @@
   .home-page::after {
     height: 150px;
   }
-  .home-sections {
-    scroll-snap-type: y proximity;
-  }
-  .home-section {
-    scroll-snap-stop: normal;
-  }
   .home-page::before {
     background: linear-gradient(to bottom, var(--bg) 0%, var(--bg) 55px, transparent 150px);
     mask-image: linear-gradient(to bottom, black 55px, transparent 150px);
