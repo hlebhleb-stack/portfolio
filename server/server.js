@@ -325,7 +325,8 @@ function helpText() {
     '  /devices [p] device split',
     '  /referrers [p]  top referrers',
     '  /export      send analytics.json',
-    '  /clear       wipe all data (confirm)',
+    '  /wipe        delete bot messages',
+    '  /clear       wipe analytics (confirm)',
     '  /help        this list',
     '</pre>',
     '<i>p = today | yesterday | week | month | all (default: all)</i>',
@@ -342,6 +343,13 @@ function parsePeriod(text) {
 let bot = null;
 let pendingClear = false;
 let pendingTimer = null;
+const sentMessages = new Map(); // chatId -> Set<messageId>
+
+function rememberSent(chatId, messageId) {
+  if (!messageId) return;
+  if (!sentMessages.has(chatId)) sentMessages.set(chatId, new Set());
+  sentMessages.get(chatId).add(messageId);
+}
 
 function authed(msg) {
   return CHAT_ID && String(msg.chat.id) === CHAT_ID;
@@ -349,6 +357,7 @@ function authed(msg) {
 
 function reply(chatId, html) {
   return bot.sendMessage(chatId, html, { parse_mode: 'HTML', disable_web_page_preview: true })
+    .then(m => { rememberSent(chatId, m?.message_id); return m; })
     .catch(err => console.error('TG send error:', err.message));
 }
 
@@ -370,7 +379,8 @@ if (BOT_TOKEN) {
     { command: 'devices',   description: 'Device split' },
     { command: 'referrers', description: 'Top referrers' },
     { command: 'export',    description: 'Send analytics.json' },
-    { command: 'clear',     description: 'Wipe all data (confirm)' },
+    { command: 'wipe',      description: 'Delete bot messages in this chat' },
+    { command: 'clear',     description: 'Wipe all analytics data (confirm)' },
     { command: 'help',      description: 'Show command list' },
   ]).catch(e => console.error('setMyCommands failed:', e.message));
 
@@ -429,7 +439,36 @@ if (BOT_TOKEN) {
   bot.onText(/^\/export\b/, msg => {
     if (!authed(msg)) return;
     bot.sendDocument(msg.chat.id, DATA_FILE, {}, { filename: 'analytics.json', contentType: 'application/json' })
+      .then(m => rememberSent(msg.chat.id, m?.message_id))
       .catch(err => reply(msg.chat.id, `<b>Export failed</b>\n<pre>${escapeHtml(err.message)}</pre>`));
+  });
+
+  bot.onText(/^\/wipe\b/, async msg => {
+    if (!authed(msg)) return;
+    const chatId = msg.chat.id;
+    const ids = sentMessages.get(chatId);
+    let deleted = 0;
+    let failed = 0;
+    if (ids) {
+      for (const id of [...ids]) {
+        try {
+          await bot.deleteMessage(chatId, id);
+          ids.delete(id);
+          deleted++;
+        } catch {
+          ids.delete(id); // older than 48h or already gone
+          failed++;
+        }
+      }
+    }
+    // Also try to delete the /wipe command itself
+    try { await bot.deleteMessage(chatId, msg.message_id); } catch {}
+    const note = await bot.sendMessage(
+      chatId,
+      `<b>Wiped</b>\nDeleted ${deleted} bot message(s)${failed ? `, ${failed} were too old` : ''}.`,
+      { parse_mode: 'HTML' }
+    );
+    rememberSent(chatId, note?.message_id);
   });
 
   bot.onText(/^\/clear\b/, msg => {
