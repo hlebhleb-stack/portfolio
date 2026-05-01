@@ -433,7 +433,7 @@
 
 .home-section-socials .home-socials {
   display: flex;
-  gap: 48px;
+  gap: 36px;
   align-items: center;
   justify-content: center;
 }
