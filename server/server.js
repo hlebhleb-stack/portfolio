@@ -388,10 +388,18 @@ if (BOT_TOKEN) {
     if (!authed(msg)) return;
     const data = loadData();
     const last = data.contacts.slice(-10).reverse();
-    if (!last.length) return reply(msg.chat.id, '<b>Contacts</b>\n<pre>  —</pre>');
-    const body = last.map(c =>
-      `${c.timestamp.slice(0, 16).replace('T', ' ')}\n  ${c.name} · ${c.email}\n  ${(c.message || '').slice(0, 200)}`
-    ).join('\n\n');
+    if (!last.length) {
+      const empty = padRightNbsp('  No messages yet.', MIN_ROW_WIDTH);
+      return reply(msg.chat.id, `<b>Contacts</b>\n<pre>${empty}</pre>`);
+    }
+    const body = last.map(c => {
+      const when = c.timestamp.slice(0, 16).replace('T', ' ');
+      return [
+        padRightNbsp(when, MIN_ROW_WIDTH),
+        padRightNbsp(`  ${c.name} · ${c.email}`, MIN_ROW_WIDTH),
+        padRightNbsp(`  ${(c.message || '').slice(0, 200)}`, MIN_ROW_WIDTH),
+      ].join('\n');
+    }).join('\n\n');
     reply(msg.chat.id, `<b>Contacts · last ${last.length}</b>\n<pre>${escapeHtml(body)}</pre>`);
   });
 
