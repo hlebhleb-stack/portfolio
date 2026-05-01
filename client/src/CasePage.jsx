@@ -5,18 +5,18 @@ import { translations, LANGS } from './translations.jsx'
 
 function VideoItem({ src, alt }) {
   const videoRef = useRef(null)
-  const [playing, setPlaying] = useState(false)
+  const [muted, setMuted] = useState(true)
 
-  const handlePlay = (e) => {
+  const toggleMute = (e) => {
     e.stopPropagation()
     const v = videoRef.current
     if (!v) return
-    v.muted = false
-    v.volume = 1
+    const next = !v.muted
+    v.muted = next
+    if (!next) v.volume = 1
+    setMuted(next)
     const p = v.play()
-    if (p && typeof p.catch === 'function') {
-      p.catch(() => {})
-    }
+    if (p && typeof p.catch === 'function') p.catch(() => {})
   }
 
   return (
@@ -24,30 +24,36 @@ function VideoItem({ src, alt }) {
       <video
         ref={videoRef}
         src={src}
+        autoPlay
+        muted
         loop
         playsInline
         preload="auto"
         aria-label={alt}
         onLoadedData={(e) => e.target.parentElement.classList.add('loaded')}
         onLoadedMetadata={(e) => e.target.parentElement.classList.add('loaded')}
-        onPlay={() => setPlaying(true)}
-        onPause={() => setPlaying(false)}
-        controls={playing}
-        controlsList="nodownload noplaybackrate"
-        disablePictureInPicture
+        onClick={toggleMute}
       />
-      {!playing && (
-        <button
-          type="button"
-          className="video-play-btn"
-          aria-label="Play video"
-          onClick={handlePlay}
-        >
-          <svg width="20" height="24" viewBox="0 0 20 24" xmlns="http://www.w3.org/2000/svg">
-            <polygon points="0,0 20,12 0,24" fill="#fff" />
+      <button
+        type="button"
+        className="video-mute-btn"
+        aria-label={muted ? 'Unmute video' : 'Mute video'}
+        onClick={toggleMute}
+      >
+        {muted ? (
+          <svg width="18" height="18" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="#fff" stroke="#fff" />
+            <line x1="23" y1="9" x2="17" y2="15" />
+            <line x1="17" y1="9" x2="23" y2="15" />
           </svg>
-        </button>
-      )}
+        ) : (
+          <svg width="18" height="18" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="#fff" stroke="#fff" />
+            <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+          </svg>
+        )}
+      </button>
     </>
   )
 }
