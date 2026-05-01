@@ -27,7 +27,6 @@ function trackPage(page, lang) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       page,
-      referrer: document.referrer,
       screenWidth: window.innerWidth,
       lang: lang || (typeof document !== 'undefined' ? document.documentElement.lang : ''),
       sessionId: getSessionId(),

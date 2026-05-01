@@ -288,12 +288,6 @@ function summary(period) {
   const desktop = visits.length - mobile;
   const pages = topCounts(visits.map(v => v.page), 8);
   const langs = topCounts(visits.map(v => v.lang).filter(Boolean), 5);
-  const referrers = topCounts(
-    visits.map(v => v.referrer)
-      .filter(r => r && !r.includes('glebaagleb.com'))
-      .map(r => { try { return new URL(r).hostname; } catch { return r; } }),
-    5
-  );
 
   let out = `<b>${escapeHtml(rangeLabel(period))}</b>\n\n`;
   out += `<pre>${escapeHtml(table([
@@ -305,8 +299,7 @@ function summary(period) {
   const geo = geoBreakdown(visits, 8);
   if (pages.length) out += section('Pages', table(pages)) + '\n\n';
   if (geo.length) out += section('Geo', table(geo)) + '\n\n';
-  if (langs.length) out += section('Languages', table(langs)) + '\n\n';
-  if (referrers.length) out += section('Referrers', table(referrers));
+  if (langs.length) out += section('Languages', table(langs));
   return out.trim();
 }
 
@@ -323,7 +316,6 @@ function helpText() {
     '  /geo [p]     visitor countries',
     '  /langs [p]   language split',
     '  /devices [p] device split',
-    '  /referrers [p]  top referrers',
     '  /export      send analytics.json',
     '  /wipe        delete bot messages',
     '  /clear       wipe analytics (confirm)',
@@ -377,7 +369,6 @@ if (BOT_TOKEN) {
     { command: 'geo',       description: 'Visitor countries' },
     { command: 'langs',     description: 'Language split' },
     { command: 'devices',   description: 'Device split' },
-    { command: 'referrers', description: 'Top referrers' },
     { command: 'export',    description: 'Send analytics.json' },
     { command: 'wipe',      description: 'Delete bot messages in this chat' },
     { command: 'clear',     description: 'Wipe all analytics data (confirm)' },
@@ -421,19 +412,6 @@ if (BOT_TOKEN) {
     const visits = filterByPeriod(loadData().visits, period);
     const rows = geoBreakdown(visits, 30);
     reply(msg.chat.id, `<b>Geo · ${escapeHtml(rangeLabel(period))}</b>\n<pre>${escapeHtml(table(rows))}</pre>`);
-  });
-
-  bot.onText(/^\/referrers\b/, msg => {
-    if (!authed(msg)) return;
-    const period = parsePeriod(msg.text);
-    const visits = filterByPeriod(loadData().visits, period);
-    const rows = topCounts(
-      visits.map(v => v.referrer)
-        .filter(r => r && !r.includes('glebaagleb.com'))
-        .map(r => { try { return new URL(r).hostname; } catch { return r; } }),
-      20
-    );
-    reply(msg.chat.id, `<b>Referrers · ${escapeHtml(rangeLabel(period))}</b>\n<pre>${escapeHtml(table(rows.length ? rows : [['—', 0]]))}</pre>`);
   });
 
   bot.onText(/^\/export\b/, msg => {
@@ -505,7 +483,7 @@ app.post('/api/track', (req, res) => {
   const ua = req.headers['user-agent'] || '';
   if (BOT_UA.test(ua)) return res.json({ ok: true, ignored: 'bot' });
 
-  const { page, referrer, screenWidth, lang, sessionId } = req.body || {};
+  const { page, screenWidth, lang, sessionId } = req.body || {};
   const ip = (req.headers['x-forwarded-for'] || req.ip || '').toString().split(',')[0].trim();
   const data = loadData();
 
@@ -521,7 +499,6 @@ app.post('/api/track', (req, res) => {
 
   data.visits.push({
     page: page || '/',
-    referrer: referrer || '',
     screenWidth: Number(screenWidth) || 0,
     device: (Number(screenWidth) || 0) <= 768 ? 'mobile' : 'desktop',
     lang: lang || '',

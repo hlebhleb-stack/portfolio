@@ -137,7 +137,6 @@ function CasePage({ theme, setTheme, lang, setLang }) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         page: `/case/${slug}`,
-        referrer: document.referrer,
         screenWidth: window.innerWidth,
         lang: langRef.current,
         sessionId: sid,
