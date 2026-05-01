@@ -1,9 +1,9 @@
-# Site state — 2026-05-02
+# Site state — 2026-05-02 (evening)
 
 Snapshot of where the portfolio is right now so you can pick up later without re-exploring.
 
-**Git checkpoint tag:** `checkpoint-2026-05-02-auto-cases`
-Previous: `checkpoint-2026-05-01-analytics-bot-rewrite`, `checkpoint-2026-05-01-icon-theme-toggle`, `checkpoint-2026-04-30-home-3sections`.
+**Git checkpoint tag:** `checkpoint-2026-05-02-video-mute-coordination`
+Previous: `checkpoint-2026-05-02-auto-cases`, `checkpoint-2026-05-01-analytics-bot-rewrite`, `checkpoint-2026-05-01-icon-theme-toggle`, `checkpoint-2026-04-30-home-3sections`.
 
 **Live:** https://www.glebaagleb.com (Vercel auto-deploy from `main`)
 **Repo:** github.com/hlebhleb-stack/portfolio
@@ -12,9 +12,9 @@ Previous: `checkpoint-2026-05-01-analytics-bot-rewrite`, `checkpoint-2026-05-01-
 
 ```bash
 git fetch --tags
-git checkout checkpoint-2026-05-02-auto-cases
+git checkout checkpoint-2026-05-02-video-mute-coordination
 # or, to make main this state again:
-git switch main && git reset --hard checkpoint-2026-05-02-auto-cases && git push --force-with-lease origin main
+git switch main && git reset --hard checkpoint-2026-05-02-video-mute-coordination && git push --force-with-lease origin main
 ```
 
 ## What's on the site now
@@ -38,9 +38,10 @@ git switch main && git reset --hard checkpoint-2026-05-02-auto-cases && git push
 
 ### Case-gallery videos (changed 2026-05-02)
 - Auto-play, muted, looped, no native controls.
-- Small speaker icon bottom-right toggles mute (on desktop appears on hover; on mobile always visible).
+- Small speaker icon bottom-right toggles mute (on desktop appears on hover; on mobile always visible). **No circular background, no drop-shadow** — just the white speaker glyph.
 - Click on the video itself also toggles mute.
 - The big pink play button is gone.
+- **Mutual exclusion**: unmuting any video dispatches a `video-unmuted` `CustomEvent`; sibling `VideoItem`s listen and mute themselves + flip their icon back. Only one case video ever has sound at a time.
 
 ### Auto-discovery of case items (NEW 2026-05-02)
 `client/vite-plugin-case-items.js` scans `client/public/assets/works/<slug>/` at build start and on every file change in dev. Files matching `^\d+(\.[a-z0-9-]+)?\.(mp4|png|jpg|jpeg|webp)$` (numeric-prefixed) are picked up; everything else is ignored (e.g. `honeybee_1f41d.png` used inside translations).
@@ -128,7 +129,7 @@ Render free tier wipes the filesystem every 2-3 hours, so analytics are now pers
 
 **Removed**: `/referrers` (social platforms strip referer header), `/contacts` (no form on the site), `/reset` (redundant with `/clear`).
 
-**Style**: no emojis, `<b>Title</b>` + monospace `<pre>` tables. Rows are right-padded with NBSP to a 38-char minimum width so Telegram doesn't collapse short tables (`/langs`, `/devices`, etc.).
+**Style**: no emojis, `<b>Title</b>` + monospace `<pre>` tables. Rows are right-padded with NBSP to a 38-char minimum width so Telegram doesn't collapse short tables (`/langs`, `/devices`, etc.). The period `summary()` (used by `/today`, `/week`, etc.) builds a **single** `<pre>` block with plain-text section headers (`PAGES`, `GEO`, `LANGUAGES`) — multiple consecutive `<pre>` blocks rendered inconsistently on Telegram Desktop, so this keeps mobile and desktop identical.
 
 **Geo**: country code + name lookup map for top-50 countries; falls back to bare code for unmapped.
 
