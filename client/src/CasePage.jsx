@@ -128,8 +128,8 @@ function CasePage({ theme, setTheme, lang, setLang }) {
   const caseData = casesData[slug]
   const t = translations[lang]
   const caseTranslation = caseData ? t.cases[slug] : null
-  const pageRef = useFadeIn()
   const [filter, setFilter] = useState('all')
+  const pageRef = useFadeIn([slug, filter])
   const [lastSlug, setLastSlug] = useState(slug)
   if (slug !== lastSlug) {
     setLastSlug(slug)
@@ -326,7 +326,7 @@ function CasePage({ theme, setTheme, lang, setLang }) {
         {caseData.items
           .filter((item) => filter === 'all' || item.type === filter)
           .map((item, i) => (
-            <div key={`${filter}-${item.src}`} className="case-gallery-item">
+            <div key={`${filter}-${item.src}`} className="case-gallery-item fade-in-up">
               {item.type === 'video' ? (
                 <VideoItem src={item.src} alt={`${caseData.company} work ${i + 1}`} />
               ) : (
