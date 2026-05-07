@@ -6,7 +6,23 @@ import generatedItems from './caseItems.generated.json'
 
 function VideoItem({ src, alt }) {
   const videoRef = useRef(null)
+  const sentinelRef = useRef(null)
   const [muted, setMuted] = useState(true)
+  const [inView, setInView] = useState(false)
+
+  useEffect(() => {
+    const parent = sentinelRef.current?.parentElement
+    if (!parent || typeof IntersectionObserver === 'undefined') {
+      setInView(true)
+      return
+    }
+    const io = new IntersectionObserver(
+      ([entry]) => setInView(entry.isIntersecting),
+      { rootMargin: '400px 0px' }
+    )
+    io.observe(parent)
+    return () => io.disconnect()
+  }, [])
 
   useEffect(() => {
     const onOtherUnmuted = (e) => {
@@ -39,19 +55,22 @@ function VideoItem({ src, alt }) {
 
   return (
     <>
-      <video
-        ref={videoRef}
-        src={src}
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="metadata"
-        aria-label={alt}
-        onLoadedData={(e) => e.target.parentElement.classList.add('loaded')}
-        onLoadedMetadata={(e) => e.target.parentElement.classList.add('loaded')}
-        onClick={toggleMute}
-      />
+      <span ref={sentinelRef} style={{ display: 'none' }} aria-hidden="true" />
+      {inView && (
+        <video
+          ref={videoRef}
+          src={src}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          aria-label={alt}
+          onLoadedData={(e) => e.target.parentElement.classList.add('loaded')}
+          onLoadedMetadata={(e) => e.target.parentElement.classList.add('loaded')}
+          onClick={toggleMute}
+        />
+      )}
       <button
         type="button"
         className="video-mute-btn"
@@ -170,6 +189,7 @@ function CasePage({ theme, setTheme, lang, setLang }) {
       if (Math.abs(dx) < 80) return
       if (Math.abs(dy) > Math.abs(dx) * 0.5) return
       const currentIndex = slugs.indexOf(slug)
+      document.querySelectorAll('video').forEach((v) => { try { v.pause() } catch { /* ignore */ } })
       if (dx > 0) {
         if (currentIndex === 0) {
           if (location.key && location.key !== 'default') navigate(-1)
