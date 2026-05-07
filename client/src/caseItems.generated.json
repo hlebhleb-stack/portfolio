@@ -2,6 +2,14 @@
   "colb-finance": [
     {
       "type": "video",
+      "src": "/assets/works/colb-finance/1.mp4"
+    },
+    {
+      "type": "video",
+      "src": "/assets/works/colb-finance/2.mp4"
+    },
+    {
+      "type": "video",
       "src": "/assets/works/colb-finance/3.mp4"
     },
     {
@@ -21,14 +29,6 @@
       "src": "/assets/works/colb-finance/7.mp4"
     },
     {
-      "type": "video",
-      "src": "/assets/works/colb-finance/8.mp4"
-    },
-    {
-      "type": "video",
-      "src": "/assets/works/colb-finance/9.mp4"
-    },
-    {
       "type": "image",
       "src": "/assets/works/colb-finance/1.png"
     },
@@ -38,7 +38,7 @@
     },
     {
       "type": "image",
-      "src": "/assets/works/colb-finance/9.png"
+      "src": "/assets/works/colb-finance/3.png"
     }
   ],
   "re-protocol": [
@@ -86,15 +86,15 @@
     },
     {
       "type": "image",
+      "src": "/assets/works/sova-labs/1.png"
+    },
+    {
+      "type": "image",
       "src": "/assets/works/sova-labs/2.png"
     },
     {
       "type": "image",
-      "src": "/assets/works/sova-labs/4.png"
-    },
-    {
-      "type": "image",
-      "src": "/assets/works/sova-labs/6.png"
+      "src": "/assets/works/sova-labs/3.png"
     }
   ]
 }
