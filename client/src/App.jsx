@@ -43,6 +43,7 @@ function HomePage({ theme, setTheme, lang, setLang }) {
   const [typingDone, setTypingDone] = useState(false)
   const [animatingName, setAnimatingName] = useState(fullName)
   const [hoveredSocial, setHoveredSocial] = useState(null)
+  const [pressedWork, setPressedWork] = useState(null)
 
   useEffect(() => {
     const el = sectionsRef.current
@@ -176,7 +177,11 @@ function HomePage({ theme, setTheme, lang, setLang }) {
               <React.Fragment key={i}>
                 <Link
                   to={`/case/${work.slug}`}
-                  className="work-row"
+                  className={`work-row${pressedWork === i ? ' is-pressed' : ''}`}
+                  onTouchStart={() => {
+                    setPressedWork(i)
+                    setTimeout(() => setPressedWork(null), 250)
+                  }}
                 >
                   <span className="work-company">{work.company}</span>
                   <span className="work-role">{t.workRole}</span>

@@ -1039,6 +1039,10 @@ body {
     background: none;
   }
 
+  .work-row.is-pressed {
+    background: rgba(255, 136, 136, 0.12);
+  }
+
   .work-company {
     font-weight: 400;
   }
