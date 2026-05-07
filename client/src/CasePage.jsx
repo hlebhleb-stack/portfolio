@@ -46,7 +46,7 @@ function VideoItem({ src, alt }) {
         muted
         loop
         playsInline
-        preload="auto"
+        preload="metadata"
         aria-label={alt}
         onLoadedData={(e) => e.target.parentElement.classList.add('loaded')}
         onLoadedMetadata={(e) => e.target.parentElement.classList.add('loaded')}
