@@ -119,8 +119,6 @@ const casesData = Object.fromEntries(
   ])
 )
 
-const slugs = Object.keys(casesData)
-
 function CasePage({ theme, setTheme, lang, setLang }) {
   const { slug } = useParams()
   const navigate = useNavigate()
@@ -197,17 +195,7 @@ function CasePage({ theme, setTheme, lang, setLang }) {
       const dy = e.changedTouches[0].clientY - touchStartY.current
       if (Math.abs(dx) < 80) return
       if (Math.abs(dy) > Math.abs(dx) * 0.5) return
-      const currentIndex = slugs.indexOf(slug)
-      const target = (() => {
-        if (dx > 0) {
-          if (currentIndex === 0) {
-            return (location.key && location.key !== 'default') ? -1 : '/'
-          }
-          return `/case/${slugs[currentIndex - 1]}`
-        }
-        if (currentIndex < slugs.length - 1) return `/case/${slugs[currentIndex + 1]}`
-        return '/'
-      })()
+      const target = (location.key && location.key !== 'default') ? -1 : '/'
       const gallery = document.querySelector('.case-gallery')
       if (gallery) gallery.style.visibility = 'hidden'
       document.querySelectorAll('video').forEach((v) => {
