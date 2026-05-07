@@ -1,3 +1,11 @@
+/* ========== Smooth scroll ========== */
+html {
+  scroll-behavior: smooth;
+}
+body {
+  -webkit-overflow-scrolling: touch;
+}
+
 /* ========== Page Transition ========== */
 .page-transition {
   animation: pageEnter 0.4s ease-out both;
@@ -268,8 +276,10 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-.work-row:hover {
-  background: rgba(255, 136, 136, 0.12);
+@media (hover: hover) and (pointer: fine) {
+  .work-row:hover {
+    background: rgba(255, 136, 136, 0.12);
+  }
 }
 
 .work-company {
@@ -1026,7 +1036,7 @@
   }
 
   .work-row:active {
-    background: rgba(255, 136, 136, 0.12);
+    background: none;
   }
 
   .work-company {
