@@ -45,10 +45,7 @@ function HomePage({ theme, setTheme, lang, setLang }) {
   const [animatingName, setAnimatingName] = useState(fullName)
   const [hoveredSocial, setHoveredSocial] = useState(null)
   const [pressedWork, setPressedWork] = useState(null)
-
-  useEffect(() => {
-    if (location.pathname !== '/') setPressedWork(null)
-  }, [location.pathname])
+  const isPressed = (i) => location.pathname === '/' && pressedWork === i
 
   useEffect(() => {
     const el = sectionsRef.current
@@ -188,7 +185,7 @@ function HomePage({ theme, setTheme, lang, setLang }) {
               <React.Fragment key={i}>
                 <Link
                   to={`/case/${work.slug}`}
-                  className={`work-row${pressedWork === i ? ' is-pressed' : ''}`}
+                  className={`work-row${isPressed(i) ? ' is-pressed' : ''}`}
                   onTouchStart={() => {
                     setPressedWork(i)
                     setTimeout(() => setPressedWork(null), 180)

@@ -8,14 +8,12 @@ function VideoItem({ src, alt }) {
   const videoRef = useRef(null)
   const sentinelRef = useRef(null)
   const [muted, setMuted] = useState(true)
-  const [inView, setInView] = useState(false)
+  const [inView, setInView] = useState(typeof IntersectionObserver === 'undefined')
 
   useEffect(() => {
+    if (typeof IntersectionObserver === 'undefined') return
     const parent = sentinelRef.current?.parentElement
-    if (!parent || typeof IntersectionObserver === 'undefined') {
-      setInView(true)
-      return
-    }
+    if (!parent) return
     const io = new IntersectionObserver(
       ([entry]) => setInView(entry.isIntersecting),
       { rootMargin: '400px 0px' }
