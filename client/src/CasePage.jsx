@@ -8,14 +8,25 @@ function VideoItem({ src, alt }) {
   const videoRef = useRef(null)
   const sentinelRef = useRef(null)
   const [muted, setMuted] = useState(true)
-  const [inView, setInView] = useState(typeof IntersectionObserver === 'undefined')
+  const [hasMounted, setHasMounted] = useState(typeof IntersectionObserver === 'undefined')
 
   useEffect(() => {
     if (typeof IntersectionObserver === 'undefined') return
     const parent = sentinelRef.current?.parentElement
     if (!parent) return
     const io = new IntersectionObserver(
-      ([entry]) => setInView(entry.isIntersecting),
+      ([entry]) => {
+        const v = videoRef.current
+        if (entry.isIntersecting) {
+          setHasMounted(true)
+          if (v && v.paused) {
+            const p = v.play()
+            if (p && typeof p.catch === 'function') p.catch(() => {})
+          }
+        } else if (v) {
+          v.pause()
+        }
+      },
       { rootMargin: '400px 0px' }
     )
     io.observe(parent)
@@ -54,7 +65,7 @@ function VideoItem({ src, alt }) {
   return (
     <>
       <span ref={sentinelRef} style={{ display: 'none' }} aria-hidden="true" />
-      {inView && (
+      {hasMounted && (
         <video
           ref={videoRef}
           src={src}
