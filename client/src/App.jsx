@@ -45,6 +45,7 @@ function HomePage({ theme, setTheme, lang, setLang }) {
   const [hoveredSocial, setHoveredSocial] = useState(null)
 
   useEffect(() => {
+    window.scrollTo(0, 0)
     const el = sectionsRef.current
     if (!el) return
     const saved = sessionStorage.getItem('homeScrollY')

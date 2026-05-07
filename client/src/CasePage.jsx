@@ -172,7 +172,7 @@ function CasePage({ theme, setTheme, lang, setLang }) {
       const currentIndex = slugs.indexOf(slug)
       if (dx > 0) {
         if (currentIndex === 0) {
-          navigate('/')
+          navigate(-1)
         } else {
           navigate(`/case/${slugs[currentIndex - 1]}`)
         }
