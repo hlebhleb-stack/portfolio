@@ -11,12 +11,12 @@ body {
   animation: pageEnter 0.4s ease-out both;
 }
 
-.home-wrap.is-hidden {
-  display: none;
-}
-
 .home-wrap {
   animation: none;
+}
+
+.home-wrap.is-hidden {
+  display: none;
 }
 
 @keyframes pageEnter {

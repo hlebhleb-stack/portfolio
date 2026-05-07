@@ -198,7 +198,13 @@ function CasePage({ theme, setTheme, lang, setLang }) {
       if (Math.abs(dx) < 80) return
       if (Math.abs(dy) > Math.abs(dx) * 0.5) return
       const currentIndex = slugs.indexOf(slug)
-      document.querySelectorAll('video').forEach((v) => { try { v.pause() } catch { /* ignore */ } })
+      document.querySelectorAll('video').forEach((v) => {
+        try {
+          v.pause()
+          v.removeAttribute('src')
+          v.load()
+        } catch { /* ignore */ }
+      })
       if (dx > 0) {
         if (currentIndex === 0) {
           if (location.key && location.key !== 'default') navigate(-1)
