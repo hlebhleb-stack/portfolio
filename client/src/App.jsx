@@ -37,6 +37,7 @@ function trackPage(page, lang) {
 function HomePage({ theme, setTheme, lang, setLang }) {
   const pageRef = useFadeIn()
   const sectionsRef = useRef(null)
+  const location = useLocation()
   const t = translations[lang]
   const fullName = t.fullName
   const [typed, setTyped] = useState('')
@@ -44,6 +45,10 @@ function HomePage({ theme, setTheme, lang, setLang }) {
   const [animatingName, setAnimatingName] = useState(fullName)
   const [hoveredSocial, setHoveredSocial] = useState(null)
   const [pressedWork, setPressedWork] = useState(null)
+
+  useEffect(() => {
+    if (location.pathname !== '/') setPressedWork(null)
+  }, [location.pathname])
 
   useEffect(() => {
     const el = sectionsRef.current
@@ -87,10 +92,16 @@ function HomePage({ theme, setTheme, lang, setLang }) {
     setTypingDone(false)
   }
 
-  const initialLangRef = useRef(lang)
+  const langRef = useRef(lang)
+  useEffect(() => { langRef.current = lang }, [lang])
+  const prevPathRef = useRef(null)
   useEffect(() => {
-    trackPage('/', initialLangRef.current)
-  }, [])
+    const prev = prevPathRef.current
+    prevPathRef.current = location.pathname
+    if (location.pathname === '/' && prev !== '/') {
+      trackPage('/', langRef.current)
+    }
+  }, [location.pathname])
 
   useEffect(() => {
     const startDelay = 250
@@ -180,8 +191,10 @@ function HomePage({ theme, setTheme, lang, setLang }) {
                   className={`work-row${pressedWork === i ? ' is-pressed' : ''}`}
                   onTouchStart={() => {
                     setPressedWork(i)
-                    setTimeout(() => setPressedWork(null), 250)
+                    setTimeout(() => setPressedWork(null), 180)
                   }}
+                  onTouchEnd={() => setPressedWork(null)}
+                  onTouchCancel={() => setPressedWork(null)}
                 >
                   <span className="work-company">{work.company}</span>
                   <span className="work-role">{t.workRole}</span>
@@ -269,15 +282,21 @@ function App() {
     return () => window.removeEventListener('mousemove', onMouseMove)
   }, [])
 
+  const isHome = location.pathname === '/'
+
   return (
     <>
       <div className="custom-cursor" ref={cursorRef} />
-      <div className="page-transition" key={location.pathname}>
-        <Routes>
-          <Route path="/" element={<HomePage theme={theme} setTheme={setTheme} lang={lang} setLang={setLang} />} />
-          <Route path="/case/:slug" element={<CasePage theme={theme} setTheme={setTheme} lang={lang} setLang={setLang} />} />
-        </Routes>
+      <div className={`page-transition home-wrap${isHome ? '' : ' is-hidden'}`}>
+        <HomePage theme={theme} setTheme={setTheme} lang={lang} setLang={setLang} />
       </div>
+      <Routes>
+        <Route path="/case/:slug" element={
+          <div className="page-transition" key={location.pathname}>
+            <CasePage theme={theme} setTheme={setTheme} lang={lang} setLang={setLang} />
+          </div>
+        } />
+      </Routes>
     </>
   )
 }
