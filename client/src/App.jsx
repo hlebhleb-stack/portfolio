@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { Routes, Route, Link, useLocation } from 'react-router-dom'
 import CasePage from './CasePage.jsx'
 import useFadeIn from './useFadeIn.js'
@@ -45,7 +45,6 @@ function HomePage({ theme, setTheme, lang, setLang }) {
   const [hoveredSocial, setHoveredSocial] = useState(null)
 
   useEffect(() => {
-    window.scrollTo(0, 0)
     const el = sectionsRef.current
     if (!el) return
     const saved = sessionStorage.getItem('homeScrollY')
@@ -238,6 +237,13 @@ function App() {
     try { window.localStorage.setItem('lang', l) } catch { /* ignore */ }
   }
   const location = useLocation()
+
+  useLayoutEffect(() => {
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual'
+    }
+    window.scrollTo(0, 0)
+  }, [location.pathname])
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)

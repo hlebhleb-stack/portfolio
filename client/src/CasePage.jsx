@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import useFadeIn from './useFadeIn.js'
 import { translations, LANGS } from './translations.jsx'
 import generatedItems from './caseItems.generated.json'
@@ -96,6 +96,7 @@ const slugs = Object.keys(casesData)
 function CasePage({ theme, setTheme, lang, setLang }) {
   const { slug } = useParams()
   const navigate = useNavigate()
+  const location = useLocation()
   const caseData = casesData[slug]
   const t = translations[lang]
   const caseTranslation = caseData ? t.cases[slug] : null
@@ -115,7 +116,6 @@ function CasePage({ theme, setTheme, lang, setLang }) {
   const langRef = useRef(lang)
   useEffect(() => { langRef.current = lang }, [lang])
   useEffect(() => {
-    window.scrollTo(0, 0)
     let sid = ''
     try {
       sid = sessionStorage.getItem('sid') || ''
@@ -172,7 +172,8 @@ function CasePage({ theme, setTheme, lang, setLang }) {
       const currentIndex = slugs.indexOf(slug)
       if (dx > 0) {
         if (currentIndex === 0) {
-          navigate(-1)
+          if (location.key && location.key !== 'default') navigate(-1)
+          else navigate('/')
         } else {
           navigate(`/case/${slugs[currentIndex - 1]}`)
         }
@@ -194,7 +195,7 @@ function CasePage({ theme, setTheme, lang, setLang }) {
       window.removeEventListener('touchend', onTouchEnd)
       window.removeEventListener('gesturestart', onGestureStart)
     }
-  }, [slug, navigate])
+  }, [slug, navigate, location.key])
 
   if (!caseData) {
     return (
