@@ -1150,7 +1150,9 @@ body {
 }
 
 /* ========== Phone-only single-column gallery (≤ 600px) ========== */
-@media (max-width: 600px) {
+/* Single-column gallery only on narrow portrait phones —
+   landscape mobile keeps the desktop 2-column layout. */
+@media (max-width: 600px) and (orientation: portrait) {
   .case-gallery {
     column-count: 1;
   }
