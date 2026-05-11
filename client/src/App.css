@@ -926,7 +926,7 @@ body {
     column-gap: 0;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 16px;
+    gap: 20px;
     align-items: start;
   }
 
@@ -1157,7 +1157,7 @@ body {
 @media (max-width: 600px) {
   .case-gallery {
     grid-template-columns: 1fr;
-    gap: 14px;
+    gap: 20px;
   }
 }
 
