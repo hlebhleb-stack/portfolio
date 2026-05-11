@@ -922,16 +922,12 @@ body {
 
   .case-gallery {
     margin-top: 60px;
-    column-count: auto;
-    column-gap: 0;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-    align-items: start;
+    column-count: 2;
+    column-gap: 20px;
   }
 
   .case-gallery-item {
-    margin-bottom: 0;
+    margin-bottom: 20px;
   }
 }
 
@@ -1156,8 +1152,7 @@ body {
 /* ========== Phone-only single-column gallery (≤ 600px) ========== */
 @media (max-width: 600px) {
   .case-gallery {
-    grid-template-columns: 1fr;
-    gap: 20px;
+    column-count: 1;
   }
 }
 
