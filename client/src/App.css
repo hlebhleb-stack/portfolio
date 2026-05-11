@@ -922,12 +922,16 @@ body {
 
   .case-gallery {
     margin-top: 60px;
-    column-count: 2;
-    column-gap: 20px;
+    column-count: auto;
+    column-gap: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    align-items: start;
   }
 
   .case-gallery-item {
-    margin-bottom: 20px;
+    margin-bottom: 0;
   }
 }
 
@@ -1151,10 +1155,10 @@ body {
 
 /* ========== Phone-only single-column gallery (≤ 600px) ========== */
 /* Single-column gallery only on narrow portrait phones —
-   landscape mobile keeps the desktop 2-column layout. */
+   landscape mobile keeps the 2-column layout. */
 @media (max-width: 600px) and (orientation: portrait) {
   .case-gallery {
-    column-count: 1;
+    grid-template-columns: 1fr;
   }
 }
 
