@@ -3,5 +3,17 @@ dist/
 .env
 .DS_Store
 *.log
+
+# Claude Code local config and runtime
 .claude/settings.json
 .claude/settings.local.json
+.claude/scheduled_tasks.lock
+
+# Runtime-generated server data (analytics persists in GitHub Gist)
+server/analytics.json
+
+# Local working drafts: drawio source files, asset optimisation scripts,
+# raw social icon SVGs, etc. Kept out of the published site.
+_drafts/
+*.drawio
+*.drawio.bkp
