@@ -314,25 +314,47 @@ function CasePage({ theme, setTheme, lang, setLang }) {
         )
       })()}
 
-      {/* Gallery */}
-      <div className="case-gallery">
-        {caseData.items
-          .filter((item) => filter === 'all' || item.type === filter)
-          .map((item, i) => (
-            <div key={`${filter}-${item.src}`} className="case-gallery-item fade-in-up">
-              {item.type === 'video' ? (
-                <VideoItem src={item.src} alt={`${caseData.company} work ${i + 1}`} />
-              ) : (
-                <img
-                  src={item.src}
-                  alt={`${caseData.company} work ${i + 1}`}
-                  loading="lazy"
-                  onLoad={(e) => e.target.parentElement.classList.add('loaded')}
-                />
-              )}
+      {/* Gallery — two-column masonry: items alternate between
+          columns so the first two are always side-by-side at the top
+          with uniform 20px gaps. CSS `order` preserves source order
+          when the layout collapses to one column on narrow phones. */}
+      {(() => {
+        const visibleItems = caseData.items.filter(
+          (item) => filter === 'all' || item.type === filter
+        )
+        const renderItem = (item, originalIndex) => (
+          <div
+            key={`${filter}-${item.src}`}
+            className="case-gallery-item fade-in-up"
+            style={{ order: originalIndex }}
+          >
+            {item.type === 'video' ? (
+              <VideoItem src={item.src} alt={`${caseData.company} work ${originalIndex + 1}`} />
+            ) : (
+              <img
+                src={item.src}
+                alt={`${caseData.company} work ${originalIndex + 1}`}
+                loading="lazy"
+                onLoad={(e) => e.target.parentElement.classList.add('loaded')}
+              />
+            )}
+          </div>
+        )
+        return (
+          <div className="case-gallery">
+            <div className="case-gallery-col">
+              {visibleItems
+                .filter((_, i) => i % 2 === 0)
+                .map((item, idx) => renderItem(item, idx * 2))}
             </div>
-          ))}
-      </div>
+            <div className="case-gallery-col">
+              {visibleItems
+                .filter((_, i) => i % 2 === 1)
+                .map((item, idx) => renderItem(item, idx * 2 + 1))}
+            </div>
+          </div>
+        )
+      })()}
 
       {/* Footer */}
       <footer className="footer">

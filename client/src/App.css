@@ -620,11 +620,24 @@ body {
   color: var(--text);
 }
 
-/* Case Gallery — Desktop collage */
+/* Case Gallery — true row-major two-column masonry.
+   JSX renders two .case-gallery-col children, each a flex column with
+   alternating items. This guarantees:
+   - the first two items (0 and 1) sit side-by-side at the top
+   - vertical and horizontal gaps are exactly 20px everywhere
+   - columns pack tightly with no empty space below shorter items */
 .case-gallery {
   margin-top: 80px;
-  column-count: 2;
-  column-gap: 20px;
+  display: flex;
+  gap: 20px;
+}
+
+.case-gallery-col {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .case-filter + .case-gallery {
@@ -632,8 +645,6 @@ body {
 }
 
 .case-gallery-item {
-  break-inside: avoid;
-  margin-bottom: 20px;
   overflow: hidden;
   background: var(--divider);
   min-height: 200px;
@@ -922,12 +933,6 @@ body {
 
   .case-gallery {
     margin-top: 60px;
-    column-count: 2;
-    column-gap: 20px;
-  }
-
-  .case-gallery-item {
-    margin-bottom: 20px;
   }
 }
 
@@ -1147,6 +1152,10 @@ body {
   .case-gallery {
     margin-top: 48px;
   }
+
+  /* On narrow phones the sub-columns flatten into a single column —
+     `display: contents` removes the wrapper from layout, and the
+     inline `order` style on each item restores source order. */
 }
 
 /* ========== Phone-only single-column gallery (≤ 600px) ========== */
@@ -1154,7 +1163,10 @@ body {
    landscape mobile keeps the 2-column layout. */
 @media (max-width: 600px) and (orientation: portrait) {
   .case-gallery {
-    column-count: 1;
+    flex-direction: column;
+  }
+  .case-gallery-col {
+    display: contents;
   }
 }
 
