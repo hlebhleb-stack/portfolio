@@ -1148,10 +1148,16 @@ body {
     margin-top: 30px;
   }
 
-  /* Single column on mobile */
+  .case-gallery {
+    margin-top: 48px;
+  }
+}
+
+/* ========== Phone-only single-column gallery (≤ 600px) ========== */
+@media (max-width: 600px) {
   .case-gallery {
     grid-template-columns: 1fr;
-    margin-top: 48px;
+    gap: 14px;
   }
 }
 
