@@ -30,7 +30,7 @@ export const translations = {
     cases: {
       'colb-finance': {
         description:
-          'Full-cycle design for a Swiss fintech project: from high-fidelity web prototyping and technical documentation to brand graphics, motion design, and UI assets for Twitter and Discord.',
+          'Twitter content design for a Swiss fintech project. Built a consistent visual language out of motion graphics, infographics, and announcement assets — translating dense financial mechanics into clear, focused posts.',
         skills: ['UX/UI', 'Web Prototyping', 'Brand Identity', 'Motion Design'],
       },
       'sova-labs': {
@@ -66,7 +66,7 @@ export const translations = {
     cases: {
       'colb-finance': {
         description:
-          'Полный цикл дизайна для швейцарского финтех-проекта: от детализированного веб-прототипирования и технической документации до брендовой графики, моушн-дизайна и UI-материалов для Twitter и Discord.',
+          'Дизайн Twitter-контента для швейцарского финтех-проекта. Сформировал единый визуальный язык из моушн-графики, инфографики и анонсных материалов, переводящий сложные финансовые механики в чёткие и понятные посты.',
         skills: ['UX/UI', 'Веб-прототипирование', 'Айдентика', 'Моушн-дизайн'],
       },
       'sova-labs': {
@@ -102,7 +102,7 @@ export const translations = {
     cases: {
       'colb-finance': {
         description:
-          'Full-Cycle-Design für ein Schweizer Fintech-Projekt: von detailliertem Web-Prototyping und technischer Dokumentation bis hin zu Markengrafik, Motion Design und UI-Assets für Twitter und Discord.',
+          'Twitter-Content-Design für ein Schweizer Fintech-Projekt. Aufbau einer einheitlichen Bildsprache aus Motion Graphics, Infografiken und Ankündigungs-Assets — komplexe Finanzmechaniken werden in klare, fokussierte Posts übersetzt.',
         skills: ['UX/UI', 'Web-Prototyping', 'Markenidentität', 'Motion Design'],
       },
       'sova-labs': {
