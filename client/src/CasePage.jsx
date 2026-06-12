@@ -3,6 +3,7 @@ import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import useFadeIn from './useFadeIn.js'
 import { translations, LANGS } from './translations.jsx'
 import generatedItems from './caseItems.generated.json'
+import columnOverrides from './caseItemsColumns.js'
 
 function VideoItem({ src, alt }) {
   const videoRef = useRef(null)
@@ -314,9 +315,13 @@ function CasePage({ theme, setTheme, lang, setLang }) {
         )
       })()}
 
-      {/* Gallery — two-column masonry: items alternate between
-          columns so the first two are always side-by-side at the top
-          with uniform 20px gaps. CSS `order` preserves source order
+      {/* Gallery — two-column masonry. For each item:
+            – if its src is listed in caseItemsColumns.js, force that
+              column (1 = left, 2 = right);
+            – otherwise place it in whichever column currently has
+              fewer items so far.
+          CSS `order` preserves source order both within each column
+          (where they happen to render in render order anyway) and
           when the layout collapses to one column on narrow phones. */}
       {(() => {
         const visibleItems = caseData.items.filter(
@@ -340,17 +345,24 @@ function CasePage({ theme, setTheme, lang, setLang }) {
             )}
           </div>
         )
+        const col1 = []
+        const col2 = []
+        visibleItems.forEach((item, index) => {
+          const override = columnOverrides[item.src]
+          let targetCol
+          if (override === 1) targetCol = 0
+          else if (override === 2) targetCol = 1
+          else targetCol = col1.length <= col2.length ? 0 : 1
+          if (targetCol === 0) col1.push({ item, index })
+          else col2.push({ item, index })
+        })
         return (
           <div className="case-gallery">
             <div className="case-gallery-col">
-              {visibleItems
-                .filter((_, i) => i % 2 === 0)
-                .map((item, idx) => renderItem(item, idx * 2))}
+              {col1.map(({ item, index }) => renderItem(item, index))}
             </div>
             <div className="case-gallery-col">
-              {visibleItems
-                .filter((_, i) => i % 2 === 1)
-                .map((item, idx) => renderItem(item, idx * 2 + 1))}
+              {col2.map(({ item, index }) => renderItem(item, index))}
             </div>
           </div>
         )
