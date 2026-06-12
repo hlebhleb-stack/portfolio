@@ -4,6 +4,7 @@ import useFadeIn from './useFadeIn.js'
 import { translations, LANGS } from './translations.jsx'
 import generatedItems from './caseItems.generated.json'
 import columnOverrides from './caseItemsColumns.js'
+import videoLinks from './videoLinks.js'
 
 function VideoItem({ src, alt }) {
   const videoRef = useRef(null)
@@ -101,6 +102,21 @@ function VideoItem({ src, alt }) {
           </svg>
         )}
       </button>
+      {videoLinks[src] && (
+        <a
+          href={videoLinks[src]}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="video-link-btn"
+          aria-label="Open related post"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <svg width="18" height="18" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#fff" strokeWidth="10.6667" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M53.332 69.3338C55.6224 72.3958 58.5446 74.9294 61.9003 76.7628C65.256 78.5962 68.9667 79.6864 72.7808 79.9596C76.5949 80.2327 80.4232 79.6824 84.0059 78.346C87.5886 77.0095 90.842 74.9182 93.5454 72.2138L109.545 56.2138C114.403 51.1844 117.091 44.4483 117.03 37.4564C116.969 30.4645 114.165 23.7762 109.221 18.832C104.276 13.8878 97.588 11.0833 90.5961 11.0225C83.6041 10.9617 76.8681 13.6496 71.8387 18.5071L62.6654 27.6271" />
+            <path d="M74.656 58.6627C72.3656 55.6006 69.4434 53.067 66.0877 51.2336C62.732 49.4003 59.0213 48.31 55.2072 48.0369C51.3931 47.7637 47.5649 48.314 43.9822 49.6505C40.3995 50.9869 37.1461 53.0783 34.4427 55.7827L18.4427 71.7827C13.5851 76.8121 10.8973 83.5481 10.958 90.54C11.0188 97.5319 13.8233 104.22 18.7675 109.164C23.7117 114.109 30.4001 116.913 37.392 116.974C44.3839 117.035 51.1199 114.347 56.1493 109.489L65.2693 100.369" />
+          </svg>
+        </a>
+      )}
     </>
   )
 }

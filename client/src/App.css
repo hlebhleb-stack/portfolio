@@ -693,10 +693,10 @@ body {
   opacity: 1;
 }
 
-.video-mute-btn {
+.video-mute-btn,
+.video-link-btn {
   position: absolute;
   bottom: 12px;
-  right: 12px;
   width: 24px;
   height: 24px;
   background: none;
@@ -711,12 +711,18 @@ body {
   transition: opacity 0.2s;
 }
 
+.video-mute-btn { right: 12px; }
+.video-link-btn { left: 12px; }
+
 .case-gallery-item:hover .video-mute-btn,
-.video-mute-btn:focus-visible {
+.video-mute-btn:focus-visible,
+.case-gallery-item:hover .video-link-btn,
+.video-link-btn:focus-visible {
   opacity: 1;
 }
 
-.video-mute-btn svg {
+.video-mute-btn svg,
+.video-link-btn svg {
   display: block;
 }
 
@@ -725,7 +731,8 @@ body {
 }
 
 @media (max-width: 1024px) {
-  .video-mute-btn {
+  .video-mute-btn,
+  .video-link-btn {
     cursor: pointer;
     opacity: 1;
   }
@@ -736,14 +743,18 @@ body {
 }
 
 @media (max-width: 768px) {
-  .video-mute-btn {
+  .video-mute-btn,
+  .video-link-btn {
     width: 22px;
     height: 22px;
     bottom: 8px;
-    right: 8px;
   }
 
-  .video-mute-btn svg {
+  .video-mute-btn { right: 8px; }
+  .video-link-btn { left: 8px; }
+
+  .video-mute-btn svg,
+  .video-link-btn svg {
     width: 16px;
     height: 16px;
   }
