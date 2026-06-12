@@ -113,7 +113,9 @@ jobs:
               const ext = path.extname(file).toLowerCase();
               if (ext === '.png') {
                 const before = fs.statSync(file).size;
-                const buf = await sharp(file).png({ quality: 85, compressionLevel: 9 }).toBuffer();
+                // Lossless DEFLATE only — no quality/palette reduction that
+                // would degrade banner artwork.
+                const buf = await sharp(file).png({ compressionLevel: 9 }).toBuffer();
                 if (buf.length < before) {
                   fs.writeFileSync(file, buf);
                   const saved = ((1 - buf.length / before) * 100).toFixed(1);
