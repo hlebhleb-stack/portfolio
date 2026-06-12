@@ -194,7 +194,7 @@ function HomePage({ theme, setTheme, lang, setLang }) {
                   onTouchCancel={() => setPressedWork(null)}
                 >
                   <span className="work-company">{work.company}</span>
-                  <span className="work-role">{t.workRole}</span>
+                  <span className="work-role">{t.workRoles[work.slug]}</span>
                   <span className="work-period">{t.periods[work.slug]}</span>
                 </Link>
                 <div className="divider" />
