@@ -30,7 +30,7 @@ export const translations = {
     cases: {
       'colb-finance': {
         description:
-          'Twitter content design for a Swiss fintech project. Built a consistent visual language out of motion graphics, infographics, and announcement assets — translating dense financial mechanics into clear, focused posts.',
+          'Twitter content design for a Swiss fintech project. Built a consistent visual language out of motion graphics, infographics, and announcement assets – translating dense financial mechanics into clear, focused posts.',
         skills: ['UX/UI', 'Web Prototyping', 'Brand Identity', 'Motion Design'],
       },
       'sova-labs': {
@@ -102,7 +102,7 @@ export const translations = {
     cases: {
       'colb-finance': {
         description:
-          'Twitter-Content-Design für ein Schweizer Fintech-Projekt. Aufbau einer einheitlichen Bildsprache aus Motion Graphics, Infografiken und Ankündigungs-Assets — komplexe Finanzmechaniken werden in klare, fokussierte Posts übersetzt.',
+          'Twitter-Content-Design für ein Schweizer Fintech-Projekt. Aufbau einer einheitlichen Bildsprache aus Motion Graphics, Infografiken und Ankündigungs-Assets – komplexe Finanzmechaniken werden in klare, fokussierte Posts übersetzt.',
         skills: ['UX/UI', 'Web-Prototyping', 'Markenidentität', 'Motion Design'],
       },
       'sova-labs': {
