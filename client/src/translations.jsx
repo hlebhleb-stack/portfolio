@@ -23,9 +23,9 @@ export const translations = {
     filter: { all: 'All', videos: 'Videos', banners: 'Banners' },
     notFound: 'Case not found',
     periods: {
-      'colb-finance': 'Sep 2025 — Present',
-      'sova-labs': 'Jan 2026 — Present',
-      're-protocol': 'Dec 2025 — Jan 2026',
+      'colb-finance': 'Sep 2025 – Present',
+      'sova-labs': 'Jan 2026 – Present',
+      're-protocol': 'Dec 2025 – Jan 2026',
     },
     cases: {
       'colb-finance': {
@@ -59,9 +59,9 @@ export const translations = {
     filter: { all: 'Все', videos: 'Видео', banners: 'Баннеры' },
     notFound: 'Кейс не найден',
     periods: {
-      'colb-finance': 'Сен 2025 — наст. время',
-      'sova-labs': 'Янв 2026 — наст. время',
-      're-protocol': 'Дек 2025 — Янв 2026',
+      'colb-finance': 'Сен 2025 – наст. время',
+      'sova-labs': 'Янв 2026 – наст. время',
+      're-protocol': 'Дек 2025 – Янв 2026',
     },
     cases: {
       'colb-finance': {
@@ -95,9 +95,9 @@ export const translations = {
     filter: { all: 'Alle', videos: 'Videos', banners: 'Banner' },
     notFound: 'Fall nicht gefunden',
     periods: {
-      'colb-finance': 'Sep 2025 — heute',
-      'sova-labs': 'Jan 2026 — heute',
-      're-protocol': 'Dez 2025 — Jan 2026',
+      'colb-finance': 'Sep 2025 – heute',
+      'sova-labs': 'Jan 2026 – heute',
+      're-protocol': 'Dez 2025 – Jan 2026',
     },
     cases: {
       'colb-finance': {
