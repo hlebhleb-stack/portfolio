@@ -13,6 +13,6 @@
 // continues to work — overrides only apply to paths you list here.
 
 export default {
-  // pin specific media to a column:
-  '/assets/works/colb-finance/3.png': 2,
+  // pin specific media to a column by adding entries like:
+  //   '/assets/works/colb-finance/2.mp4': 2,
 }
