@@ -128,69 +128,16 @@ function CasePage({ theme, setTheme, lang, setLang }) {
   const caseTranslation = caseData ? t.cases[slug] : null
   const [filter, setFilter] = useState('all')
   const pageRef = useFadeIn([slug, filter])
-  // Runtime column balancing: after media loads, measure heights and pack
-  // each item into whichever column is currently shorter (greedy masonry).
-  // Map: item.src → 0 (col1) or 1 (col2). When null, fall back to index parity.
-  const [columnAssignment, setColumnAssignment] = useState(null)
-  const galleryRef = useRef(null)
   const [lastSlug, setLastSlug] = useState(slug)
   if (slug !== lastSlug) {
     setLastSlug(slug)
     setFilter('all')
-    setColumnAssignment(null)
-  }
-  const [lastFilter, setLastFilter] = useState(filter)
-  if (filter !== lastFilter) {
-    setLastFilter(filter)
-    setColumnAssignment(null)
   }
   const touchStartX = useRef(0)
   const touchStartY = useRef(0)
   const touchStartTime = useRef(0)
   const touchStartScale = useRef(1)
   const touchCancelled = useRef(false)
-  useEffect(() => {
-    if (columnAssignment !== null) return
-    if (!galleryRef.current) return
-    let cancelled = false
-    const rebalance = () => {
-      if (cancelled) return
-      const node = galleryRef.current
-      if (!node) return
-      const items = node.querySelectorAll('.case-gallery-item')
-      if (items.length === 0) return
-      // Bail if any media still has zero height (not loaded yet)
-      const measurements = []
-      for (const el of items) {
-        const h = el.getBoundingClientRect().height
-        const media = el.querySelector('img, video')
-        const src = media?.getAttribute('src')
-        if (!src) continue
-        if (h < 20) return // not loaded yet, retry later
-        measurements.push({ src, h })
-      }
-      // Greedy: each item goes to currently shorter column
-      const assignment = {}
-      let h1 = 0
-      let h2 = 0
-      for (const { src, h } of measurements) {
-        if (h1 <= h2) {
-          assignment[src] = 0
-          h1 += h + 20
-        } else {
-          assignment[src] = 1
-          h2 += h + 20
-        }
-      }
-      setColumnAssignment(assignment)
-    }
-    // Retry a few times to wait for video metadata
-    const timers = [500, 1200, 2500, 4500].map((d) => setTimeout(rebalance, d))
-    return () => {
-      cancelled = true
-      timers.forEach(clearTimeout)
-    }
-  }, [slug, filter, columnAssignment])
 
   const langRef = useRef(lang)
   useEffect(() => { langRef.current = lang }, [lang])
@@ -367,11 +314,10 @@ function CasePage({ theme, setTheme, lang, setLang }) {
         )
       })()}
 
-      {/* Gallery — two-column greedy masonry. On first render we use
-          index parity (item N → col N%2) so the layout shows up
-          immediately. After media loads, the rebalance effect above
-          measures actual heights and re-packs each item into the
-          currently shorter column, mimicking a Lego/constructor fit. */}
+      {/* Gallery — two-column masonry: items alternate between
+          columns so the first two are always side-by-side at the top
+          with uniform 20px gaps. CSS `order` preserves source order
+          when the layout collapses to one column on narrow phones. */}
       {(() => {
         const visibleItems = caseData.items.filter(
           (item) => filter === 'all' || item.type === filter
@@ -394,25 +340,17 @@ function CasePage({ theme, setTheme, lang, setLang }) {
             )}
           </div>
         )
-        const columnOf = (item, index) => {
-          if (columnAssignment && columnAssignment[item.src] !== undefined) {
-            return columnAssignment[item.src]
-          }
-          return index % 2
-        }
-        const col1 = []
-        const col2 = []
-        visibleItems.forEach((item, index) => {
-          if (columnOf(item, index) === 0) col1.push({ item, index })
-          else col2.push({ item, index })
-        })
         return (
-          <div className="case-gallery" ref={galleryRef}>
+          <div className="case-gallery">
             <div className="case-gallery-col">
-              {col1.map(({ item, index }) => renderItem(item, index))}
+              {visibleItems
+                .filter((_, i) => i % 2 === 0)
+                .map((item, idx) => renderItem(item, idx * 2))}
             </div>
             <div className="case-gallery-col">
-              {col2.map(({ item, index }) => renderItem(item, index))}
+              {visibleItems
+                .filter((_, i) => i % 2 === 1)
+                .map((item, idx) => renderItem(item, idx * 2 + 1))}
             </div>
           </div>
         )
