@@ -14,5 +14,5 @@
 
 export default {
   // pin specific media to a column:
-  '/assets/works/colb-finance/2.png': 2,
+  '/assets/works/colb-finance/3.png': 2,
 }
