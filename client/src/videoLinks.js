@@ -8,6 +8,7 @@
 // and add an entry below.
 
 export default {
-  '/assets/works/colb-finance/1.mp4': 'https://x.com/BNBCHAIN/status/2065429957204213949',
-  '/assets/works/colb-finance/2.mp4': 'https://x.com/ColbFinance/status/2051318953100681462',
+  '/assets/works/colb-finance/1.mp4': 'https://x.com/PancakeSwap/status/2065442212935348678',
+  '/assets/works/colb-finance/2.mp4': 'https://x.com/BNBCHAIN/status/2065429957204213949',
+  '/assets/works/colb-finance/3.mp4': 'https://x.com/ColbFinance/status/2051318953100681462',
 }
