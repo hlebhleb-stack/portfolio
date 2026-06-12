@@ -24,7 +24,7 @@ export const translations = {
     notFound: 'Case not found',
     periods: {
       'colb-finance': 'Sep 2025 – Present',
-      'sova-labs': 'Jan 2026 – Present',
+      'sova-labs': 'Jan 2026 – May 2026',
       're-protocol': 'Dec 2025 – Jan 2026',
     },
     cases: {
@@ -60,7 +60,7 @@ export const translations = {
     notFound: 'Кейс не найден',
     periods: {
       'colb-finance': 'Сен 2025 – наст. время',
-      'sova-labs': 'Янв 2026 – наст. время',
+      'sova-labs': 'Янв 2026 – Май 2026',
       're-protocol': 'Дек 2025 – Янв 2026',
     },
     cases: {
@@ -96,7 +96,7 @@ export const translations = {
     notFound: 'Fall nicht gefunden',
     periods: {
       'colb-finance': 'Sep 2025 – heute',
-      'sova-labs': 'Jan 2026 – heute',
+      'sova-labs': 'Jan 2026 – Mai 2026',
       're-protocol': 'Dez 2025 – Jan 2026',
     },
     cases: {
