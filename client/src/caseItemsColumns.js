@@ -13,18 +13,6 @@
 // continues to work — overrides only apply to paths you list here.
 
 export default {
-  // pin specific media to a column by uncommenting / editing below:
-  //
-  // '/assets/works/colb-finance/1.mp4': 1,
-  // '/assets/works/colb-finance/2.mp4': 2,
-  // '/assets/works/colb-finance/3.mp4': 1,
-  // '/assets/works/colb-finance/4.mp4': 2,
-  // '/assets/works/colb-finance/5.mp4': 1,
-  // '/assets/works/colb-finance/6.mp4': 2,
-  // '/assets/works/colb-finance/7.mp4': 1,
-  // '/assets/works/colb-finance/8.mp4': 2,
-  // '/assets/works/colb-finance/9.mp4': 1,
-  // '/assets/works/colb-finance/1.png': 2,
-  // '/assets/works/colb-finance/2.png': 1,
-  // '/assets/works/colb-finance/3.png': 2,
+  // pin specific media to a column:
+  '/assets/works/colb-finance/3.png': 2,
 }
