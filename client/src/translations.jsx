@@ -92,50 +92,9 @@ export const translations = {
       },
     },
   },
-  de: {
-    fullName: 'Gleb Dihtievsky',
-    heroRole: 'Visueller Designer',
-    experience: 'Erfahrung',
-    workRoles: {
-      'colb-finance': 'Vollzeit',
-      'sova-labs': 'Freelance',
-      're-protocol': 'Freelance',
-    },
-    cv: 'Lebenslauf',
-    theme: { light: 'Hell', dark: 'Dunkel' },
-    copy: '© 2026 Gleb Dihtievsky. Alle Rechte vorbehalten.',
-    filter: { all: 'Alle', videos: 'Videos', banners: 'Banner' },
-    notFound: 'Fall nicht gefunden',
-    periods: {
-      'colb-finance': 'Sep 2025 – heute',
-      'sova-labs': 'Jan 2026 – Mai 2026',
-      're-protocol': 'Dez 2025 – Jan 2026',
-    },
-    cases: {
-      'colb-finance': {
-        description:
-          'Twitter-Content-Design für ein Schweizer Fintech-Projekt. Aufbau einer einheitlichen Bildsprache aus Motion Graphics, Infografiken und Ankündigungs-Assets – komplexe Finanzmechaniken werden in klare, fokussierte Posts übersetzt.',
-        skills: ['UX/UI', 'Web-Prototyping', 'Markenidentität', 'Motion Design'],
-      },
-      'sova-labs': {
-        description:
-          'Leitete die gesamte Creative Direction, inklusive 2D-Motion-Design und wirkungsstarker Marketinggrafik. Entwickelte ein umfassendes System wiederverwendbarer Design-Vorlagen, um die Content-Produktion zu beschleunigen und die Markenkonsistenz langfristig zu sichern.',
-        skills: ['Creative Direction', '2D Motion Design', 'Design System', 'Marketing Design'],
-      },
-      're-protocol': {
-        description: (
-          <>
-            Gemeinsam mit einem {threeDLink('3D-Designer')} entstanden hochwertige Erklär- und Promo-Animationen für den offiziellen X-Account. Verantwortete den gesamten Videoproduktionsprozess, um Markenpräsenz und Community-Engagement zu stärken.
-          </>
-        ),
-        skills: ['Creative Direction', 'Motion Design', '3D-Animation', 'Videoproduktion'],
-      },
-    },
-  },
 }
 
 export const LANGS = [
   { code: 'en', label: 'En' },
   { code: 'ru', label: 'Ru' },
-  { code: 'de', label: 'De' },
 ]
