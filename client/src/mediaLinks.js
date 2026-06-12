@@ -8,8 +8,18 @@
 // and add an entry below.
 
 export default {
+  // Colb videos
   '/assets/works/colb-finance/1.mp4': 'https://x.com/PancakeSwap/status/2065442212935348678',
   '/assets/works/colb-finance/2.mp4': 'https://x.com/BNBCHAIN/status/2065429957204213949',
   '/assets/works/colb-finance/3.mp4': 'https://x.com/ColbFinance/status/2051318953100681462',
+  // Colb banners
+  '/assets/works/colb-finance/1.png': 'https://x.com/ColbFinance/status/2045218223402942811',
   '/assets/works/colb-finance/2.png': 'https://x.com/ColbFinance/status/2065479950258274592',
+  '/assets/works/colb-finance/4.png': 'https://x.com/ColbFinance/status/1983667380682129423',
+  // Sova videos
+  '/assets/works/sova-labs/1.mp4': 'https://x.com/SovaBTC/status/2039991458673868927',
+  '/assets/works/sova-labs/2.mp4': 'https://x.com/SovaBTC/status/2034232203912106160',
+  '/assets/works/sova-labs/3.mp4': 'https://x.com/SovaBTC/status/2023785753625731173',
+  '/assets/works/sova-labs/4.mp4': 'https://x.com/SovaBTC/status/2018701033044615350',
+  '/assets/works/sova-labs/5.mp4': 'https://x.com/SovaBTC/status/2016492914134712593',
 }
