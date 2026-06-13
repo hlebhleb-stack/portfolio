@@ -14,7 +14,7 @@ const threeDLink = (label) => (
 export const translations = {
   en: {
     fullName: 'Gleb Dihtievsky',
-    heroRole: 'Visual Designer',
+    heroRole: 'Graphic Designer',
     experience: 'Experience',
     workRoles: {
       'colb-finance': 'Full Time',
@@ -54,7 +54,7 @@ export const translations = {
   },
   ru: {
     fullName: 'Глеб Дихтиевский',
-    heroRole: 'Визуальный дизайнер',
+    heroRole: 'Графический дизайнер',
     experience: 'Опыт работы',
     workRoles: {
       'colb-finance': 'Фуллтайм',

@@ -714,6 +714,15 @@ body {
 .video-mute-btn { right: 12px; }
 .video-link-btn { left: 12px; }
 
+/* Larger hit target for the link icon — same visible glyph position,
+   bigger transparent click area (about 1.5x in area). */
+.video-link-btn {
+  width: 30px;
+  height: 30px;
+  bottom: 9px;
+  left: 9px;
+}
+
 .case-gallery-item:hover .video-mute-btn,
 .video-mute-btn:focus-visible,
 .case-gallery-item:hover .video-link-btn,
@@ -752,6 +761,14 @@ body {
 
   .video-mute-btn { right: 8px; }
   .video-link-btn { left: 8px; }
+
+  /* Larger hit target for the link icon on mobile too. */
+  .video-link-btn {
+    width: 28px;
+    height: 28px;
+    bottom: 5px;
+    left: 5px;
+  }
 
   .video-mute-btn svg,
   .video-link-btn svg {
