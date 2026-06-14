@@ -29,7 +29,7 @@ function VideoItem({ src, alt }) {
           v.pause()
         }
       },
-      { rootMargin: '400px 0px' }
+      { rootMargin: '1500px 0px' }
     )
     io.observe(parent)
     return () => io.disconnect()
@@ -75,7 +75,7 @@ function VideoItem({ src, alt }) {
           muted
           loop
           playsInline
-          preload="metadata"
+          preload="auto"
           aria-label={alt}
           onLoadedData={(e) => e.target.parentElement.classList.add('loaded')}
           onLoadedMetadata={(e) => e.target.parentElement.classList.add('loaded')}
@@ -360,7 +360,8 @@ function CasePage({ theme, setTheme, lang, setLang }) {
                 <img
                   src={item.src}
                   alt={`${caseData.company} work ${originalIndex + 1}`}
-                  loading="lazy"
+                  decoding="async"
+                  fetchpriority="high"
                   onLoad={(e) => e.target.parentElement.classList.add('loaded')}
                 />
               )}
