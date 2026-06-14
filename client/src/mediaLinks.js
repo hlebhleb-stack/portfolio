@@ -16,6 +16,7 @@ export default {
   '/assets/works/colb-finance/1.png': 'https://x.com/ColbFinance/status/2065817009552581096',
   '/assets/works/colb-finance/2.png': 'https://x.com/ColbFinance/status/2045218223402942811',
   '/assets/works/colb-finance/3.png': 'https://x.com/ColbFinance/status/2065479950258274592',
+  '/assets/works/colb-finance/4.png': 'https://x.com/ColbFinance/status/2027135844218519704',
   '/assets/works/colb-finance/5.png': 'https://x.com/ColbFinance/status/1983667380682129423',
   // Sova videos
   '/assets/works/sova-labs/1.mp4': 'https://x.com/SovaBTC/status/2039991458673868927',
