@@ -351,7 +351,7 @@ function CasePage({ theme, setTheme, lang, setLang }) {
           return (
             <div
               key={`${filter}-${item.src}`}
-              className="case-gallery-item fade-in-up"
+              className="case-gallery-item"
               style={{ order: originalIndex }}
             >
               {item.type === 'video' ? (
