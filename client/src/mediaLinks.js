@@ -21,6 +21,11 @@ export default {
   '/assets/works/colb-finance/3.png': 'https://x.com/ColbFinance/status/2065479950258274592',
   '/assets/works/colb-finance/4.png': 'https://x.com/ColbFinance/status/2027135844218519704',
   '/assets/works/colb-finance/5.png': 'https://x.com/ColbFinance/status/1983667380682129423',
+  // Re Protocol videos
+  '/assets/works/re-protocol/1.mp4': 'https://x.com/re/status/2008217198981247302',
+  '/assets/works/re-protocol/2.mp4': 'https://x.com/re/status/2005670932086743474',
+  '/assets/works/re-protocol/3.mp4': 'https://x.com/re/status/2000597049616789574',
+  '/assets/works/re-protocol/4.mp4': 'https://x.com/re/status/1998786761422782932',
   // Sova videos
   '/assets/works/sova-labs/1.mp4': 'https://x.com/SovaBTC/status/2039991458673868927',
   '/assets/works/sova-labs/2.mp4': 'https://x.com/SovaBTC/status/2034232203912106160',
