@@ -32,4 +32,8 @@ export default {
   '/assets/works/sova-labs/3.mp4': 'https://x.com/SovaBTC/status/2023785753625731173',
   '/assets/works/sova-labs/4.mp4': 'https://x.com/SovaBTC/status/2018701033044615350',
   '/assets/works/sova-labs/5.mp4': 'https://x.com/SovaBTC/status/2016492914134712593',
+  // Sova banners
+  '/assets/works/sova-labs/1.png': 'https://x.com/SovaBTC/status/2034676518287265806',
+  '/assets/works/sova-labs/2.png': 'https://x.com/SovaBTC/status/2021951770373894658',
+  '/assets/works/sova-labs/3.png': 'https://x.com/SovaBTC/status/2021237765225025905',
 }
