@@ -17,7 +17,7 @@ export default {
   '/assets/works/colb-finance/6.mp4': 'https://x.com/ColbFinance/status/2021565060641137113',
   '/assets/works/colb-finance/7.mp4': 'https://x.com/plumenetwork/status/1996242365510500667',
   '/assets/works/colb-finance/8.mp4': 'https://x.com/ColbFinance/status/1970173484304155118',
-  '/assets/works/colb-finance/9.mp4': 'https://x.com/ColbFinance/status/2045570037553996251',
+  '/assets/works/colb-finance/9.mp4': 'https://x.com/ColbFinance/status/2057477929693581500',
   '/assets/works/colb-finance/10.mp4': 'https://x.com/ColbFinance/status/2026335121935090050',
   // Colb banners
   '/assets/works/colb-finance/1.png': 'https://x.com/ColbFinance/status/2065817009552581096',
