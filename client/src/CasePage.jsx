@@ -191,8 +191,18 @@ function CasePage({ theme, setTheme, lang, setLang }) {
         touchCancelled.current = true
         return
       }
+      // Ignore touches that start within ~30px of either side of
+      // the screen — those belong to Safari's native edge-swipe-back
+      // gesture. Letting our handler fire on the same gesture used to
+      // pop one extra history entry, sending the user back to whatever
+      // site they had open before the portfolio.
+      const x = e.touches[0].clientX
+      if (x < 30 || x > window.innerWidth - 30) {
+        touchCancelled.current = true
+        return
+      }
       touchCancelled.current = false
-      touchStartX.current = e.touches[0].clientX
+      touchStartX.current = x
       touchStartY.current = e.touches[0].clientY
       touchStartTime.current = Date.now()
       touchStartScale.current = getScale()
@@ -361,7 +371,7 @@ function CasePage({ theme, setTheme, lang, setLang }) {
                   src={item.src}
                   alt={`${caseData.company} work ${originalIndex + 1}`}
                   decoding="async"
-                  fetchpriority="high"
+                  fetchPriority="high"
                   onLoad={(e) => e.target.parentElement.classList.add('loaded')}
                 />
               )}
