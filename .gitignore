@@ -12,8 +12,6 @@ dist/
 # Runtime-generated server data (analytics persists in GitHub Gist)
 server/analytics.json
 
-# Local working drafts: drawio source files, asset optimisation scripts,
-# raw social icon SVGs, etc. Kept out of the published site.
-_drafts/
+# Local drawio drafts (if you generate any later, they stay out of the repo)
 *.drawio
 *.drawio.bkp
