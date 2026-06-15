@@ -6,13 +6,19 @@ import generatedItems from './caseItems.generated.json'
 import columnOverrides from './caseItemsColumns.js'
 import mediaLinks from './mediaLinks.js'
 
-function VideoItem({ src, alt }) {
+function VideoItem({ src, alt, priority = false }) {
   const videoRef = useRef(null)
   const sentinelRef = useRef(null)
   const [muted, setMuted] = useState(true)
-  const [hasMounted, setHasMounted] = useState(typeof IntersectionObserver === 'undefined')
+  // Priority videos mount immediately so they start downloading on the
+  // first paint instead of waiting for the IntersectionObserver tick.
+  const [hasMounted, setHasMounted] = useState(priority || typeof IntersectionObserver === 'undefined')
 
   useEffect(() => {
+    // Priority videos opt out of the observer — they are always mounted
+    // and the browser handles pause/play via the autoplay/visibility
+    // policy on its own.
+    if (priority) return
     if (typeof IntersectionObserver === 'undefined') return
     const parent = sentinelRef.current?.parentElement
     if (!parent) return
@@ -33,7 +39,7 @@ function VideoItem({ src, alt }) {
     )
     io.observe(parent)
     return () => io.disconnect()
-  }, [])
+  }, [priority])
 
   useEffect(() => {
     const onOtherUnmuted = (e) => {
@@ -75,7 +81,7 @@ function VideoItem({ src, alt }) {
           muted
           loop
           playsInline
-          preload="metadata"
+          preload={priority ? "auto" : "metadata"}
           aria-label={alt}
           onLoadedData={(e) => e.target.parentElement.classList.add('loaded')}
           onLoadedMetadata={(e) => e.target.parentElement.classList.add('loaded')}
@@ -365,7 +371,11 @@ function CasePage({ theme, setTheme, lang, setLang }) {
               style={{ order: originalIndex }}
             >
               {item.type === 'video' ? (
-                <VideoItem src={item.src} alt={`${caseData.company} work ${originalIndex + 1}`} />
+                <VideoItem
+                  src={item.src}
+                  alt={`${caseData.company} work ${originalIndex + 1}`}
+                  priority={originalIndex < 2}
+                />
               ) : (
                 <img
                   src={item.src}
