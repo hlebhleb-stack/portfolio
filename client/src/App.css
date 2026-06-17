@@ -715,68 +715,6 @@ body {
   cursor: none;
 }
 
-/* Scrub bar at the bottom of each video — Vimeo-style thin line with
-   a circular thumb at the current playback position. Hidden by default
-   on desktop, fades in on hover. Always visible on mobile. */
-.video-scrub {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 14px;
-  z-index: 1;
-  opacity: 0;
-  transition: opacity 0.2s;
-  touch-action: none;
-  cursor: none;
-}
-
-.case-gallery-item:hover .video-scrub {
-  opacity: 1;
-}
-
-.video-scrub-track {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 3px;
-  background: rgba(255, 255, 255, 0.35);
-  pointer-events: none;
-}
-
-.video-scrub-fill {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  height: 3px;
-  background: #fff;
-  pointer-events: none;
-}
-
-.video-scrub-thumb {
-  position: absolute;
-  bottom: 0;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: #fff;
-  transform: translateX(-50%);
-  pointer-events: none;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
-}
-
-@media (max-width: 1024px) {
-  .video-scrub {
-    opacity: 1;
-    cursor: pointer;
-  }
-  .video-scrub-thumb {
-    width: 12px;
-    height: 12px;
-  }
-}
-
 @media (max-width: 1024px) {
   .video-mute-btn,
   .video-link-btn {

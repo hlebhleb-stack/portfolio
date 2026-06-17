@@ -9,16 +9,10 @@ import mediaLinks from './mediaLinks.js'
 function VideoItem({ src, alt, priority = false }) {
   const videoRef = useRef(null)
   const sentinelRef = useRef(null)
-  const scrubRef = useRef(null)
   const [muted, setMuted] = useState(true)
   // Priority videos mount immediately so they start downloading on the
   // first paint instead of waiting for the IntersectionObserver tick.
   const [hasMounted, setHasMounted] = useState(priority || typeof IntersectionObserver === 'undefined')
-  // Playback progress, 0..1. Driven by the video's timeupdate event,
-  // overridden temporarily while the user is dragging the scrub thumb.
-  const [progress, setProgress] = useState(0)
-  const draggingRef = useRef(false)
-  const wasPlayingRef = useRef(false)
 
   useEffect(() => {
     // Priority videos opt out of the observer — they are always mounted
@@ -76,64 +70,6 @@ function VideoItem({ src, alt, priority = false }) {
     if (p && typeof p.catch === 'function') p.catch(() => {})
   }
 
-  // Keep the scrub bar in sync with the video's current time. Pauses
-  // updates while the user is dragging the thumb so the visual doesn't
-  // fight the user's input.
-  useEffect(() => {
-    const v = videoRef.current
-    if (!v) return
-    const onTime = () => {
-      if (draggingRef.current) return
-      if (v.duration && isFinite(v.duration) && v.duration > 0) {
-        setProgress(v.currentTime / v.duration)
-      }
-    }
-    v.addEventListener('timeupdate', onTime)
-    return () => v.removeEventListener('timeupdate', onTime)
-  }, [hasMounted])
-
-  const seekFromClientX = (clientX) => {
-    const bar = scrubRef.current
-    const v = videoRef.current
-    if (!bar || !v || !v.duration || !isFinite(v.duration)) return
-    const rect = bar.getBoundingClientRect()
-    if (rect.width <= 0) return
-    const x = Math.max(0, Math.min(clientX - rect.left, rect.width))
-    const ratio = x / rect.width
-    setProgress(ratio)
-    v.currentTime = ratio * v.duration
-  }
-
-  const onScrubPointerDown = (e) => {
-    e.stopPropagation()
-    e.preventDefault()
-    const v = videoRef.current
-    if (!v) return
-    draggingRef.current = true
-    wasPlayingRef.current = !v.paused
-    v.pause()
-    try { e.currentTarget.setPointerCapture(e.pointerId) } catch { /* ignore */ }
-    seekFromClientX(e.clientX)
-  }
-
-  const onScrubPointerMove = (e) => {
-    if (!draggingRef.current) return
-    e.stopPropagation()
-    seekFromClientX(e.clientX)
-  }
-
-  const endScrub = (e) => {
-    if (!draggingRef.current) return
-    e.stopPropagation()
-    draggingRef.current = false
-    const v = videoRef.current
-    if (v && wasPlayingRef.current) {
-      const p = v.play()
-      if (p && typeof p.catch === 'function') p.catch(() => {})
-    }
-    try { e.currentTarget.releasePointerCapture(e.pointerId) } catch { /* ignore */ }
-  }
-
   return (
     <>
       <span ref={sentinelRef} style={{ display: 'none' }} aria-hidden="true" />
@@ -172,20 +108,6 @@ function VideoItem({ src, alt, priority = false }) {
           </svg>
         )}
       </button>
-      {hasMounted && (
-        <div
-          ref={scrubRef}
-          className="video-scrub"
-          onPointerDown={onScrubPointerDown}
-          onPointerMove={onScrubPointerMove}
-          onPointerUp={endScrub}
-          onPointerCancel={endScrub}
-        >
-          <div className="video-scrub-track" />
-          <div className="video-scrub-fill" style={{ width: `${progress * 100}%` }} />
-          <div className="video-scrub-thumb" style={{ left: `${progress * 100}%` }} />
-        </div>
-      )}
     </>
   )
 }
