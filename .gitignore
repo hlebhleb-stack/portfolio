@@ -15,3 +15,5 @@ server/analytics.json
 # Local drawio drafts (if you generate any later, they stay out of the repo)
 *.drawio
 *.drawio.bkp
+.vercel
+.env*
