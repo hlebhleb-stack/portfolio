@@ -15,4 +15,14 @@
 export default {
   // pin specific media to a column by adding entries like:
   //   '/assets/works/colb-finance/2.mp4': 2,
+
+  // Banners have very mixed aspect ratios (1.png is a tall portrait
+  // crop, the rest are wide/square), so plain count-based balancing
+  // left one column much taller than the other. Pin them manually
+  // to balance total column height instead.
+  '/assets/works/colb-finance/1.png': 1,
+  '/assets/works/colb-finance/2.png': 1,
+  '/assets/works/colb-finance/3.png': 2,
+  '/assets/works/colb-finance/4.png': 2,
+  '/assets/works/colb-finance/5.png': 2,
 }
