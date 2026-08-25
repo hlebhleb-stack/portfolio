@@ -24,7 +24,7 @@
 }
 
 [data-theme="dark"] {
-  --bg: #111111;
+  --bg: #000000;
   --text: #ffffff;
   --text-muted: rgba(255, 255, 255, 0.5);
   --divider: rgba(255, 255, 255, 0.2);
@@ -67,7 +67,7 @@ body {
 }
 
 ::selection {
-  background: #FF8888;
+  background: #FF0000;
   color: #fff;
 }
 

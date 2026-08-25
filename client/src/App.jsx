@@ -34,15 +34,15 @@ function trackPage(page, lang) {
   }).catch(() => {})
 }
 
+const HERO_TEXT = 'Designing for brands that move fast. Motion, graphics, and everything in between.'
+
 function HomePage({ theme, setTheme, lang, setLang }) {
   const pageRef = useFadeIn()
   const sectionsRef = useRef(null)
   const location = useLocation()
   const t = translations[lang]
-  const fullName = t.fullName
   const [typed, setTyped] = useState('')
-  const [typingDone, setTypingDone] = useState(false)
-  const [animatingName, setAnimatingName] = useState(fullName)
+  const [caretPhase, setCaretPhase] = useState('typing')
   const [hoveredSocial, setHoveredSocial] = useState(null)
   const [pressedWork, setPressedWork] = useState(null)
   const isPressed = (i) => location.pathname === '/' && pressedWork === i
@@ -83,12 +83,6 @@ function HomePage({ theme, setTheme, lang, setLang }) {
     }
   }, [])
 
-  if (animatingName !== fullName) {
-    setAnimatingName(fullName)
-    setTyped('')
-    setTypingDone(false)
-  }
-
   const langRef = useRef(lang)
   useEffect(() => { langRef.current = lang }, [lang])
   const prevPathRef = useRef(null)
@@ -102,20 +96,21 @@ function HomePage({ theme, setTheme, lang, setLang }) {
 
   useEffect(() => {
     const startDelay = 250
-    const charInterval = 55
+    const charInterval = 35
     let i = 0
     const start = setTimeout(() => {
       const id = setInterval(() => {
         i += 1
-        setTyped(animatingName.slice(0, i))
-        if (i >= animatingName.length) {
+        setTyped(HERO_TEXT.slice(0, i))
+        if (i >= HERO_TEXT.length) {
           clearInterval(id)
-          setTimeout(() => setTypingDone(true), 700)
+          setCaretPhase('blinking')
+          setTimeout(() => setCaretPhase('hidden'), 1500)
         }
       }, charInterval)
     }, startDelay)
     return () => clearTimeout(start)
-  }, [animatingName])
+  }, [])
 
   const works = [
     { company: 'Colb.finance', slug: 'colb-finance' },
@@ -159,46 +154,39 @@ function HomePage({ theme, setTheme, lang, setLang }) {
 
       {/* Snap-scroll sections */}
       <main className="home-sections" ref={sectionsRef}>
-        {/* Section 1 — photo + hero */}
+        {/* Section 1 — hero */}
         <section className="home-section home-section-photo">
-          <div className="photo-portrait">
-            <div className="photo-wrapper">
-              <img src="/assets/photo-portrait.jpg" alt="Gleb Dihtievsky" className="photo-img" />
-              <div className="photo-overlay" />
-            </div>
-          </div>
           <div className="hero">
-            <h1 className="hero-name">
-              <span className="hero-name-text">{typed}</span>
-              {!typingDone && <span className="hero-caret" aria-hidden="true" />}
-              {typingDone && <span className="hero-dot">.</span>}
+            <h1 className="hero-title">
+              <span className="hero-highlight">{typed}</span>
+              {caretPhase !== 'hidden' && (
+                <span
+                  className={`hero-caret${caretPhase === 'blinking' ? ' is-blinking' : ''}`}
+                  aria-hidden="true"
+                />
+              )}
             </h1>
-            <p className="hero-role">{t.heroRole}</p>
           </div>
         </section>
 
-        {/* Section 2 — works (no title) */}
+        {/* Section 2 — works (folder icons) */}
         <section className="home-section home-section-works" id="works">
-          <div className="works">
-            <div className="divider" />
+          <div className="works-folders">
             {works.map((work, i) => (
-              <React.Fragment key={i}>
-                <Link
-                  to={`/case/${work.slug}`}
-                  className={`work-row${isPressed(i) ? ' is-pressed' : ''}`}
-                  onTouchStart={() => {
-                    setPressedWork(i)
-                    setTimeout(() => setPressedWork(null), 180)
-                  }}
-                  onTouchEnd={() => setPressedWork(null)}
-                  onTouchCancel={() => setPressedWork(null)}
-                >
-                  <span className="work-company">{work.company}</span>
-                  <span className="work-role">{t.workRoles[work.slug]}</span>
-                  <span className="work-period">{t.periods[work.slug]}</span>
-                </Link>
-                <div className="divider" />
-              </React.Fragment>
+              <Link
+                key={i}
+                to={`/case/${work.slug}`}
+                className={`work-folder${isPressed(i) ? ' is-pressed' : ''}`}
+                onTouchStart={() => {
+                  setPressedWork(i)
+                  setTimeout(() => setPressedWork(null), 180)
+                }}
+                onTouchEnd={() => setPressedWork(null)}
+                onTouchCancel={() => setPressedWork(null)}
+              >
+                <img src="/assets/folder-ios.png" alt="" className="work-folder-icon" draggable="false" />
+                <span className="work-folder-label">{work.company}</span>
+              </Link>
             ))}
           </div>
         </section>
