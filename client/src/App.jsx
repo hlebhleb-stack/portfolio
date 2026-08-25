@@ -35,8 +35,6 @@ function trackPage(page, lang) {
   }).catch(() => {})
 }
 
-const HERO_TEXT = 'Designing for brands that move fast. Motion, graphics, and everything in between.'
-
 function defaultWorkPosition(i, count) {
   const isNarrow = typeof window !== 'undefined' && window.innerWidth < 700
   if (isNarrow) {
@@ -164,14 +162,17 @@ function HomePage({ theme, setTheme, lang, setLang }) {
   }, [location.pathname])
 
   useEffect(() => {
+    const heroText = t.heroText
     const startDelay = 250
     const charInterval = 35
     let i = 0
     const start = setTimeout(() => {
+      setTyped('')
+      setCaretPhase('typing')
       const id = setInterval(() => {
         i += 1
-        setTyped(HERO_TEXT.slice(0, i))
-        if (i >= HERO_TEXT.length) {
+        setTyped(heroText.slice(0, i))
+        if (i >= heroText.length) {
           clearInterval(id)
           setCaretPhase('blinking')
           setTimeout(() => setCaretPhase('hidden'), 1500)
@@ -179,7 +180,7 @@ function HomePage({ theme, setTheme, lang, setLang }) {
       }, charInterval)
     }, startDelay)
     return () => clearTimeout(start)
-  }, [])
+  }, [t.heroText])
 
   const works = [
     { company: 'Colb.finance', slug: 'colb-finance' },

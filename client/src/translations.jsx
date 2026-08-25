@@ -15,6 +15,7 @@ export const translations = {
   en: {
     fullName: 'Gleb Dihtievsky',
     heroRole: 'Graphic Designer',
+    heroText: 'Designing for brands that move fast. Motion, graphics, and everything in between.',
     experience: 'Experience',
     workRoles: {
       'colb-finance': 'Full Time',
@@ -55,6 +56,7 @@ export const translations = {
   ru: {
     fullName: 'Глеб Дихтиевский',
     heroRole: 'Графический дизайнер',
+    heroText: 'Дизайн для брендов, которые двигаются быстро. Моушн, графика и всё, что между ними.',
     experience: 'Опыт работы',
     workRoles: {
       'colb-finance': 'Фуллтайм',
