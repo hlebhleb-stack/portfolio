@@ -54,7 +54,6 @@ function HomePage({ theme, setTheme, lang, setLang }) {
   const t = translations[lang]
   const [typed, setTyped] = useState('')
   const [caretPhase, setCaretPhase] = useState('typing')
-  const [hoveredSocial, setHoveredSocial] = useState(null)
   const [pressedWork, setPressedWork] = useState(null)
   const isPressed = (i) => location.pathname === '/' && pressedWork === i
   const worksContainerRef = useRef(null)
@@ -139,15 +138,18 @@ function HomePage({ theme, setTheme, lang, setLang }) {
     }
   }, [])
 
+  const socialsSectionRef = useRef(null)
+  const [onSocials, setOnSocials] = useState(false)
   useEffect(() => {
-    const clear = () => setHoveredSocial(null)
-    const onVis = () => { if (document.hidden) clear() }
-    window.addEventListener('blur', clear)
-    document.addEventListener('visibilitychange', onVis)
-    return () => {
-      window.removeEventListener('blur', clear)
-      document.removeEventListener('visibilitychange', onVis)
-    }
+    const root = sectionsRef.current
+    const target = socialsSectionRef.current
+    if (!root || !target) return
+    const observer = new IntersectionObserver(
+      ([entry]) => setOnSocials(entry.isIntersecting),
+      { root, threshold: 0.5 }
+    )
+    observer.observe(target)
+    return () => observer.disconnect()
   }, [])
 
   const langRef = useRef(lang)
@@ -189,7 +191,7 @@ function HomePage({ theme, setTheme, lang, setLang }) {
   ]
 
   return (
-    <div className="home-page" ref={pageRef}>
+    <div className={`home-page${onSocials ? ' home-page--socials' : ''}`} ref={pageRef}>
       {/* Header (fixed) */}
       <header className="header home-header">
         <div className="lang-toggle">
@@ -272,27 +274,8 @@ function HomePage({ theme, setTheme, lang, setLang }) {
         </section>
 
         {/* Section 3 — socials */}
-        <section className="home-section home-section-socials" id="links">
-          <div className="home-socials">
-            {[
-              { id: 'tg', href: 'https://t.me/glebaagleb', src: '/assets/socials/tg.svg', alt: 'Telegram' },
-              { id: 'linkedin', href: 'https://www.linkedin.com/in/gleb-dihtievsky/', src: '/assets/socials/linkedin.svg', alt: 'LinkedIn' },
-              { id: 'x', href: 'https://x.com/glebaagleb', src: '/assets/socials/x.svg', alt: 'X' },
-            ].map((s) => (
-              <a
-                key={s.id}
-                href={s.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`home-social${hoveredSocial === s.id ? ' is-hover' : ''}`}
-                onMouseEnter={() => setHoveredSocial(s.id)}
-                onMouseLeave={() => setHoveredSocial(null)}
-                onClick={() => setHoveredSocial(null)}
-              >
-                <img src={s.src} alt={s.alt} />
-              </a>
-            ))}
-          </div>
+        <section className="home-section home-section-socials" id="links" ref={socialsSectionRef}>
+          <p className="home-follow-text">{t.followText}</p>
         </section>
       </main>
 

@@ -11,11 +11,27 @@ const threeDLink = (label) => (
   </a>
 )
 
+const socialLink = (href, label) => (
+  <a
+    href={href}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="home-follow-link"
+  >
+    {label}
+  </a>
+)
+
 export const translations = {
   en: {
     fullName: 'Gleb Dihtievsky',
     heroRole: 'Graphic Designer',
     heroText: 'Designing for brands that move fast. Motion, graphics, and everything in between.',
+    followText: (
+      <>
+        Follow me on {socialLink('https://x.com/glebaagleb', 'X')}, {socialLink('https://t.me/glebaagleb', 'Telegram')}, {socialLink('https://www.behance.net/gleb_diht', 'Behance')}, and {socialLink('https://www.linkedin.com/in/gleb-dihtievsky/', 'LinkedIn')}.
+      </>
+    ),
     experience: 'Experience',
     workRoles: {
       'colb-finance': 'Full Time',
@@ -57,6 +73,11 @@ export const translations = {
     fullName: 'Глеб Дихтиевский',
     heroRole: 'Графический дизайнер',
     heroText: 'Дизайн для брендов, которые двигаются быстро. Моушн, графика и всё, что между ними.',
+    followText: (
+      <>
+        Следите за мной в {socialLink('https://x.com/glebaagleb', 'X')}, {socialLink('https://t.me/glebaagleb', 'Telegram')}, {socialLink('https://www.behance.net/gleb_diht', 'Behance')} и {socialLink('https://www.linkedin.com/in/gleb-dihtievsky/', 'LinkedIn')}.
+      </>
+    ),
     experience: 'Опыт работы',
     workRoles: {
       'colb-finance': 'Фуллтайм',
