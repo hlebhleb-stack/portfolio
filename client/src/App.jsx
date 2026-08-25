@@ -36,6 +36,29 @@ function trackPage(page, lang) {
 
 const HERO_TEXT = 'Designing for brands that move fast. Motion, graphics, and everything in between.'
 
+const WORK_POSITIONS_KEY = 'workFolderPositions'
+
+function loadWorkPositions() {
+  try {
+    const raw = localStorage.getItem(WORK_POSITIONS_KEY)
+    return raw ? JSON.parse(raw) : {}
+  } catch {
+    return {}
+  }
+}
+
+function saveWorkPositions(positions) {
+  try {
+    localStorage.setItem(WORK_POSITIONS_KEY, JSON.stringify(positions))
+  } catch { /* ignore */ }
+}
+
+function defaultWorkPosition(i, count) {
+  const spacing = 11
+  const offset = (i - (count - 1) / 2) * spacing
+  return { x: 50 + offset, y: 50 }
+}
+
 function HomePage({ theme, setTheme, lang, setLang }) {
   const pageRef = useFadeIn()
   const sectionsRef = useRef(null)
@@ -46,6 +69,66 @@ function HomePage({ theme, setTheme, lang, setLang }) {
   const [hoveredSocial, setHoveredSocial] = useState(null)
   const [pressedWork, setPressedWork] = useState(null)
   const isPressed = (i) => location.pathname === '/' && pressedWork === i
+  const worksContainerRef = useRef(null)
+  const [workPositions, setWorkPositions] = useState(() => loadWorkPositions())
+  const dragRef = useRef(null)
+  const justDraggedRef = useRef(false)
+
+  const getWorkPosition = (slug, i, count) =>
+    workPositions[slug] || defaultWorkPosition(i, count)
+
+  const handleWorkPointerDown = (e, slug, i, count) => {
+    const container = worksContainerRef.current
+    if (!container) return
+    const rect = container.getBoundingClientRect()
+    const pos = getWorkPosition(slug, i, count)
+    dragRef.current = {
+      slug,
+      startClientX: e.clientX,
+      startClientY: e.clientY,
+      startX: pos.x,
+      startY: pos.y,
+      rectWidth: rect.width,
+      rectHeight: rect.height,
+      moved: false,
+    }
+    setPressedWork(i)
+    e.currentTarget.setPointerCapture(e.pointerId)
+  }
+
+  const handleWorkPointerMove = (e) => {
+    const drag = dragRef.current
+    if (!drag) return
+    const dxClient = e.clientX - drag.startClientX
+    const dyClient = e.clientY - drag.startClientY
+    if (!drag.moved && (Math.abs(dxClient) > 4 || Math.abs(dyClient) > 4)) {
+      drag.moved = true
+    }
+    const dxPct = (dxClient / drag.rectWidth) * 100
+    const dyPct = (dyClient / drag.rectHeight) * 100
+    const x = Math.min(92, Math.max(8, drag.startX + dxPct))
+    const y = Math.min(88, Math.max(12, drag.startY + dyPct))
+    setWorkPositions((prev) => ({ ...prev, [drag.slug]: { x, y } }))
+  }
+
+  const handleWorkPointerUp = () => {
+    const drag = dragRef.current
+    if (!drag) return
+    dragRef.current = null
+    justDraggedRef.current = drag.moved
+    setPressedWork(null)
+    setWorkPositions((prev) => {
+      saveWorkPositions(prev)
+      return prev
+    })
+  }
+
+  const handleWorkClick = (e) => {
+    if (justDraggedRef.current) {
+      e.preventDefault()
+      justDraggedRef.current = false
+    }
+  }
 
   useEffect(() => {
     const el = sectionsRef.current
@@ -169,25 +252,30 @@ function HomePage({ theme, setTheme, lang, setLang }) {
           </div>
         </section>
 
-        {/* Section 2 — works (folder icons) */}
+        {/* Section 2 — works (freely draggable folder icons) */}
         <section className="home-section home-section-works" id="works">
-          <div className="works-folders">
-            {works.map((work, i) => (
-              <Link
-                key={i}
-                to={`/case/${work.slug}`}
-                className={`work-folder${isPressed(i) ? ' is-pressed' : ''}`}
-                onTouchStart={() => {
-                  setPressedWork(i)
-                  setTimeout(() => setPressedWork(null), 180)
-                }}
-                onTouchEnd={() => setPressedWork(null)}
-                onTouchCancel={() => setPressedWork(null)}
-              >
-                <img src="/assets/folder-ios.png" alt="" className="work-folder-icon" draggable="false" />
-                <span className="work-folder-label">{work.company}</span>
-              </Link>
-            ))}
+          <div className="works-folders" ref={worksContainerRef}>
+            {works.map((work, i) => {
+              const pos = getWorkPosition(work.slug, i, works.length)
+              return (
+                <Link
+                  key={i}
+                  to={`/case/${work.slug}`}
+                  className={`work-folder${isPressed(i) ? ' is-pressed' : ''}`}
+                  style={{ left: `${pos.x}%`, top: `${pos.y}%` }}
+                  draggable="false"
+                  onDragStart={(e) => e.preventDefault()}
+                  onPointerDown={(e) => handleWorkPointerDown(e, work.slug, i, works.length)}
+                  onPointerMove={handleWorkPointerMove}
+                  onPointerUp={handleWorkPointerUp}
+                  onPointerCancel={handleWorkPointerUp}
+                  onClick={handleWorkClick}
+                >
+                  <img src="/assets/folder-ios.png" alt="" className="work-folder-icon" draggable="false" />
+                  <span className="work-folder-label">{work.company}</span>
+                </Link>
+              )
+            })}
           </div>
         </section>
 
