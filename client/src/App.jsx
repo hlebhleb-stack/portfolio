@@ -3,6 +3,7 @@ import { Routes, Route, Link, useLocation } from 'react-router-dom'
 import CasePage from './CasePage.jsx'
 import useFadeIn from './useFadeIn.js'
 import { translations, LANGS } from './translations.jsx'
+import { SIGNATURE_PATH_D, SIGNATURE_VIEWBOX } from './signaturePath.js'
 import './App.css'
 
 const API_URL = import.meta.env.VITE_API_URL || ''
@@ -234,6 +235,11 @@ function HomePage({ theme, setTheme, lang, setLang }) {
                 />
               )}
             </h1>
+            <div className="hero-signature" aria-hidden="true">
+              <svg viewBox={SIGNATURE_VIEWBOX} className="hero-signature-svg">
+                <path d={SIGNATURE_PATH_D} className="hero-signature-path" />
+              </svg>
+            </div>
           </div>
         </section>
 

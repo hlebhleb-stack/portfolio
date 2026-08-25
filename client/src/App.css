@@ -179,6 +179,22 @@ body {
   max-width: 760px;
 }
 
+.hero-signature {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.hero-signature-svg {
+  display: block;
+  width: 140px;
+  height: auto;
+}
+
+.hero-signature-path {
+  fill: #FF0000;
+}
+
 .hero-title {
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-weight: 700;
