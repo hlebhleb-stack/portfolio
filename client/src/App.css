@@ -268,6 +268,8 @@ body {
   display: block;
   user-select: none;
   -webkit-user-drag: none;
+  touch-action: none;
+  pointer-events: none;
 }
 
 .work-folder-label {
@@ -275,6 +277,9 @@ body {
   font-weight: 400;
   font-size: 14px;
   text-align: center;
+  white-space: nowrap;
+  touch-action: none;
+  pointer-events: none;
 }
 
 

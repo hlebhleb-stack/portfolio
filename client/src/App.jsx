@@ -36,25 +36,14 @@ function trackPage(page, lang) {
 
 const HERO_TEXT = 'Designing for brands that move fast. Motion, graphics, and everything in between.'
 
-const WORK_POSITIONS_KEY = 'workFolderPositions'
-
-function loadWorkPositions() {
-  try {
-    const raw = localStorage.getItem(WORK_POSITIONS_KEY)
-    return raw ? JSON.parse(raw) : {}
-  } catch {
-    return {}
-  }
-}
-
-function saveWorkPositions(positions) {
-  try {
-    localStorage.setItem(WORK_POSITIONS_KEY, JSON.stringify(positions))
-  } catch { /* ignore */ }
-}
-
 function defaultWorkPosition(i, count) {
-  const spacing = 11
+  const isNarrow = typeof window !== 'undefined' && window.innerWidth < 700
+  if (isNarrow) {
+    const spacing = 24
+    const offset = (i - (count - 1) / 2) * spacing
+    return { x: 50, y: 50 + offset }
+  }
+  const spacing = 16
   const offset = (i - (count - 1) / 2) * spacing
   return { x: 50 + offset, y: 50 }
 }
@@ -70,7 +59,7 @@ function HomePage({ theme, setTheme, lang, setLang }) {
   const [pressedWork, setPressedWork] = useState(null)
   const isPressed = (i) => location.pathname === '/' && pressedWork === i
   const worksContainerRef = useRef(null)
-  const [workPositions, setWorkPositions] = useState(() => loadWorkPositions())
+  const [workPositions, setWorkPositions] = useState({})
   const dragRef = useRef(null)
   const justDraggedRef = useRef(false)
 
@@ -117,10 +106,6 @@ function HomePage({ theme, setTheme, lang, setLang }) {
     dragRef.current = null
     justDraggedRef.current = drag.moved
     setPressedWork(null)
-    setWorkPositions((prev) => {
-      saveWorkPositions(prev)
-      return prev
-    })
   }
 
   const handleWorkClick = (e) => {
