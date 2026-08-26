@@ -1023,17 +1023,20 @@ body {
 }
 
 .colb-inline-link {
-  display: inline-block;
-  font-size: 13px;
-  color: var(--text-muted);
+  color: inherit;
   text-decoration: underline;
   text-decoration-color: var(--text-muted);
   text-underline-offset: 3px;
-  transition: color 0.2s;
+  transition: text-decoration-color 0.2s;
 }
 
 .colb-inline-link:hover {
-  color: var(--text);
+  text-decoration-color: var(--text);
+}
+
+.colb-gitbook-link {
+  display: inline-block;
+  font-size: 13px;
 }
 
 .colb-media-grid {

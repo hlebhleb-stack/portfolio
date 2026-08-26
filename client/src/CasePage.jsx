@@ -327,7 +327,7 @@ function ColbCaseBody({ content, nav }) {
             href="https://docs.colb.finance/"
             target="_blank"
             rel="noopener noreferrer"
-            className="colb-inline-link"
+            className="colb-inline-link colb-gitbook-link"
           >
             {content.gitbookLink}
           </a>
