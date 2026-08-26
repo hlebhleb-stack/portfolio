@@ -4,6 +4,7 @@ import CasePage from './CasePage.jsx'
 import useFadeIn from './useFadeIn.js'
 import { translations, LANGS } from './translations.jsx'
 import { SIGNATURE_PATH_D, SIGNATURE_VIEWBOX } from './signaturePath.js'
+import MusicPlayer from './MusicPlayer.jsx'
 import './App.css'
 
 const API_URL = import.meta.env.VITE_API_URL || ''
@@ -194,6 +195,7 @@ function HomePage({ theme, setTheme, lang, setLang }) {
     <div className={`home-page${onSocials ? ' home-page--socials' : ''}`} ref={pageRef}>
       {/* Header (fixed) */}
       <header className="header home-header">
+      <div className="header-row">
         <div className="lang-toggle">
           {LANGS.map((l) => (
             <button
@@ -222,6 +224,8 @@ function HomePage({ theme, setTheme, lang, setLang }) {
             </svg>
           )}
         </button>
+        <MusicPlayer />
+      </div>
       </header>
 
       {/* Snap-scroll sections */}

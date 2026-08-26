@@ -5,6 +5,7 @@ import { translations, LANGS } from './translations.jsx'
 import generatedItems from './caseItems.generated.json'
 import columnOverrides from './caseItemsColumns.js'
 import mediaLinks from './mediaLinks.js'
+import MusicPlayer from './MusicPlayer.jsx'
 
 function VideoItem({ src, alt, priority = false }) {
   const videoRef = useRef(null)
@@ -269,6 +270,7 @@ function CasePage({ theme, setTheme, lang, setLang }) {
     <div className="page" ref={pageRef}>
       {/* Header */}
       <header className="header">
+      <div className="header-row">
         <div className="lang-toggle">
           {LANGS.map((l) => (
             <button
@@ -297,6 +299,8 @@ function CasePage({ theme, setTheme, lang, setLang }) {
             </svg>
           )}
         </button>
+        <MusicPlayer />
+      </div>
       </header>
 
       {/* Case Hero */}
