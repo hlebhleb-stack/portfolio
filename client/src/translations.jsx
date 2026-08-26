@@ -103,6 +103,26 @@ export const translations = {
         description:
           'Spearheaded the end-to-end creative direction, including 2D motion design and high-impact marketing graphics. Developed a comprehensive system of reusable design templates to streamline future content production and ensure long-term brand consistency.',
         skills: ['Creative Direction', '2D Motion Design', 'Design System', 'Marketing Design'],
+        nav: {
+          context: 'Context',
+          process: 'Process',
+          motionVideos: 'Motion videos',
+          banners: 'Banners',
+          output: 'Output',
+        },
+        content: {
+          context: (
+            <>
+              {docLink('https://sova.io/borrow', 'Sova')} is a DeFi platform with cross-chain swaps, BTC vaults, and onchain liquidity. I came on as graphic and motion designer on a freelance basis, producing social content for their X account across product launches and feature updates.
+            </>
+          ),
+          motionVideos:
+            'Each video was built from scratch. The challenge with DeFi content is making something technically accurate without losing the viewer. Cross-chain swaps, vault mechanics, fiat on-ramps, each needed a visual approach that communicated the concept, not just decorated the announcement.',
+          banners:
+            'Both single banners and series under one post. Some were straightforward announcements, others explained how a specific product works step by step. The visual approach changed depending on whether the goal was to grab attention or actually teach something.',
+          output:
+            "5 motion videos and 8+ static banners shipped for Sova's X account across product launches, feature updates, and partnership announcements.",
+        },
       },
       're-protocol': {
         description: (
@@ -203,6 +223,26 @@ export const translations = {
         description:
           'Вёл креативное направление от начала и до конца: 2D моушн-дизайн и маркетинговая графика высокого уровня. Разработал систему переиспользуемых шаблонов, чтобы ускорить производство контента и удерживать единство бренда.',
         skills: ['Креативное направление', '2D моушн-дизайн', 'Дизайн-система', 'Маркетинговый дизайн'],
+        nav: {
+          context: 'Контекст',
+          process: 'Процесс',
+          motionVideos: 'Моушн-видео',
+          banners: 'Баннеры',
+          output: 'Результат',
+        },
+        content: {
+          context: (
+            <>
+              {docLink('https://sova.io/borrow', 'Sova')} это DeFi-платформа с кросс-чейн свопами, BTC-хранилищами и ончейн-ликвидностью. Я пришёл туда графическим и моушн-дизайнером на фрилансе, делал контент для соцсетей их X-аккаунта под запуски продуктов и обновления функций.
+            </>
+          ),
+          motionVideos:
+            'Каждое видео собиралось с нуля. Главная сложность с DeFi-контентом в том, чтобы сделать всё технически точным, не потеряв зрителя. Кросс-чейн свопы, механика хранилищ, фиатные ончейн переходы: каждому нужен был визуальный подход, который объяснял суть, а не просто украшал анонс.',
+          banners:
+            'Были и одиночные баннеры, и серии в одном посте. Часть это простые анонсы, часть объясняла работу конкретного продукта шаг за шагом. Визуальный подход менялся в зависимости от того, нужно ли было привлечь внимание или реально что-то объяснить.',
+          output:
+            '5 моушн-видео и 8+ статичных баннеров для X-аккаунта Sova: запуски продуктов, обновления функций и партнёрские анонсы.',
+        },
       },
       're-protocol': {
         description: (

@@ -123,7 +123,10 @@ const COLB_GITBOOK = '/assets/works/colb-finance/gitbook-visuals.png'
 
 const RE_VIDEOS = Array.from({ length: 5 }, (_, i) => `/assets/works/re-protocol/${i + 1}.mp4`)
 
-const DOC_CASE_SLUGS = ['colb-finance', 're-protocol']
+const SOVA_VIDEOS = Array.from({ length: 5 }, (_, i) => `/assets/works/sova-labs/${i + 1}.mp4`)
+const SOVA_BANNERS = Array.from({ length: 3 }, (_, i) => `/assets/works/sova-labs/${i + 1}.png`)
+
+const DOC_CASE_SLUGS = ['colb-finance', 're-protocol', 'sova-labs']
 
 function ColbMediaItem({ item, priority, order }) {
   const linkUrl = mediaLinks[item.src]
@@ -595,6 +598,55 @@ function CasePage({ theme, setTheme, lang, setLang }) {
               <p className="colb-text">{content.motionVideos}</p>
               <ColbMedia
                 items={RE_VIDEOS.map((src, i) => ({ type: 'video', src, alt: `Re motion video ${i + 1}` }))}
+              />
+            </section>
+
+            <section id="output" className="colb-section">
+              <p className="colb-section-label">{nav.output}</p>
+              <p className="colb-text">{content.output}</p>
+            </section>
+          </ColbCaseBody>
+        )
+      })()}
+
+      {slug === 'sova-labs' && caseTranslation?.content && (() => {
+        const nav = caseTranslation.nav
+        const content = caseTranslation.content
+        return (
+          <ColbCaseBody
+            sectionIds={['context', 'motion-videos', 'banners', 'output']}
+            navItems={[
+              { id: 'context', label: nav.context },
+              {
+                label: nav.process,
+                children: [
+                  { id: 'motion-videos', label: nav.motionVideos },
+                  { id: 'banners', label: nav.banners },
+                ],
+              },
+              { id: 'output', label: nav.output },
+            ]}
+          >
+            <section id="context" className="colb-section">
+              <p className="colb-section-label">{nav.context}</p>
+              <p className="colb-text">{content.context}</p>
+            </section>
+
+            <p className="colb-section-label colb-process-label">{nav.process}</p>
+
+            <section id="motion-videos" className="colb-section">
+              <p className="colb-section-label">{nav.motionVideos}</p>
+              <p className="colb-text">{content.motionVideos}</p>
+              <ColbMedia
+                items={SOVA_VIDEOS.map((src, i) => ({ type: 'video', src, alt: `Sova motion video ${i + 1}` }))}
+              />
+            </section>
+
+            <section id="banners" className="colb-section">
+              <p className="colb-section-label">{nav.banners}</p>
+              <p className="colb-text">{content.banners}</p>
+              <ColbMedia
+                items={SOVA_BANNERS.map((src, i) => ({ type: 'image', src, alt: `Sova banner ${i + 1}` }))}
               />
             </section>
 
