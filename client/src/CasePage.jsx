@@ -121,6 +121,10 @@ const COLB_EXTRA_NEWS = '/assets/works/colb-finance/extra-news-template.png'
 const COLB_ONE_PAGER = '/assets/works/colb-finance/one-pager-document.png'
 const COLB_GITBOOK = '/assets/works/colb-finance/gitbook-visuals.png'
 
+const RE_VIDEOS = Array.from({ length: 5 }, (_, i) => `/assets/works/re-protocol/${i + 1}.mp4`)
+
+const DOC_CASE_SLUGS = ['colb-finance', 're-protocol']
+
 function ColbMediaItem({ item, priority, order }) {
   const linkUrl = mediaLinks[item.src]
   return (
@@ -201,41 +205,36 @@ function ColbNavButton({ id, label, activeId, onNavigate }) {
   )
 }
 
-function ColbSidebar({ nav, activeId, onNavigate }) {
-  const processChildren = [
-    { id: 'motion-videos', label: nav.motionVideos },
-    { id: 'brand-social', label: nav.brandSocial },
-    { id: 'one-pager', label: nav.onePager },
-    { id: 'gitbook', label: nav.gitbook },
-  ]
+function ColbSidebar({ navItems, activeId, onNavigate }) {
   return (
-    <nav className="colb-sidebar" aria-label={nav.root}>
+    <nav className="colb-sidebar">
       <ul className="colb-sidebar-list">
-        <li className="colb-sidebar-item">
-          <ColbNavButton id="context" label={nav.context} activeId={activeId} onNavigate={onNavigate} />
-        </li>
-        <li className="colb-sidebar-item">
-          <span className="colb-sidebar-group">{nav.process}</span>
-          <ul className="colb-sidebar-sublist">
-            {processChildren.map((item) => (
-              <li key={item.id} className="colb-sidebar-item">
-                <ColbNavButton id={item.id} label={item.label} activeId={activeId} onNavigate={onNavigate} />
-              </li>
-            ))}
-          </ul>
-        </li>
-        <li className="colb-sidebar-item">
-          <ColbNavButton id="output" label={nav.output} activeId={activeId} onNavigate={onNavigate} />
-        </li>
+        {navItems.map((entry, i) =>
+          entry.children ? (
+            <li key={i} className="colb-sidebar-item">
+              <span className="colb-sidebar-group">{entry.label}</span>
+              <ul className="colb-sidebar-sublist">
+                {entry.children.map((child) => (
+                  <li key={child.id} className="colb-sidebar-item">
+                    <ColbNavButton id={child.id} label={child.label} activeId={activeId} onNavigate={onNavigate} />
+                  </li>
+                ))}
+              </ul>
+            </li>
+          ) : (
+            <li key={entry.id} className="colb-sidebar-item">
+              <ColbNavButton id={entry.id} label={entry.label} activeId={activeId} onNavigate={onNavigate} />
+            </li>
+          )
+        )}
       </ul>
     </nav>
   )
 }
 
-function ColbCaseBody({ content, nav }) {
+function ColbCaseBody({ sectionIds, navItems, children }) {
   const contentRef = useRef(null)
-  const [activeId, setActiveId] = useState('context')
-  const sectionIds = ['context', 'motion-videos', 'brand-social', 'one-pager', 'gitbook', 'output']
+  const [activeId, setActiveId] = useState(sectionIds[0])
 
   useEffect(() => {
     const sections = sectionIds
@@ -270,74 +269,16 @@ function ColbCaseBody({ content, nav }) {
       window.removeEventListener('resize', onScroll)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [content])
+  }, [sectionIds.join(',')])
 
   const handleNavigate = (id) => {
-    if (id === 'top') {
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-      return
-    }
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
   return (
     <div className="colb-layout" ref={contentRef}>
-      <ColbSidebar nav={nav} activeId={activeId} onNavigate={handleNavigate} />
-      <div className="colb-content">
-        <section id="context" className="colb-section">
-          <p className="colb-section-label">{nav.context}</p>
-          <p className="colb-text">{content.context}</p>
-        </section>
-
-        <p className="colb-section-label colb-process-label">{nav.process}</p>
-
-        <section id="motion-videos" className="colb-section">
-          <p className="colb-section-label">{nav.motionVideos}</p>
-          <p className="colb-text">{content.motionVideosP1a}</p>
-          <ColbMedia items={[{ type: 'image', src: COLB_STORYBOARD, alt: 'Colb storyboard sequence' }]} />
-          <p className="colb-text">{content.motionVideosP1b}</p>
-          <ColbMedia
-            items={COLB_MOTION_REST.map((src, i) => ({ type: 'video', src, alt: `Colb motion video ${i + 2}` }))}
-          />
-          <p className="colb-text">{content.motionVideosP2}</p>
-          <ColbMedia items={[{ type: 'video', src: COLB_MOTION_MAIN, alt: 'Colb x PancakeSwap video' }]} />
-        </section>
-
-        <section id="brand-social" className="colb-section">
-          <p className="colb-section-label">{nav.brandSocial}</p>
-          <p className="colb-text">{content.extraNews}</p>
-          <ColbMedia items={[{ type: 'image', src: COLB_EXTRA_NEWS, alt: 'Extra News banner template' }]} />
-          <p className="colb-text">{content.editorial}</p>
-          <ColbMedia
-            items={COLB_BANNERS.map((src, i) => ({ type: 'image', src, alt: `Colb editorial banner ${i + 1}` }))}
-          />
-        </section>
-
-        <section id="one-pager" className="colb-section">
-          <p className="colb-section-label">{nav.onePager}</p>
-          <p className="colb-text">{content.onePager}</p>
-          <ColbMedia items={[{ type: 'image', src: COLB_ONE_PAGER, alt: 'Colb one pager document' }]} />
-        </section>
-
-        <section id="gitbook" className="colb-section">
-          <p className="colb-section-label">{nav.gitbook}</p>
-          <p className="colb-text">{content.gitbook}</p>
-          <ColbMedia items={[{ type: 'image', src: COLB_GITBOOK, alt: 'Colb GitBook visuals' }]} />
-          <a
-            href="https://docs.colb.finance/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="colb-inline-link colb-gitbook-link"
-          >
-            {content.gitbookLink}
-          </a>
-        </section>
-
-        <section id="output" className="colb-section">
-          <p className="colb-section-label">{nav.output}</p>
-          <p className="colb-text">{content.output}</p>
-        </section>
-      </div>
+      <ColbSidebar navItems={navItems} activeId={activeId} onNavigate={handleNavigate} />
+      <div className="colb-content">{children}</div>
     </div>
   )
 }
@@ -533,7 +474,7 @@ function CasePage({ theme, setTheme, lang, setLang }) {
       </header>
 
       {/* Case Hero */}
-      {slug !== 'colb-finance' && (
+      {!DOC_CASE_SLUGS.includes(slug) && (
         <section className="case-hero">
           <h1 className="case-title"><a href={caseData.url} target="_blank" rel="noopener noreferrer">{caseData.company}<span className="hero-dot">.</span></a></h1>
           {caseTranslation?.description && (
@@ -553,12 +494,120 @@ function CasePage({ theme, setTheme, lang, setLang }) {
         </section>
       )}
 
-      {slug === 'colb-finance' && caseTranslation?.content && (
-        <ColbCaseBody content={caseTranslation.content} nav={caseTranslation.nav} />
-      )}
+      {slug === 'colb-finance' && caseTranslation?.content && (() => {
+        const nav = caseTranslation.nav
+        const content = caseTranslation.content
+        return (
+          <ColbCaseBody
+            sectionIds={['context', 'motion-videos', 'brand-social', 'one-pager', 'gitbook', 'output']}
+            navItems={[
+              { id: 'context', label: nav.context },
+              {
+                label: nav.process,
+                children: [
+                  { id: 'motion-videos', label: nav.motionVideos },
+                  { id: 'brand-social', label: nav.brandSocial },
+                  { id: 'one-pager', label: nav.onePager },
+                  { id: 'gitbook', label: nav.gitbook },
+                ],
+              },
+              { id: 'output', label: nav.output },
+            ]}
+          >
+            <section id="context" className="colb-section">
+              <p className="colb-section-label">{nav.context}</p>
+              <p className="colb-text">{content.context}</p>
+            </section>
+
+            <p className="colb-section-label colb-process-label">{nav.process}</p>
+
+            <section id="motion-videos" className="colb-section">
+              <p className="colb-section-label">{nav.motionVideos}</p>
+              <p className="colb-text">{content.motionVideosP1a}</p>
+              <ColbMedia items={[{ type: 'image', src: COLB_STORYBOARD, alt: 'Colb storyboard sequence' }]} />
+              <p className="colb-text">{content.motionVideosP1b}</p>
+              <ColbMedia
+                items={COLB_MOTION_REST.map((src, i) => ({ type: 'video', src, alt: `Colb motion video ${i + 2}` }))}
+              />
+              <p className="colb-text">{content.motionVideosP2}</p>
+              <ColbMedia items={[{ type: 'video', src: COLB_MOTION_MAIN, alt: 'Colb x PancakeSwap video' }]} />
+            </section>
+
+            <section id="brand-social" className="colb-section">
+              <p className="colb-section-label">{nav.brandSocial}</p>
+              <p className="colb-text">{content.extraNews}</p>
+              <ColbMedia items={[{ type: 'image', src: COLB_EXTRA_NEWS, alt: 'Extra News banner template' }]} />
+              <p className="colb-text">{content.editorial}</p>
+              <ColbMedia
+                items={COLB_BANNERS.map((src, i) => ({ type: 'image', src, alt: `Colb editorial banner ${i + 1}` }))}
+              />
+            </section>
+
+            <section id="one-pager" className="colb-section">
+              <p className="colb-section-label">{nav.onePager}</p>
+              <p className="colb-text">{content.onePager}</p>
+              <ColbMedia items={[{ type: 'image', src: COLB_ONE_PAGER, alt: 'Colb one pager document' }]} />
+            </section>
+
+            <section id="gitbook" className="colb-section">
+              <p className="colb-section-label">{nav.gitbook}</p>
+              <p className="colb-text">{content.gitbook}</p>
+              <ColbMedia items={[{ type: 'image', src: COLB_GITBOOK, alt: 'Colb GitBook visuals' }]} />
+              <a
+                href="https://docs.colb.finance/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="colb-inline-link colb-gitbook-link"
+              >
+                {content.gitbookLink}
+              </a>
+            </section>
+
+            <section id="output" className="colb-section">
+              <p className="colb-section-label">{nav.output}</p>
+              <p className="colb-text">{content.output}</p>
+            </section>
+          </ColbCaseBody>
+        )
+      })()}
+
+      {slug === 're-protocol' && caseTranslation?.content && (() => {
+        const nav = caseTranslation.nav
+        const content = caseTranslation.content
+        return (
+          <ColbCaseBody
+            sectionIds={['context', 'motion-videos', 'output']}
+            navItems={[
+              { id: 'context', label: nav.context },
+              { label: nav.process, children: [{ id: 'motion-videos', label: nav.motionVideos }] },
+              { id: 'output', label: nav.output },
+            ]}
+          >
+            <section id="context" className="colb-section">
+              <p className="colb-section-label">{nav.context}</p>
+              <p className="colb-text">{content.context}</p>
+            </section>
+
+            <p className="colb-section-label colb-process-label">{nav.process}</p>
+
+            <section id="motion-videos" className="colb-section">
+              <p className="colb-section-label">{nav.motionVideos}</p>
+              <p className="colb-text">{content.motionVideos}</p>
+              <ColbMedia
+                items={RE_VIDEOS.map((src, i) => ({ type: 'video', src, alt: `Re motion video ${i + 1}` }))}
+              />
+            </section>
+
+            <section id="output" className="colb-section">
+              <p className="colb-section-label">{nav.output}</p>
+              <p className="colb-text">{content.output}</p>
+            </section>
+          </ColbCaseBody>
+        )
+      })()}
 
       {/* Filter */}
-      {slug !== 'colb-finance' && (() => {
+      {!DOC_CASE_SLUGS.includes(slug) && (() => {
         const videoCount = caseData.items.filter((it) => it.type === 'video').length
         const imageCount = caseData.items.length - videoCount
         if (videoCount === 0 || imageCount === 0) return null
@@ -597,7 +646,7 @@ function CasePage({ theme, setTheme, lang, setLang }) {
           CSS `order` preserves source order both within each column
           (where they happen to render in render order anyway) and
           when the layout collapses to one column on narrow phones. */}
-      {slug !== 'colb-finance' && (() => {
+      {!DOC_CASE_SLUGS.includes(slug) && (() => {
         const visibleItems = caseData.items.filter(
           (item) => filter === 'all' || item.type === filter
         )

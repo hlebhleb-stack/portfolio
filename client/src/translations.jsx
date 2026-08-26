@@ -11,9 +11,9 @@ const threeDLink = (label) => (
   </a>
 )
 
-const colbLink = (label) => (
+const docLink = (href, label) => (
   <a
-    href="https://www.colb.finance/"
+    href={href}
     target="_blank"
     rel="noopener noreferrer"
     className="colb-inline-link"
@@ -77,7 +77,7 @@ export const translations = {
         content: {
           context: (
             <>
-              {colbLink('Colb')} is a Swiss-based platform for tokenized pre-IPO investments. I came on as the sole graphic and motion designer, initially to handle social media visuals, which quickly expanded into motion videos, website prototypes, investor materials, and product documentation.
+              {docLink('https://www.colb.finance/', 'Colb')} is a Swiss-based platform for tokenized pre-IPO investments. I came on as the sole graphic and motion designer, initially to handle social media visuals, which quickly expanded into motion videos, website prototypes, investor materials, and product documentation.
             </>
           ),
           motionVideosP1a:
@@ -111,6 +111,26 @@ export const translations = {
           </>
         ),
         skills: ['Creative Direction', 'Motion Design', '3D Animation', 'Video Production'],
+        nav: {
+          context: 'Context',
+          process: 'Process',
+          motionVideos: 'Motion videos',
+          output: 'Output',
+        },
+        content: {
+          context: (
+            <>
+              {docLink('https://re.xyz/', 'Re')} is a reinsurance protocol bringing institutional reinsurance capital onchain. I came on as motion designer for a short engagement, collaborating with a 3D artist on a series of announcement videos for their X account.
+            </>
+          ),
+          motionVideos: (
+            <>
+              The pipeline was split: 3D visuals handled by a {docLink('https://x.com/puselol', 'dedicated artist')}, everything else by me. Text animation, compositing, sound design and final edit. Five videos total covering milestone announcements, protocol launches, and a year-end recap. Working within someone else’s visual output and making it feel cohesive was the main challenge.
+            </>
+          ),
+          output:
+            '5 motion videos shipped for Re’s X account across milestone announcements and protocol launches.',
+        },
       },
     },
   },
@@ -157,7 +177,7 @@ export const translations = {
         content: {
           context: (
             <>
-              {colbLink('Colb')} это швейцарская платформа для токенизированных pre-IPO инвестиций. Я пришёл туда единственным графическим и моушн-дизайнером, сначала вести визуал для соцсетей, но задача быстро выросла в моушн-видео, прототипы сайта, материалы для инвесторов и продуктовую документацию.
+              {docLink('https://www.colb.finance/', 'Colb')} это швейцарская платформа для токенизированных pre-IPO инвестиций. Я пришёл туда единственным графическим и моушн-дизайнером, сначала вести визуал для соцсетей, но задача быстро выросла в моушн-видео, прототипы сайта, материалы для инвесторов и продуктовую документацию.
             </>
           ),
           motionVideosP1a:
@@ -191,6 +211,26 @@ export const translations = {
           </>
         ),
         skills: ['Креативное направление', 'Моушн-дизайн', '3D-анимация', 'Видеопродакшн'],
+        nav: {
+          context: 'Контекст',
+          process: 'Процесс',
+          motionVideos: 'Моушн-видео',
+          output: 'Результат',
+        },
+        content: {
+          context: (
+            <>
+              {docLink('https://re.xyz/', 'Re')} это протокол перестрахования, который переносит институциональный перестраховочный капитал ончейн. Я пришёл туда моушн-дизайнером на короткий проект, работая в паре с 3D-художником над серией анонсных видео для их X-аккаунта.
+            </>
+          ),
+          motionVideos: (
+            <>
+              Пайплайн был разделён: 3D-визуал делал {docLink('https://x.com/puselol', 'выделенный 3D-художник')}, всё остальное делал я. Анимация текста, композитинг, саунд-дизайн и финальный монтаж. Всего пять видео: анонсы вех, запуски протокола и итоговый ролик года. Главный вызов был в том, чтобы работать поверх чужого визуала и сделать всё цельным.
+            </>
+          ),
+          output:
+            '5 моушн-видео для X-аккаунта Re: анонсы вех и запуски протокола.',
+        },
       },
     },
   },
