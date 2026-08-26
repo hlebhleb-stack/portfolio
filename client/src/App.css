@@ -171,6 +171,9 @@ body {
   display: block;
   animation: vinyl-spin 3s linear infinite;
   transition: width 0.25s, height 0.25s;
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 .music-icon-active {
@@ -188,7 +191,7 @@ body {
 }
 
 @keyframes vinyl-spin {
-  to { transform: rotate(360deg); }
+  to { transform: rotate3d(0, 0, 1, 360deg); }
 }
 
 /* A transition (not @keyframes) between an open and closed transform/opacity state,
