@@ -2,10 +2,10 @@ import { useEffect, useRef, useState } from 'react'
 
 const TRACKS = [
   {
-    id: 'bulletproof',
-    title: 'Bulletproof... I Wish I Was',
-    icon: '/assets/radiohead-bulletproof.png',
-    src: '/assets/radiohead-bulletproof.mp3',
+    id: 'glasshouse',
+    title: 'Life in a Glasshouse',
+    icon: '/assets/radiohead-glasshouse.png',
+    src: '/assets/radiohead-glasshouse.mp3',
   },
   {
     id: 'exitmusic',
