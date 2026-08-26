@@ -21,11 +21,34 @@ function getAudio() {
   return sharedAudio
 }
 
+const MENU_CLOSE_MS = 260
+
 export default function MusicPlayer() {
   const [menuOpen, setMenuOpen] = useState(false)
+  const [menuRendered, setMenuRendered] = useState(false)
+  const [menuClosing, setMenuClosing] = useState(false)
   const [currentId, setCurrentId] = useState(null)
   const [isPlaying, setIsPlaying] = useState(false)
   const wrapRef = useRef(null)
+  const closeTimeoutRef = useRef(null)
+
+  useEffect(() => {
+    if (menuOpen) {
+      if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current)
+      setMenuClosing(false)
+      setMenuRendered(true)
+    } else if (menuRendered) {
+      setMenuClosing(true)
+      closeTimeoutRef.current = setTimeout(() => {
+        setMenuRendered(false)
+        setMenuClosing(false)
+      }, MENU_CLOSE_MS)
+    }
+    return () => {
+      if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [menuOpen])
 
   useEffect(() => {
     const audio = getAudio()
@@ -98,8 +121,8 @@ export default function MusicPlayer() {
         />
       </button>
 
-      {menuOpen && (
-        <div className="music-menu">
+      {menuRendered && (
+        <div className={`music-menu${menuClosing ? ' is-closing' : ''}`}>
           {currentTrack && (
             <button
               type="button"
