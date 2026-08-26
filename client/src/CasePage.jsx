@@ -113,6 +113,235 @@ function VideoItem({ src, alt, priority = false }) {
   )
 }
 
+const COLB_MOTION_MAIN = '/assets/works/colb-finance/1.mp4'
+const COLB_MOTION_REST = Array.from({ length: 11 }, (_, i) => `/assets/works/colb-finance/${i + 2}.mp4`)
+const COLB_BANNERS = Array.from({ length: 5 }, (_, i) => `/assets/works/colb-finance/${i + 1}.png`)
+const COLB_STORYBOARD = '/assets/works/colb-finance/storyboard-sequence.png'
+const COLB_EXTRA_NEWS = '/assets/works/colb-finance/extra-news-template.png'
+const COLB_ONE_PAGER = '/assets/works/colb-finance/one-pager-document.png'
+const COLB_GITBOOK = '/assets/works/colb-finance/gitbook-visuals.png'
+
+function ColbMediaItem({ item, priority, order }) {
+  const linkUrl = mediaLinks[item.src]
+  return (
+    <div className="colb-media-item" style={{ order }}>
+      {item.type === 'video' ? (
+        <VideoItem src={item.src} alt={item.alt} priority={priority} />
+      ) : (
+        <img
+          src={item.src}
+          alt={item.alt}
+          decoding="async"
+          loading="lazy"
+          onLoad={(e) => e.target.parentElement.classList.add('loaded')}
+        />
+      )}
+      {linkUrl && <MediaLinkOverlay href={linkUrl} />}
+    </div>
+  )
+}
+
+function ColbMedia({ items }) {
+  if (items.length === 0) return null
+  if (items.length === 1) {
+    return (
+      <div className="colb-media-grid single">
+        <ColbMediaItem item={items[0]} priority order={0} />
+      </div>
+    )
+  }
+  // Two-column masonry: items go into whichever column currently has
+  // less accumulated height, using aspect ratio as a stand-in since real
+  // heights aren't known until media loads. Falls back to a manual
+  // override in caseItemsColumns.js for items with unusual ratios.
+  const col1 = []
+  const col2 = []
+  let h1 = 0
+  let h2 = 0
+  items.forEach((item, index) => {
+    const override = columnOverrides[item.src]
+    const ratio = item.ratio || 1
+    let targetCol
+    if (override === 1) targetCol = 0
+    else if (override === 2) targetCol = 1
+    else targetCol = h1 <= h2 ? 0 : 1
+    if (targetCol === 0) {
+      col1.push({ item, index })
+      h1 += ratio
+    } else {
+      col2.push({ item, index })
+      h2 += ratio
+    }
+  })
+  return (
+    <div className="colb-media-grid">
+      <div className="colb-media-col">
+        {col1.map(({ item, index }) => (
+          <ColbMediaItem key={item.src} item={item} priority={index === 0} order={index} />
+        ))}
+      </div>
+      <div className="colb-media-col">
+        {col2.map(({ item, index }) => (
+          <ColbMediaItem key={item.src} item={item} priority={index === 0} order={index} />
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function ColbNavButton({ id, label, activeId, onNavigate }) {
+  return (
+    <button
+      type="button"
+      className={activeId === id ? 'active' : ''}
+      onClick={() => onNavigate(id)}
+    >
+      {label}
+    </button>
+  )
+}
+
+function ColbSidebar({ nav, activeId, onNavigate }) {
+  const processChildren = [
+    { id: 'motion-videos', label: nav.motionVideos },
+    { id: 'brand-social', label: nav.brandSocial },
+    { id: 'one-pager', label: nav.onePager },
+    { id: 'gitbook', label: nav.gitbook },
+  ]
+  return (
+    <nav className="colb-sidebar" aria-label={nav.root}>
+      <ul className="colb-sidebar-list">
+        <li className="colb-sidebar-item">
+          <ColbNavButton id="context" label={nav.context} activeId={activeId} onNavigate={onNavigate} />
+        </li>
+        <li className="colb-sidebar-item">
+          <span className="colb-sidebar-group">{nav.process}</span>
+          <ul className="colb-sidebar-sublist">
+            {processChildren.map((item) => (
+              <li key={item.id} className="colb-sidebar-item">
+                <ColbNavButton id={item.id} label={item.label} activeId={activeId} onNavigate={onNavigate} />
+              </li>
+            ))}
+          </ul>
+        </li>
+        <li className="colb-sidebar-item">
+          <ColbNavButton id="output" label={nav.output} activeId={activeId} onNavigate={onNavigate} />
+        </li>
+      </ul>
+    </nav>
+  )
+}
+
+function ColbCaseBody({ content, nav }) {
+  const contentRef = useRef(null)
+  const [activeId, setActiveId] = useState('context')
+  const sectionIds = ['context', 'motion-videos', 'brand-social', 'one-pager', 'gitbook', 'output']
+
+  useEffect(() => {
+    const sections = sectionIds
+      .map((id) => document.getElementById(id))
+      .filter(Boolean)
+    if (sections.length === 0) return
+    const OFFSET = 160
+    let ticking = false
+    const update = () => {
+      ticking = false
+      const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2
+      if (atBottom) {
+        setActiveId(sections[sections.length - 1].id)
+        return
+      }
+      let current = sections[0].id
+      for (const s of sections) {
+        if (s.getBoundingClientRect().top - OFFSET <= 0) current = s.id
+      }
+      setActiveId(current)
+    }
+    const onScroll = () => {
+      if (ticking) return
+      ticking = true
+      requestAnimationFrame(update)
+    }
+    update()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll)
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [content])
+
+  const handleNavigate = (id) => {
+    if (id === 'top') {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+      return
+    }
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
+  return (
+    <div className="colb-layout" ref={contentRef}>
+      <ColbSidebar nav={nav} activeId={activeId} onNavigate={handleNavigate} />
+      <div className="colb-content">
+        <section id="context" className="colb-section">
+          <p className="colb-section-label">{nav.context}</p>
+          <p className="colb-text">{content.context}</p>
+        </section>
+
+        <p className="colb-section-label colb-process-label">{nav.process}</p>
+
+        <section id="motion-videos" className="colb-section">
+          <p className="colb-section-label">{nav.motionVideos}</p>
+          <p className="colb-text">{content.motionVideosP1a}</p>
+          <ColbMedia items={[{ type: 'image', src: COLB_STORYBOARD, alt: 'Colb storyboard sequence' }]} />
+          <p className="colb-text">{content.motionVideosP1b}</p>
+          <ColbMedia
+            items={COLB_MOTION_REST.map((src, i) => ({ type: 'video', src, alt: `Colb motion video ${i + 2}` }))}
+          />
+          <p className="colb-text">{content.motionVideosP2}</p>
+          <ColbMedia items={[{ type: 'video', src: COLB_MOTION_MAIN, alt: 'Colb x PancakeSwap video' }]} />
+        </section>
+
+        <section id="brand-social" className="colb-section">
+          <p className="colb-section-label">{nav.brandSocial}</p>
+          <p className="colb-text">{content.extraNews}</p>
+          <ColbMedia items={[{ type: 'image', src: COLB_EXTRA_NEWS, alt: 'Extra News banner template' }]} />
+          <p className="colb-text">{content.editorial}</p>
+          <ColbMedia
+            items={COLB_BANNERS.map((src, i) => ({ type: 'image', src, alt: `Colb editorial banner ${i + 1}` }))}
+          />
+        </section>
+
+        <section id="one-pager" className="colb-section">
+          <p className="colb-section-label">{nav.onePager}</p>
+          <p className="colb-text">{content.onePager}</p>
+          <ColbMedia items={[{ type: 'image', src: COLB_ONE_PAGER, alt: 'Colb one pager document' }]} />
+        </section>
+
+        <section id="gitbook" className="colb-section">
+          <p className="colb-section-label">{nav.gitbook}</p>
+          <p className="colb-text">{content.gitbook}</p>
+          <ColbMedia items={[{ type: 'image', src: COLB_GITBOOK, alt: 'Colb GitBook visuals' }]} />
+          <a
+            href="https://docs.colb.finance/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="colb-inline-link"
+          >
+            {content.gitbookLink}
+          </a>
+        </section>
+
+        <section id="output" className="colb-section">
+          <p className="colb-section-label">{nav.output}</p>
+          <p className="colb-text">{content.output}</p>
+        </section>
+      </div>
+    </div>
+  )
+}
+
 function MediaLinkOverlay({ href }) {
   return (
     <a
@@ -304,26 +533,32 @@ function CasePage({ theme, setTheme, lang, setLang }) {
       </header>
 
       {/* Case Hero */}
-      <section className="case-hero">
-        <h1 className="case-title"><a href={caseData.url} target="_blank" rel="noopener noreferrer">{caseData.company}<span className="hero-dot">.</span></a></h1>
-        {caseTranslation?.description && (
-          <p className="case-description">{caseTranslation.description}</p>
-        )}
-        {caseTranslation?.skills && caseTranslation.skills.length > 0 && (
-          <ul className="case-skills">
-            {Array.from({ length: Math.ceil(caseTranslation.skills.length / 2) }, (_, ri) => (
-              <li key={ri} className="case-skills-row">
-                {caseTranslation.skills.slice(ri * 2, ri * 2 + 2).map((skill) => (
-                  <span key={skill} className="case-skill">{skill}</span>
-                ))}
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
+      {slug !== 'colb-finance' && (
+        <section className="case-hero">
+          <h1 className="case-title"><a href={caseData.url} target="_blank" rel="noopener noreferrer">{caseData.company}<span className="hero-dot">.</span></a></h1>
+          {caseTranslation?.description && (
+            <p className="case-description">{caseTranslation.description}</p>
+          )}
+          {caseTranslation?.skills && caseTranslation.skills.length > 0 && (
+            <ul className="case-skills">
+              {Array.from({ length: Math.ceil(caseTranslation.skills.length / 2) }, (_, ri) => (
+                <li key={ri} className="case-skills-row">
+                  {caseTranslation.skills.slice(ri * 2, ri * 2 + 2).map((skill) => (
+                    <span key={skill} className="case-skill">{skill}</span>
+                  ))}
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      )}
+
+      {slug === 'colb-finance' && caseTranslation?.content && (
+        <ColbCaseBody content={caseTranslation.content} nav={caseTranslation.nav} />
+      )}
 
       {/* Filter */}
-      {(() => {
+      {slug !== 'colb-finance' && (() => {
         const videoCount = caseData.items.filter((it) => it.type === 'video').length
         const imageCount = caseData.items.length - videoCount
         if (videoCount === 0 || imageCount === 0) return null
@@ -362,7 +597,7 @@ function CasePage({ theme, setTheme, lang, setLang }) {
           CSS `order` preserves source order both within each column
           (where they happen to render in render order anyway) and
           when the layout collapses to one column on narrow phones. */}
-      {(() => {
+      {slug !== 'colb-finance' && (() => {
         const visibleItems = caseData.items.filter(
           (item) => filter === 'all' || item.type === filter
         )
