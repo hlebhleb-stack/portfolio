@@ -915,6 +915,41 @@ body {
   margin-bottom: 20px;
 }
 
+/* Touch-primary devices (any width/orientation) get the same no-custom-cursor,
+   native-pointer behavior as mobile. This is separate from the width-based tablet
+   breakpoint below: a landscape tablet (e.g. iPad in landscape, ~1180-1366px wide)
+   is still touch-only but wider than 1024px, so a width breakpoint alone would miss it
+   and leave the desktop custom cursor showing. */
+@media (hover: none), (pointer: coarse) {
+  .custom-cursor {
+    display: none;
+  }
+  body,
+  .page,
+  .home-page,
+  a,
+  span[role="button"] {
+    cursor: auto;
+  }
+  .lang-btn,
+  .theme-btn,
+  .nav-link,
+  .social-icon,
+  .footer-email,
+  .footer-cv,
+  .work-folder,
+  .home-social,
+  .case-filter-btn,
+  .theme-toggle-btn,
+  .video-mute-btn,
+  .video-link-btn {
+    cursor: pointer;
+  }
+  .case-gallery-item video {
+    cursor: pointer;
+  }
+}
+
 /* ========== Tablet (768px – 1024px) ========== */
 @media (max-width: 1024px) {
   /* Touch-style behavior: no custom cursor, native pointers */
