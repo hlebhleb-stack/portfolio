@@ -21,34 +21,57 @@ function getAudio() {
   return sharedAudio
 }
 
-const MENU_CLOSE_MS = 260
+const MENU_CLOSE_FALLBACK_MS = 300
 
 export default function MusicPlayer() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [menuRendered, setMenuRendered] = useState(false)
-  const [menuClosing, setMenuClosing] = useState(false)
+  const [menuEntered, setMenuEntered] = useState(false)
   const [currentId, setCurrentId] = useState(null)
   const [isPlaying, setIsPlaying] = useState(false)
   const wrapRef = useRef(null)
-  const closeTimeoutRef = useRef(null)
+  const fallbackTimeoutRef = useRef(null)
 
   useEffect(() => {
-    if (menuOpen) {
-      if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current)
-      setMenuClosing(false)
-      setMenuRendered(true)
-    } else if (menuRendered) {
-      setMenuClosing(true)
-      closeTimeoutRef.current = setTimeout(() => {
-        setMenuRendered(false)
-        setMenuClosing(false)
-      }, MENU_CLOSE_MS)
-    }
     return () => {
-      if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current)
+      if (fallbackTimeoutRef.current) clearTimeout(fallbackTimeoutRef.current)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [menuOpen])
+  }, [])
+
+  useEffect(() => {
+    if (!menuRendered || !menuOpen) return undefined
+    let raf2 = 0
+    const raf1 = requestAnimationFrame(() => {
+      raf2 = requestAnimationFrame(() => setMenuEntered(true))
+    })
+    return () => {
+      cancelAnimationFrame(raf1)
+      if (raf2) cancelAnimationFrame(raf2)
+    }
+  }, [menuRendered, menuOpen])
+
+  const openMenu = () => {
+    if (fallbackTimeoutRef.current) clearTimeout(fallbackTimeoutRef.current)
+    setMenuOpen(true)
+    setMenuRendered(true)
+  }
+
+  const closeMenu = () => {
+    setMenuOpen(false)
+    setMenuEntered(false)
+    if (fallbackTimeoutRef.current) clearTimeout(fallbackTimeoutRef.current)
+    fallbackTimeoutRef.current = setTimeout(() => {
+      setMenuRendered(false)
+    }, MENU_CLOSE_FALLBACK_MS)
+  }
+
+  const handleMenuTransitionEnd = (e) => {
+    if (e.target !== e.currentTarget || e.propertyName !== 'opacity') return
+    if (!menuOpen) {
+      if (fallbackTimeoutRef.current) clearTimeout(fallbackTimeoutRef.current)
+      setMenuRendered(false)
+    }
+  }
 
   useEffect(() => {
     const audio = getAudio()
@@ -72,7 +95,7 @@ export default function MusicPlayer() {
     if (!menuOpen) return
     const onClickOutside = (e) => {
       if (wrapRef.current && !wrapRef.current.contains(e.target)) {
-        setMenuOpen(false)
+        closeMenu()
       }
     }
     document.addEventListener('mousedown', onClickOutside)
@@ -92,7 +115,7 @@ export default function MusicPlayer() {
       audio.play().catch(() => {})
       setCurrentId(track.id)
     }
-    setMenuOpen(false)
+    closeMenu()
   }
 
   const handleStop = () => {
@@ -100,7 +123,7 @@ export default function MusicPlayer() {
     audio.pause()
     audio.removeAttribute('src')
     setCurrentId(null)
-    setMenuOpen(false)
+    closeMenu()
   }
 
   const currentTrack = TRACKS.find((track) => track.id === currentId)
@@ -110,7 +133,7 @@ export default function MusicPlayer() {
       <button
         type="button"
         className="theme-toggle-btn music-toggle-btn"
-        onClick={() => setMenuOpen((open) => !open)}
+        onClick={() => (menuOpen ? closeMenu() : openMenu())}
         aria-label="Toggle music menu"
       >
         <img
@@ -122,7 +145,10 @@ export default function MusicPlayer() {
       </button>
 
       {menuRendered && (
-        <div className={`music-menu${menuClosing ? ' is-closing' : ''}`}>
+        <div
+          className={`music-menu${menuEntered ? ' is-entered' : ''}`}
+          onTransitionEnd={handleMenuTransitionEnd}
+        >
           {currentTrack && (
             <button
               type="button"
