@@ -326,12 +326,23 @@ function App() {
   useEffect(() => {
     const cursor = cursorRef.current
     if (!cursor) return
+    let raf = 0
+    let pendingX = 0
+    let pendingY = 0
     const onMouseMove = (e) => {
-      cursor.style.left = e.clientX + 'px'
-      cursor.style.top = e.clientY + 'px'
+      pendingX = e.clientX
+      pendingY = e.clientY
+      if (raf) return
+      raf = requestAnimationFrame(() => {
+        raf = 0
+        cursor.style.transform = `translate3d(${pendingX}px, ${pendingY}px, 0) translate(-50%, -50%)`
+      })
     }
-    window.addEventListener('mousemove', onMouseMove)
-    return () => window.removeEventListener('mousemove', onMouseMove)
+    window.addEventListener('mousemove', onMouseMove, { passive: true })
+    return () => {
+      window.removeEventListener('mousemove', onMouseMove)
+      if (raf) cancelAnimationFrame(raf)
+    }
   }, [])
 
   const isHome = location.pathname === '/'
