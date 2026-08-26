@@ -197,8 +197,8 @@ body {
   left: 50%;
   transform-origin: top center;
   opacity: 0;
-  transform: translateX(-50%) scale(0.4, 0.2);
-  transition: opacity 0.22s cubic-bezier(0.22, 1, 0.36, 1), transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+  transform: translate3d(-50%, -6px, 0) scale(0.96);
+  transition: opacity 0.16s ease-out, transform 0.16s ease-out;
   will-change: opacity, transform;
   min-width: 200px;
   background: var(--bg);
@@ -212,7 +212,7 @@ body {
 
 .music-menu.is-entered {
   opacity: 1;
-  transform: translateX(-50%) scale(1, 1);
+  transform: translate3d(-50%, 0, 0) scale(1);
 }
 
 .music-menu-item {
@@ -588,6 +588,14 @@ body {
   -webkit-backdrop-filter: blur(12px);
   opacity: 1;
   transition: opacity 0.4s;
+}
+
+@media (max-width: 768px) {
+  .home-page::before,
+  .home-page::after {
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
 }
 
 .home-page--socials::before,
