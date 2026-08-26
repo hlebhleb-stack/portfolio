@@ -196,6 +196,15 @@ function ColbMedia({ items }) {
   )
 }
 
+function ColbLabel({ children, className = '' }) {
+  return (
+    <p className={`colb-section-label${className ? ` ${className}` : ''}`}>
+      <img src="/assets/dot.svg" alt="" className="colb-label-dot" aria-hidden="true" />
+      {children}
+    </p>
+  )
+}
+
 function ColbNavButton({ id, label, activeId, onNavigate }) {
   return (
     <button
@@ -518,11 +527,11 @@ function CasePage({ theme, setTheme, lang, setLang }) {
             ]}
           >
             <section id="context" className="colb-section">
-              <p className="colb-section-label">{nav.context}</p>
+              <ColbLabel>{nav.context}</ColbLabel>
               <p className="colb-text">{content.context}</p>
             </section>
 
-            <p className="colb-section-label colb-process-label">{nav.process}</p>
+            <ColbLabel className="colb-process-label">{nav.process}</ColbLabel>
 
             <section id="motion-videos" className="colb-section">
               <p className="colb-section-label">{nav.motionVideos}</p>
@@ -567,7 +576,7 @@ function CasePage({ theme, setTheme, lang, setLang }) {
             </section>
 
             <section id="output" className="colb-section">
-              <p className="colb-section-label">{nav.output}</p>
+              <ColbLabel>{nav.output}</ColbLabel>
               <p className="colb-text">{content.output}</p>
             </section>
           </ColbCaseBody>
@@ -587,11 +596,11 @@ function CasePage({ theme, setTheme, lang, setLang }) {
             ]}
           >
             <section id="context" className="colb-section">
-              <p className="colb-section-label">{nav.context}</p>
+              <ColbLabel>{nav.context}</ColbLabel>
               <p className="colb-text">{content.context}</p>
             </section>
 
-            <p className="colb-section-label colb-process-label">{nav.process}</p>
+            <ColbLabel className="colb-process-label">{nav.process}</ColbLabel>
 
             <section id="motion-videos" className="colb-section">
               <p className="colb-section-label">{nav.motionVideos}</p>
@@ -602,7 +611,7 @@ function CasePage({ theme, setTheme, lang, setLang }) {
             </section>
 
             <section id="output" className="colb-section">
-              <p className="colb-section-label">{nav.output}</p>
+              <ColbLabel>{nav.output}</ColbLabel>
               <p className="colb-text">{content.output}</p>
             </section>
           </ColbCaseBody>
@@ -628,11 +637,11 @@ function CasePage({ theme, setTheme, lang, setLang }) {
             ]}
           >
             <section id="context" className="colb-section">
-              <p className="colb-section-label">{nav.context}</p>
+              <ColbLabel>{nav.context}</ColbLabel>
               <p className="colb-text">{content.context}</p>
             </section>
 
-            <p className="colb-section-label colb-process-label">{nav.process}</p>
+            <ColbLabel className="colb-process-label">{nav.process}</ColbLabel>
 
             <section id="motion-videos" className="colb-section">
               <p className="colb-section-label">{nav.motionVideos}</p>
@@ -651,7 +660,7 @@ function CasePage({ theme, setTheme, lang, setLang }) {
             </section>
 
             <section id="output" className="colb-section">
-              <p className="colb-section-label">{nav.output}</p>
+              <ColbLabel>{nav.output}</ColbLabel>
               <p className="colb-text">{content.output}</p>
             </section>
           </ColbCaseBody>

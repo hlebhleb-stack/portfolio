@@ -1003,10 +1003,20 @@ body {
 }
 
 .colb-section-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   font-size: 15px;
   font-weight: 500;
   color: var(--text);
   margin: 0 0 16px;
+}
+
+.colb-label-dot {
+  width: 10px;
+  height: auto;
+  flex-shrink: 0;
+  display: block;
 }
 
 .colb-process-label {
