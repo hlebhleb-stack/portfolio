@@ -21,6 +21,16 @@ const TRACKS = [
   },
 ]
 
+// Warm the browser cache for every cover as soon as this module loads, so by the
+// time the user opens the menu or switches tracks the images are already decoded
+// instead of popping in.
+if (typeof window !== 'undefined') {
+  TRACKS.forEach((track) => {
+    const img = new Image()
+    img.src = track.icon
+  })
+}
+
 let sharedAudio = null
 function getAudio() {
   if (!sharedAudio) sharedAudio = new Audio()
