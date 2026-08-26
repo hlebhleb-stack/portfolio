@@ -191,15 +191,37 @@ body {
   to { transform: rotate(360deg); }
 }
 
+@keyframes music-menu-genie {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) scale(0.35, 0.15);
+  }
+  60% {
+    opacity: 1;
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) scale(1, 1);
+  }
+}
+
+@keyframes music-menu-genie-close {
+  from {
+    opacity: 1;
+    transform: translateX(-50%) scale(1, 1);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-50%) scale(0.35, 0.15);
+  }
+}
+
 .music-menu {
   position: absolute;
   top: calc(100% + 14px);
   left: 50%;
   transform-origin: top center;
-  opacity: 0;
-  transform: translate3d(-50%, -6px, 0) scale(0.96);
-  transition: opacity 0.16s ease-out, transform 0.16s ease-out;
-  will-change: opacity, transform;
+  animation: music-menu-genie 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
   min-width: 200px;
   background: var(--bg);
   border: 1px solid var(--divider);
@@ -210,9 +232,41 @@ body {
   gap: 2px;
 }
 
-.music-menu.is-entered {
-  opacity: 1;
-  transform: translate3d(-50%, 0, 0) scale(1);
+.music-menu.is-closing {
+  animation: music-menu-genie-close 0.26s cubic-bezier(0.4, 0, 1, 1) both;
+}
+
+/* Touch devices can't composite the genie squash smoothly — plain fade there. */
+@media (hover: none), (pointer: coarse) {
+  .music-menu {
+    animation: music-menu-fade 0.16s ease-out both;
+  }
+
+  .music-menu.is-closing {
+    animation: music-menu-fade-close 0.14s ease-in both;
+  }
+}
+
+@keyframes music-menu-fade {
+  from {
+    opacity: 0;
+    transform: translate3d(-50%, -4px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes music-menu-fade-close {
+  from {
+    opacity: 1;
+    transform: translate3d(-50%, 0, 0);
+  }
+  to {
+    opacity: 0;
+    transform: translate3d(-50%, -4px, 0);
+  }
 }
 
 .music-menu-item {
