@@ -48,6 +48,10 @@ export default function MusicPlayer() {
     const audio = getAudio()
     return Boolean(audio.src) && !audio.paused && !audio.ended
   })
+  const [progress, setProgress] = useState(() => {
+    const audio = getAudio()
+    return audio.duration ? audio.currentTime / audio.duration : 0
+  })
   const wrapRef = useRef(null)
   const menuRef = useRef(null)
   const closeTimeoutRef = useRef(null)
@@ -101,16 +105,22 @@ export default function MusicPlayer() {
     const onEnded = () => {
       setIsPlaying(false)
       setCurrentId(null)
+      setProgress(0)
     }
     const onPause = () => setIsPlaying(false)
     const onPlay = () => setIsPlaying(true)
+    const onTimeUpdate = () => {
+      setProgress(audio.duration ? audio.currentTime / audio.duration : 0)
+    }
     audio.addEventListener('ended', onEnded)
     audio.addEventListener('pause', onPause)
     audio.addEventListener('play', onPlay)
+    audio.addEventListener('timeupdate', onTimeUpdate)
     return () => {
       audio.removeEventListener('ended', onEnded)
       audio.removeEventListener('pause', onPause)
       audio.removeEventListener('play', onPlay)
+      audio.removeEventListener('timeupdate', onTimeUpdate)
     }
   }, [])
 
@@ -137,6 +147,7 @@ export default function MusicPlayer() {
       audio.src = track.src
       audio.play().catch(() => {})
       setCurrentId(track.id)
+      setProgress(0)
     }
     closeMenu()
   }
@@ -146,6 +157,7 @@ export default function MusicPlayer() {
     audio.pause()
     audio.removeAttribute('src')
     setCurrentId(null)
+    setProgress(0)
     closeMenu()
   }
 
@@ -190,7 +202,17 @@ export default function MusicPlayer() {
               onClick={() => handleSelectTrack(track)}
             >
               <img src={track.icon} alt="" className="music-menu-icon" draggable="false" />
-              <span className="music-menu-title">{track.title}</span>
+              <span className="music-menu-text">
+                <span className="music-menu-title">{track.title}</span>
+                {currentId === track.id && (
+                  <span className="music-menu-progress">
+                    <span
+                      className="music-menu-progress-fill"
+                      style={{ width: `${Math.min(100, Math.max(0, progress * 100))}%` }}
+                    />
+                  </span>
+                )}
+              </span>
             </button>
           ))}
         </div>

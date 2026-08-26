@@ -259,10 +259,33 @@ body {
   object-fit: cover;
 }
 
+.music-menu-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  flex: 1;
+}
+
 .music-menu-title {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.music-menu-progress {
+  display: block;
+  height: 2px;
+  background: var(--divider);
+  overflow: hidden;
+}
+
+.music-menu-progress-fill {
+  display: block;
+  height: 100%;
+  background: var(--text);
+  width: 0%;
+  transition: width 0.25s linear;
 }
 
 /* Navigation */
