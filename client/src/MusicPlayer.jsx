@@ -13,6 +13,12 @@ const TRACKS = [
     icon: '/assets/radiohead-exitmusic.png',
     src: '/assets/radiohead-exitmusic.mp3',
   },
+  {
+    id: 'dumb',
+    title: 'Dumb',
+    icon: '/assets/nirvana-dumb.png',
+    src: '/assets/nirvana-dumb.mp3',
+  },
 ]
 
 let sharedAudio = null
