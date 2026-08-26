@@ -27,34 +27,61 @@ function getAudio() {
   return sharedAudio
 }
 
-const MENU_CLOSE_MS = 260
+const MENU_CLOSE_FALLBACK_MS = 320
 
 export default function MusicPlayer() {
-  const [menuOpen, setMenuOpen] = useState(false)
-  const [menuRendered, setMenuRendered] = useState(false)
-  const [menuClosing, setMenuClosing] = useState(false)
+  // 'closed' -> not in DOM. 'entering' -> just mounted, about to transition to open on
+  // the next frame. 'open' -> resting open state. 'closing' -> transitioning out.
+  const [menuPhase, setMenuPhase] = useState('closed')
   const [currentId, setCurrentId] = useState(null)
   const [isPlaying, setIsPlaying] = useState(false)
   const wrapRef = useRef(null)
+  const menuRef = useRef(null)
   const closeTimeoutRef = useRef(null)
 
+  const openMenu = () => {
+    if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current)
+    setMenuPhase('entering')
+  }
+
+  const closeMenu = () => {
+    setMenuPhase((phase) => (phase === 'closed' ? 'closed' : 'closing'))
+  }
+
+  // Flip 'entering' -> 'open' a couple frames after mount, so the browser commits the
+  // collapsed starting style before the transition to the open state kicks in.
   useEffect(() => {
-    if (menuOpen) {
-      if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current)
-      setMenuClosing(false)
-      setMenuRendered(true)
-    } else if (menuRendered) {
-      setMenuClosing(true)
-      closeTimeoutRef.current = setTimeout(() => {
-        setMenuRendered(false)
-        setMenuClosing(false)
-      }, MENU_CLOSE_MS)
-    }
+    if (menuPhase !== 'entering') return
+    let raf2 = null
+    const raf1 = requestAnimationFrame(() => {
+      raf2 = requestAnimationFrame(() => setMenuPhase('open'))
+    })
     return () => {
-      if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current)
+      cancelAnimationFrame(raf1)
+      if (raf2) cancelAnimationFrame(raf2)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [menuOpen])
+  }, [menuPhase])
+
+  // Unmount once the close transition actually finishes, rather than guessing a fixed
+  // delay — a real device under load can run the transition slower or faster than the
+  // CSS duration, and a hardcoded timeout would then unmount too early (visible cutoff)
+  // or leave a stale invisible node too long.
+  useEffect(() => {
+    if (menuPhase !== 'closing') return
+    const node = menuRef.current
+    const finish = () => setMenuPhase('closed')
+    closeTimeoutRef.current = setTimeout(finish, MENU_CLOSE_FALLBACK_MS)
+    const onTransitionEnd = (e) => {
+      if (e.target !== node) return
+      clearTimeout(closeTimeoutRef.current)
+      finish()
+    }
+    node?.addEventListener('transitionend', onTransitionEnd)
+    return () => {
+      clearTimeout(closeTimeoutRef.current)
+      node?.removeEventListener('transitionend', onTransitionEnd)
+    }
+  }, [menuPhase])
 
   useEffect(() => {
     const audio = getAudio()
@@ -75,15 +102,15 @@ export default function MusicPlayer() {
   }, [])
 
   useEffect(() => {
-    if (!menuOpen) return
+    if (menuPhase === 'closed') return
     const onClickOutside = (e) => {
       if (wrapRef.current && !wrapRef.current.contains(e.target)) {
-        setMenuOpen(false)
+        closeMenu()
       }
     }
     document.addEventListener('mousedown', onClickOutside)
     return () => document.removeEventListener('mousedown', onClickOutside)
-  }, [menuOpen])
+  }, [menuPhase])
 
   const handleSelectTrack = (track) => {
     const audio = getAudio()
@@ -98,7 +125,7 @@ export default function MusicPlayer() {
       audio.play().catch(() => {})
       setCurrentId(track.id)
     }
-    setMenuOpen(false)
+    closeMenu()
   }
 
   const handleStop = () => {
@@ -106,7 +133,7 @@ export default function MusicPlayer() {
     audio.pause()
     audio.removeAttribute('src')
     setCurrentId(null)
-    setMenuOpen(false)
+    closeMenu()
   }
 
   const currentTrack = TRACKS.find((track) => track.id === currentId)
@@ -116,7 +143,7 @@ export default function MusicPlayer() {
       <button
         type="button"
         className="theme-toggle-btn music-toggle-btn"
-        onClick={() => setMenuOpen((open) => !open)}
+        onClick={() => (menuPhase === 'closed' ? openMenu() : closeMenu())}
         aria-label="Toggle music menu"
       >
         <img
@@ -127,8 +154,11 @@ export default function MusicPlayer() {
         />
       </button>
 
-      {menuRendered && (
-        <div className={`music-menu${menuClosing ? ' is-closing' : ''}`}>
+      {menuPhase !== 'closed' && (
+        <div
+          ref={menuRef}
+          className={`music-menu${menuPhase === 'closing' ? ' is-closing' : menuPhase === 'entering' ? ' is-entering' : ''}`}
+        >
           {currentTrack && (
             <button
               type="button"
