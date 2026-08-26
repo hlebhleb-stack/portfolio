@@ -27,14 +27,27 @@ function getAudio() {
   return sharedAudio
 }
 
+function findTrackIdForAudio(audio) {
+  if (!audio.src) return null
+  const track = TRACKS.find((t) => audio.src.endsWith(t.src))
+  return track ? track.id : null
+}
+
 const MENU_CLOSE_FALLBACK_MS = 320
 
 export default function MusicPlayer() {
   // 'closed' -> not in DOM. 'entering' -> just mounted, about to transition to open on
   // the next frame. 'open' -> resting open state. 'closing' -> transitioning out.
   const [menuPhase, setMenuPhase] = useState('closed')
-  const [currentId, setCurrentId] = useState(null)
-  const [isPlaying, setIsPlaying] = useState(false)
+  // The audio element is a module-level singleton that survives navigation between
+  // pages, but each mounted MusicPlayer (Home, CasePage) starts with fresh state —
+  // read the singleton's actual src/paused status instead of assuming nothing is
+  // playing, so the header icon doesn't fall back to the plain vinyl on navigation.
+  const [currentId, setCurrentId] = useState(() => findTrackIdForAudio(getAudio()))
+  const [isPlaying, setIsPlaying] = useState(() => {
+    const audio = getAudio()
+    return Boolean(audio.src) && !audio.paused && !audio.ended
+  })
   const wrapRef = useRef(null)
   const menuRef = useRef(null)
   const closeTimeoutRef = useRef(null)
