@@ -72,11 +72,25 @@ function anyVideoAudible() {
 // from the native, asynchronously-queued media events — it also catches a
 // video resuming on its own (e.g. scrolling an already-unmuted video back
 // into view), not just direct mute-button clicks.
-function pauseMusicIfVideoAudible() {
+// The resume half runs from here too, as a best-effort fallback for the
+// cases no click handler covers (an unmuted video scrolling out of view and
+// pausing itself). Browsers that demand a gesture will reject that play()
+// and the button's own 'video-muted' event stays the reliable path.
+function syncMusicToVideos() {
   const audio = getAudio()
-  if (anyVideoAudible() && audio.src && !audio.paused) {
-    pausedByVideo = true
-    audio.pause()
+  if (!audio.src) return
+  if (anyVideoAudible()) {
+    if (!audio.paused) {
+      pausedByVideo = true
+      audio.pause()
+    }
+  } else if (pausedByVideo && audio.paused) {
+    pausedByVideo = false
+    audio.play().catch(() => {
+      // Rejected for want of a user gesture — leave the flag set so the
+      // mute button's synchronous handler can still pick it back up.
+      pausedByVideo = true
+    })
   }
 }
 
@@ -89,8 +103,9 @@ function installVideoWatcher() {
   videoWatcherInstalled = true
   // play/pause/volumechange don't bubble, so listen on the capturing phase
   // at the document to catch them from any video regardless of nesting.
-  document.addEventListener('play', pauseMusicIfVideoAudible, true)
-  document.addEventListener('volumechange', pauseMusicIfVideoAudible, true)
+  document.addEventListener('play', syncMusicToVideos, true)
+  document.addEventListener('pause', syncMusicToVideos, true)
+  document.addEventListener('volumechange', syncMusicToVideos, true)
 }
 
 const MENU_CLOSE_FALLBACK_MS = 320
@@ -127,9 +142,12 @@ export default function MusicPlayer() {
   useEffect(() => {
     const onVideoMuted = () => {
       if (!pausedByVideo) return
+      // Another video may still be audible (the click only silenced this
+      // one) — in that case the music stays paused and keeps its flag.
+      if (anyVideoAudible()) return
       pausedByVideo = false
       const audio = getAudio()
-      if (audio.src) audio.play().catch(() => {})
+      if (audio.src) audio.play().catch(() => { pausedByVideo = true })
     }
     window.addEventListener('video-muted', onVideoMuted)
     return () => window.removeEventListener('video-muted', onVideoMuted)
@@ -261,7 +279,7 @@ export default function MusicPlayer() {
         <img
           src={currentTrack ? currentTrack.icon : '/assets/vinyl.svg'}
           alt=""
-          className={`music-icon${currentTrack ? ' music-icon-active' : ''}`}
+          className={`music-icon${currentTrack ? ' music-icon-active' : ''}${currentTrack && !isPlaying ? ' music-icon-paused' : ''}`}
           draggable="false"
         />
       </button>

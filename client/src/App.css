@@ -181,6 +181,13 @@ body {
   height: 44px;
 }
 
+/* The record stops turning whenever its track is paused — including when a
+   video's audio takes over the channel — and picks the rotation back up from
+   wherever it stopped once the music resumes. */
+.music-icon-paused {
+  animation-play-state: paused;
+}
+
 [data-theme="dark"] .music-icon:not(.music-icon-active) {
   filter: invert(1);
   transition: filter 0.3s;
