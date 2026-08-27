@@ -929,6 +929,42 @@ body {
   }
 }
 
+.case-nav {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 16px;
+  margin-top: 100px;
+}
+
+.case-nav-arrow {
+  background: none;
+  border: none;
+  padding: 8px;
+  margin: -8px;
+  display: flex;
+  align-items: center;
+  cursor: none;
+}
+
+.case-nav-arrow img {
+  width: 56px;
+  height: auto;
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .case-nav {
+    margin-top: 60px;
+  }
+  .case-nav-arrow {
+    cursor: pointer;
+  }
+  .case-nav-arrow img {
+    width: 40px;
+  }
+}
+
 /* ========== Colb case — sidebar TOC + document layout ========== */
 .colb-layout {
   display: flex;

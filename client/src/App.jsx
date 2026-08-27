@@ -1,5 +1,5 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { Routes, Route, Link, useLocation } from 'react-router-dom'
+import { Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom'
 import CasePage from './CasePage.jsx'
 import useFadeIn from './useFadeIn.js'
 import { translations, LANGS } from './translations.jsx'
@@ -52,7 +52,19 @@ function HomePage({ theme, setTheme, lang, setLang }) {
   const pageRef = useFadeIn()
   const sectionsRef = useRef(null)
   const location = useLocation()
+  const navigate = useNavigate()
   const t = translations[lang]
+
+  // Case-page nav arrows send you here from the first/last case, past either
+  // end of the CASE_ORDER sequence — land on the works section instead of
+  // the hero. Clear the state after acting on it so back/forward navigation
+  // and reloads don't keep re-triggering the scroll.
+  useEffect(() => {
+    if (location.pathname === '/' && location.state?.scrollToWorks) {
+      document.getElementById('works')?.scrollIntoView()
+      navigate('/', { replace: true, state: {} })
+    }
+  }, [location, navigate])
   const [typed, setTyped] = useState('')
   const [caretPhase, setCaretPhase] = useState('typing')
   const [pressedWork, setPressedWork] = useState(null)

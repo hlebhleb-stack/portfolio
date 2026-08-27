@@ -128,6 +128,11 @@ const SOVA_BANNERS = Array.from({ length: 3 }, (_, i) => `/assets/works/sova-lab
 
 const DOC_CASE_SLUGS = ['colb-finance', 're-protocol', 'sova-labs']
 
+// Matches the folder order on the home page's works section — left/right
+// case nav follows the same sequence, and runs off either end into that
+// section rather than wrapping around.
+const CASE_ORDER = ['colb-finance', 'sova-labs', 're-protocol']
+
 function ColbMediaItem({ item, priority, order }) {
   const linkUrl = mediaLinks[item.src]
   return (
@@ -244,7 +249,7 @@ function ColbSidebar({ navItems, activeId, onNavigate }) {
   )
 }
 
-function ColbCaseBody({ sectionIds, navItems, children }) {
+function ColbCaseBody({ sectionIds, navItems, children, footer }) {
   const contentRef = useRef(null)
   const [activeId, setActiveId] = useState(sectionIds[0])
 
@@ -290,7 +295,10 @@ function ColbCaseBody({ sectionIds, navItems, children }) {
   return (
     <div className="colb-layout" ref={contentRef}>
       <ColbSidebar navItems={navItems} activeId={activeId} onNavigate={handleNavigate} />
-      <div className="colb-content">{children}</div>
+      <div className="colb-content">
+        {children}
+        {footer}
+      </div>
     </div>
   )
 }
@@ -438,6 +446,35 @@ function CasePage({ theme, setTheme, lang, setLang }) {
     }
   }, [slug, navigate, location.key])
 
+  const caseNav = (
+    <div className="case-nav">
+      <button
+        type="button"
+        className="case-nav-arrow case-nav-arrow-left"
+        aria-label="Previous case"
+        onClick={() => {
+          const i = CASE_ORDER.indexOf(slug)
+          if (i > 0) navigate(`/case/${CASE_ORDER[i - 1]}`)
+          else navigate('/', { state: { scrollToWorks: true } })
+        }}
+      >
+        <img src="/assets/left.svg" alt="" draggable="false" />
+      </button>
+      <button
+        type="button"
+        className="case-nav-arrow case-nav-arrow-right"
+        aria-label="Next case"
+        onClick={() => {
+          const i = CASE_ORDER.indexOf(slug)
+          if (i >= 0 && i < CASE_ORDER.length - 1) navigate(`/case/${CASE_ORDER[i + 1]}`)
+          else navigate('/', { state: { scrollToWorks: true } })
+        }}
+      >
+        <img src="/assets/right.svg" alt="" draggable="false" />
+      </button>
+    </div>
+  )
+
   if (!caseData) {
     return (
       <div className="page">
@@ -511,6 +548,7 @@ function CasePage({ theme, setTheme, lang, setLang }) {
         const content = caseTranslation.content
         return (
           <ColbCaseBody
+            footer={caseNav}
             sectionIds={['context', 'motion-videos', 'brand-social', 'one-pager', 'gitbook', 'output']}
             navItems={[
               { id: 'context', label: nav.context },
@@ -588,6 +626,7 @@ function CasePage({ theme, setTheme, lang, setLang }) {
         const content = caseTranslation.content
         return (
           <ColbCaseBody
+            footer={caseNav}
             sectionIds={['context', 'motion-videos', 'output']}
             navItems={[
               { id: 'context', label: nav.context },
@@ -623,6 +662,7 @@ function CasePage({ theme, setTheme, lang, setLang }) {
         const content = caseTranslation.content
         return (
           <ColbCaseBody
+            footer={caseNav}
             sectionIds={['context', 'motion-videos', 'banners', 'output']}
             navItems={[
               { id: 'context', label: nav.context },
@@ -760,6 +800,11 @@ function CasePage({ theme, setTheme, lang, setLang }) {
           </div>
         )
       })()}
+
+      {/* Doc-style cases render caseNav inside ColbCaseBody's content column
+          (aligned with it, not spanning back under the sidebar); other case
+          layouts don't have a sidebar to avoid, so it renders here instead. */}
+      {!DOC_CASE_SLUGS.includes(slug) && caseNav}
 
       {/* Footer */}
       <footer className="footer">
