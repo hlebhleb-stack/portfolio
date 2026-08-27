@@ -65,6 +65,8 @@ function VideoItem({ src, alt, priority = false }) {
     if (!next) {
       v.volume = 1
       window.dispatchEvent(new CustomEvent('video-unmuted', { detail: { source: v } }))
+    } else {
+      window.dispatchEvent(new CustomEvent('video-muted', { detail: { source: v } }))
     }
     setMuted(next)
     const p = v.play()

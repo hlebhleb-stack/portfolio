@@ -65,6 +65,10 @@ export default function MusicPlayer() {
   const wrapRef = useRef(null)
   const menuRef = useRef(null)
   const closeTimeoutRef = useRef(null)
+  // Tracks whether we auto-paused music because a case-page video was
+  // unmuted, so we know to resume it (and only it) once that video is
+  // muted again. Cleared whenever the user pauses/stops music themselves.
+  const pausedByVideoRef = useRef(false)
 
   const openMenu = () => {
     if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current)
@@ -134,6 +138,33 @@ export default function MusicPlayer() {
     }
   }, [])
 
+  // Case-page videos and the header music share one audio "channel": when a
+  // video is unmuted the browser/OS interrupts the music's audio session and
+  // pauses it out from under us, but nothing resumes it when the video is
+  // muted again. Handle both ends explicitly instead of relying on that
+  // interruption behavior, so muting the video reliably hands playback back.
+  useEffect(() => {
+    const onVideoUnmuted = () => {
+      const audio = getAudio()
+      if (audio.src && !audio.paused) {
+        pausedByVideoRef.current = true
+        audio.pause()
+      }
+    }
+    const onVideoMuted = () => {
+      if (!pausedByVideoRef.current) return
+      pausedByVideoRef.current = false
+      const audio = getAudio()
+      if (audio.src) audio.play().catch(() => {})
+    }
+    window.addEventListener('video-unmuted', onVideoUnmuted)
+    window.addEventListener('video-muted', onVideoMuted)
+    return () => {
+      window.removeEventListener('video-unmuted', onVideoUnmuted)
+      window.removeEventListener('video-muted', onVideoMuted)
+    }
+  }, [])
+
   useEffect(() => {
     if (menuPhase === 'closed') return
     const onClickOutside = (e) => {
@@ -149,6 +180,7 @@ export default function MusicPlayer() {
     const audio = getAudio()
     if (currentId === track.id) {
       if (isPlaying) {
+        pausedByVideoRef.current = false
         audio.pause()
       } else {
         audio.play().catch(() => {})
@@ -164,6 +196,7 @@ export default function MusicPlayer() {
 
   const handleStop = () => {
     const audio = getAudio()
+    pausedByVideoRef.current = false
     audio.pause()
     audio.removeAttribute('src')
     setCurrentId(null)
