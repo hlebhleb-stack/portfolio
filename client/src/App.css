@@ -396,7 +396,7 @@ body {
   text-decoration: none;
   color: var(--text);
   line-height: normal;
-  transition: opacity 0.15s ease-out;
+  transition: opacity 0.15s ease-out, transform 0.15s ease-out;
   -webkit-tap-highlight-color: transparent;
   touch-action: none;
   user-select: none;
@@ -404,7 +404,7 @@ body {
 
 @media (hover: hover) and (pointer: fine) {
   .work-folder:hover {
-    opacity: 0.75;
+    transform: translate(-50%, calc(-50% - 8px));
   }
 }
 
@@ -431,17 +431,6 @@ body {
   white-space: nowrap;
   touch-action: none;
   pointer-events: none;
-}
-
-.work-folder-period {
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  font-weight: 400;
-  font-size: 14px;
-  text-align: center;
-  white-space: nowrap;
-  touch-action: none;
-  pointer-events: none;
-  margin-top: -6px;
 }
 
 
@@ -1493,10 +1482,6 @@ body {
   }
 
   .work-folder-label {
-    font-size: 12px;
-  }
-
-  .work-folder-period {
     font-size: 12px;
   }
 
