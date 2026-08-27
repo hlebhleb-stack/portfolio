@@ -79,6 +79,13 @@ function VideoItem({ src, alt, priority = false }) {
     if (!next) {
       v.volume = 1
       window.dispatchEvent(new CustomEvent('video-unmuted', { detail: { source: v } }))
+    } else {
+      // Resuming music needs an actual user gesture (Safari won't allow a
+      // programmatic play() otherwise) — dispatched synchronously here,
+      // inside the click handler, rather than relying on the native
+      // 'volumechange' event, which fires via a queued media task and can
+      // arrive too late to still count as gesture-triggered.
+      window.dispatchEvent(new CustomEvent('video-muted'))
     }
     setMuted(next)
     const p = v.play()

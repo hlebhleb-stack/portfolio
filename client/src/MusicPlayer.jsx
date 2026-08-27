@@ -44,14 +44,19 @@ function findTrackIdForAudio(audio) {
 }
 
 // Case-page videos and the header music share one audio "channel" — only one
-// should be audible at a time. Rather than reacting to specific mute-button
-// clicks (which misses videos that resume playing on their own, e.g. an
-// already-unmuted video scrolling back into view via IntersectionObserver),
-// watch every video's actual play/pause/volume state directly and keep music
-// in sync with reality. Installed once at module scope — two MusicPlayer
-// instances are mounted at once (Home stays mounted with display:none behind
-// case pages), and per-instance listeners would each keep their own
-// "did I pause it" flag and race each other.
+// should be audible at a time. Pausing music (see pauseMusicIfVideoAudible
+// below) is driven by watching actual video state rather than reacting only
+// to mute-button clicks, so it also catches a video resuming on its own
+// (e.g. scrolling an already-unmuted video back into view). Resuming music
+// instead goes through an explicit event dispatched directly from the
+// mute-button click handler (see the 'video-muted' listener below) — Safari
+// requires a real user gesture for a programmatic play(), and the native
+// media events this watcher listens for fire via a queued task, which can
+// arrive too late to still count as gesture-triggered.
+// pausedByVideo itself lives at module scope, and installVideoWatcher below
+// installs its listener once, because two MusicPlayer instances are mounted
+// at once (Home stays mounted with display:none behind case pages) — per-
+// instance state would let each keep its own "did I pause it" flag and race.
 let pausedByVideo = false
 let videoWatcherInstalled = false
 
@@ -63,16 +68,15 @@ function anyVideoAudible() {
   return false
 }
 
-function syncMusicWithVideos() {
+// Pausing never needs a user gesture, so this direction is safe to drive
+// from the native, asynchronously-queued media events — it also catches a
+// video resuming on its own (e.g. scrolling an already-unmuted video back
+// into view), not just direct mute-button clicks.
+function pauseMusicIfVideoAudible() {
   const audio = getAudio()
-  if (anyVideoAudible()) {
-    if (audio.src && !audio.paused) {
-      pausedByVideo = true
-      audio.pause()
-    }
-  } else if (pausedByVideo) {
-    pausedByVideo = false
-    if (audio.src) audio.play().catch(() => {})
+  if (anyVideoAudible() && audio.src && !audio.paused) {
+    pausedByVideo = true
+    audio.pause()
   }
 }
 
@@ -85,9 +89,8 @@ function installVideoWatcher() {
   videoWatcherInstalled = true
   // play/pause/volumechange don't bubble, so listen on the capturing phase
   // at the document to catch them from any video regardless of nesting.
-  document.addEventListener('play', syncMusicWithVideos, true)
-  document.addEventListener('pause', syncMusicWithVideos, true)
-  document.addEventListener('volumechange', syncMusicWithVideos, true)
+  document.addEventListener('play', pauseMusicIfVideoAudible, true)
+  document.addEventListener('volumechange', pauseMusicIfVideoAudible, true)
 }
 
 const MENU_CLOSE_FALLBACK_MS = 320
@@ -115,6 +118,21 @@ export default function MusicPlayer() {
 
   useEffect(() => {
     installVideoWatcher()
+  }, [])
+
+  // Resuming needs a real user gesture (Safari blocks a bare programmatic
+  // play() otherwise) — CasePage dispatches this synchronously from the
+  // video's own mute-button click handler, so this listener runs within
+  // that same gesture instead of via the async native 'volumechange' event.
+  useEffect(() => {
+    const onVideoMuted = () => {
+      if (!pausedByVideo) return
+      pausedByVideo = false
+      const audio = getAudio()
+      if (audio.src) audio.play().catch(() => {})
+    }
+    window.addEventListener('video-muted', onVideoMuted)
+    return () => window.removeEventListener('video-muted', onVideoMuted)
   }, [])
 
   const openMenu = () => {
