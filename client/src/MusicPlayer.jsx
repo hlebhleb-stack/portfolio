@@ -43,6 +43,53 @@ function findTrackIdForAudio(audio) {
   return track ? track.id : null
 }
 
+// Case-page videos and the header music share one audio "channel" — only one
+// should be audible at a time. Rather than reacting to specific mute-button
+// clicks (which misses videos that resume playing on their own, e.g. an
+// already-unmuted video scrolling back into view via IntersectionObserver),
+// watch every video's actual play/pause/volume state directly and keep music
+// in sync with reality. Installed once at module scope — two MusicPlayer
+// instances are mounted at once (Home stays mounted with display:none behind
+// case pages), and per-instance listeners would each keep their own
+// "did I pause it" flag and race each other.
+let pausedByVideo = false
+let videoWatcherInstalled = false
+
+function anyVideoAudible() {
+  const videos = document.querySelectorAll('video')
+  for (const v of videos) {
+    if (!v.paused && !v.muted && v.volume > 0) return true
+  }
+  return false
+}
+
+function syncMusicWithVideos() {
+  const audio = getAudio()
+  if (anyVideoAudible()) {
+    if (audio.src && !audio.paused) {
+      pausedByVideo = true
+      audio.pause()
+    }
+  } else if (pausedByVideo) {
+    pausedByVideo = false
+    if (audio.src) audio.play().catch(() => {})
+  }
+}
+
+function setPausedByVideo(value) {
+  pausedByVideo = value
+}
+
+function installVideoWatcher() {
+  if (videoWatcherInstalled || typeof document === 'undefined') return
+  videoWatcherInstalled = true
+  // play/pause/volumechange don't bubble, so listen on the capturing phase
+  // at the document to catch them from any video regardless of nesting.
+  document.addEventListener('play', syncMusicWithVideos, true)
+  document.addEventListener('pause', syncMusicWithVideos, true)
+  document.addEventListener('volumechange', syncMusicWithVideos, true)
+}
+
 const MENU_CLOSE_FALLBACK_MS = 320
 
 export default function MusicPlayer() {
@@ -65,10 +112,10 @@ export default function MusicPlayer() {
   const wrapRef = useRef(null)
   const menuRef = useRef(null)
   const closeTimeoutRef = useRef(null)
-  // Tracks whether we auto-paused music because a case-page video was
-  // unmuted, so we know to resume it (and only it) once that video is
-  // muted again. Cleared whenever the user pauses/stops music themselves.
-  const pausedByVideoRef = useRef(false)
+
+  useEffect(() => {
+    installVideoWatcher()
+  }, [])
 
   const openMenu = () => {
     if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current)
@@ -138,33 +185,6 @@ export default function MusicPlayer() {
     }
   }, [])
 
-  // Case-page videos and the header music share one audio "channel": when a
-  // video is unmuted the browser/OS interrupts the music's audio session and
-  // pauses it out from under us, but nothing resumes it when the video is
-  // muted again. Handle both ends explicitly instead of relying on that
-  // interruption behavior, so muting the video reliably hands playback back.
-  useEffect(() => {
-    const onVideoUnmuted = () => {
-      const audio = getAudio()
-      if (audio.src && !audio.paused) {
-        pausedByVideoRef.current = true
-        audio.pause()
-      }
-    }
-    const onVideoMuted = () => {
-      if (!pausedByVideoRef.current) return
-      pausedByVideoRef.current = false
-      const audio = getAudio()
-      if (audio.src) audio.play().catch(() => {})
-    }
-    window.addEventListener('video-unmuted', onVideoUnmuted)
-    window.addEventListener('video-muted', onVideoMuted)
-    return () => {
-      window.removeEventListener('video-unmuted', onVideoUnmuted)
-      window.removeEventListener('video-muted', onVideoMuted)
-    }
-  }, [])
-
   useEffect(() => {
     if (menuPhase === 'closed') return
     const onClickOutside = (e) => {
@@ -178,25 +198,36 @@ export default function MusicPlayer() {
 
   const handleSelectTrack = (track) => {
     const audio = getAudio()
+    // A currently-audible video takes priority: defer actually starting
+    // playback (just mark it as "paused for a video") rather than starting
+    // music that the next video play/pause/volumechange event won't know to
+    // stop, since the watcher only reacts to video-side events.
+    const videoAudible = anyVideoAudible()
     if (currentId === track.id) {
       if (isPlaying) {
-        pausedByVideoRef.current = false
+        setPausedByVideo(false)
         audio.pause()
+      } else if (videoAudible) {
+        setPausedByVideo(true)
       } else {
         audio.play().catch(() => {})
       }
     } else {
       audio.src = track.src
-      audio.play().catch(() => {})
       setCurrentId(track.id)
       setProgress(0)
+      if (videoAudible) {
+        setPausedByVideo(true)
+      } else {
+        audio.play().catch(() => {})
+      }
     }
     closeMenu()
   }
 
   const handleStop = () => {
     const audio = getAudio()
-    pausedByVideoRef.current = false
+    setPausedByVideo(false)
     audio.pause()
     audio.removeAttribute('src')
     setCurrentId(null)
