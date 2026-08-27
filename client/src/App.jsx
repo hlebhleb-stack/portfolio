@@ -283,6 +283,9 @@ function HomePage({ theme, setTheme, lang, setLang }) {
                 >
                   <img src="/assets/folder-ios.png" alt="" className="work-folder-icon" draggable="false" />
                   <span className="work-folder-label">{work.company}</span>
+                  {t.periods[work.slug] && (
+                    <span className="work-folder-period">{t.periods[work.slug]}</span>
+                  )}
                 </Link>
               )
             })}

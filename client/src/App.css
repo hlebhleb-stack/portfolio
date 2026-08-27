@@ -433,6 +433,17 @@ body {
   pointer-events: none;
 }
 
+.work-folder-period {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  text-align: center;
+  white-space: nowrap;
+  touch-action: none;
+  pointer-events: none;
+  margin-top: -6px;
+}
+
 
 /* ========== Footer ========== */
 .footer {
@@ -1482,6 +1493,10 @@ body {
   }
 
   .work-folder-label {
+    font-size: 12px;
+  }
+
+  .work-folder-period {
     font-size: 12px;
   }
 
