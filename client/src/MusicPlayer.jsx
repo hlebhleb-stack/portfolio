@@ -198,17 +198,16 @@ export default function MusicPlayer() {
 
   const handleSelectTrack = (track) => {
     const audio = getAudio()
-    // A currently-audible video takes priority: defer actually starting
-    // playback (just mark it as "paused for a video") rather than starting
-    // music that the next video play/pause/volumechange event won't know to
-    // stop, since the watcher only reacts to video-side events.
-    const videoAudible = anyVideoAudible()
+    // Picking a track always wins: silence any currently-audible video
+    // first so the sync watcher won't immediately re-pause the music we're
+    // about to start.
+    if (anyVideoAudible()) {
+      window.dispatchEvent(new CustomEvent('silence-videos'))
+    }
+    setPausedByVideo(false)
     if (currentId === track.id) {
       if (isPlaying) {
-        setPausedByVideo(false)
         audio.pause()
-      } else if (videoAudible) {
-        setPausedByVideo(true)
       } else {
         audio.play().catch(() => {})
       }
@@ -216,11 +215,7 @@ export default function MusicPlayer() {
       audio.src = track.src
       setCurrentId(track.id)
       setProgress(0)
-      if (videoAudible) {
-        setPausedByVideo(true)
-      } else {
-        audio.play().catch(() => {})
-      }
+      audio.play().catch(() => {})
     }
     closeMenu()
   }

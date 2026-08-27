@@ -52,8 +52,22 @@ function VideoItem({ src, alt, priority = false }) {
         setMuted(true)
       }
     }
+    // Picking a track from the music menu always wins over a currently
+    // audible video — MusicPlayer dispatches this to hand control back.
+    const onSilenceVideos = () => {
+      const v = videoRef.current
+      if (!v) return
+      if (!v.muted) {
+        v.muted = true
+        setMuted(true)
+      }
+    }
     window.addEventListener('video-unmuted', onOtherUnmuted)
-    return () => window.removeEventListener('video-unmuted', onOtherUnmuted)
+    window.addEventListener('silence-videos', onSilenceVideos)
+    return () => {
+      window.removeEventListener('video-unmuted', onOtherUnmuted)
+      window.removeEventListener('silence-videos', onSilenceVideos)
+    }
   }, [])
 
   const toggleMute = (e) => {
