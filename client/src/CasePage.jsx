@@ -830,7 +830,7 @@ function CasePage({ theme, setTheme, lang, setLang }) {
       {/* Footer */}
       <footer className="footer">
         <div className="footer-main">
-          <a href="/assets/cv.pdf" target="_blank" rel="noopener noreferrer" className="footer-cv">{t.cv}</a>
+          <a href={`/assets/cv-${lang}.pdf`} target="_blank" rel="noopener noreferrer" className="footer-cv">{t.cv}</a>
           <a href="mailto:glebaaagleb@gmail.com" className="footer-email">
             glebaaagleb@gmail.com
           </a>

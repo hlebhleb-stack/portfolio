@@ -324,7 +324,7 @@ function HomePage({ theme, setTheme, lang, setLang }) {
 
       {/* Footer (fixed) */}
       <footer className="footer home-footer">
-        <a href="/assets/cv.pdf" target="_blank" rel="noopener noreferrer" className="footer-cv">{t.cv}</a>
+        <a href={`/assets/cv-${lang}.pdf`} target="_blank" rel="noopener noreferrer" className="footer-cv">{t.cv}</a>
         <a href="mailto:glebaaagleb@gmail.com" className="footer-email">
           glebaaagleb@gmail.com
         </a>
