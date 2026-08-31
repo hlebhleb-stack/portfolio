@@ -77,7 +77,7 @@ export const translations = {
         content: {
           context: (
             <>
-              {docLink('https://www.colb.finance/', 'Colb')} is a Swiss-based platform for tokenized pre-IPO investments. I came on as the sole graphic and motion designer, initially to handle social media visuals, which quickly expanded into motion videos, website prototypes, investor materials, and product documentation.
+              {docLink('https://www.colb.finance/', 'Colb')} is a Swiss-based platform for tokenized pre-IPO investments. I came on as a graphic and motion designer, initially to handle social media visuals, which quickly expanded into motion videos, website prototypes, investor materials, and product documentation.
             </>
           ),
           motionVideosP1a:
@@ -96,7 +96,7 @@ export const translations = {
             'Visual system for Colb’s product documentation. Each section needed its own graphic while staying consistent across the whole book. The main challenge was translating technical financial concepts into visuals that actually clarify rather than decorate.',
           gitbookLink: 'docs.colb.finance',
           output:
-            '10+ motion launch videos shipped across token listings and partnership integrations. Content reposted by BNB Chain, PancakeSwap, Ethereum, and Concrete official accounts. A consistent visual system across social, editorial, investor materials, and product documentation, built and maintained from scratch as the sole designer on the brand.',
+            '10+ motion launch videos shipped across token listings and partnership integrations. Content reposted by BNB Chain, PancakeSwap, Ethereum, and Concrete official accounts. A consistent visual system across social, editorial, investor materials, and product documentation, built and maintained from scratch.',
         },
       },
       'sova-labs': {
@@ -197,7 +197,7 @@ export const translations = {
         content: {
           context: (
             <>
-              {docLink('https://www.colb.finance/', 'Colb')} это швейцарская платформа для токенизированных pre-IPO инвестиций. Я пришёл туда единственным графическим и моушн-дизайнером, сначала вести визуал для соцсетей, но задача быстро выросла в моушн-видео, прототипы сайта, материалы для инвесторов и продуктовую документацию.
+              {docLink('https://www.colb.finance/', 'Colb')} это швейцарская платформа для токенизированных pre-IPO инвестиций. Я пришёл туда графическим и моушн-дизайнером, сначала вести визуал для соцсетей, но задача быстро выросла в моушн-видео, прототипы сайта, материалы для инвесторов и продуктовую документацию.
             </>
           ),
           motionVideosP1a:
@@ -216,7 +216,7 @@ export const translations = {
             'Визуальная система для продуктовой документации Colb. У каждого раздела своя графика при сохранении единства по всей книге. Главный вызов в том, чтобы перевести сложные финансовые концепции в визуал, который проясняет, а не просто украшает.',
           gitbookLink: 'docs.colb.finance',
           output:
-            '10+ моушн-видео к запускам, выпущенных для листингов токенов и партнёрских интеграций. Контент репостили официальные аккаунты BNB Chain, PancakeSwap, Ethereum и Concrete. Единая визуальная система для соцсетей, редакционных материалов, инвесторских документов и продуктовой документации, выстроенная и поддерживаемая с нуля единственным дизайнером бренда.',
+            '10+ моушн-видео к запускам, выпущенных для листингов токенов и партнёрских интеграций. Контент репостили официальные аккаунты BNB Chain, PancakeSwap, Ethereum и Concrete. Единая визуальная система для соцсетей, редакционных материалов, инвесторских документов и продуктовой документации, выстроенная и поддерживаемая с нуля.',
         },
       },
       'sova-labs': {
