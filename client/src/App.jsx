@@ -126,9 +126,6 @@ function HomePage({ theme, setTheme, lang, setLang }) {
     }
   }
 
-  const [scrollProgress, setScrollProgress] = useState(0)
-  // The line only shows while you're moving — it fades out after a short idle.
-  const [lineVisible, setLineVisible] = useState(true)
   useEffect(() => {
     const el = sectionsRef.current
     if (!el) return
@@ -140,33 +137,16 @@ function HomePage({ theme, setTheme, lang, setLang }) {
       el.style.scrollBehavior = prev
     }
     let raf = 0
-    let idle = 0
-    const wake = () => {
-      setLineVisible(true)
-      clearTimeout(idle)
-      idle = setTimeout(() => setLineVisible(false), 2000)
-    }
     const onScroll = () => {
-      wake()
       if (raf) return
       raf = requestAnimationFrame(() => {
         raf = 0
         sessionStorage.setItem('homeScrollY', String(el.scrollTop))
-        const max = el.scrollHeight - el.clientHeight
-        setScrollProgress(max > 0 ? Math.min(1, Math.max(0, el.scrollTop / max)) : 0)
       })
     }
-    onScroll()
     el.addEventListener('scroll', onScroll, { passive: true })
-    el.addEventListener('wheel', wake, { passive: true })
-    el.addEventListener('touchmove', wake, { passive: true })
-    window.addEventListener('keydown', wake)
     return () => {
       el.removeEventListener('scroll', onScroll)
-      el.removeEventListener('wheel', wake)
-      el.removeEventListener('touchmove', wake)
-      window.removeEventListener('keydown', wake)
-      clearTimeout(idle)
       if (raf) cancelAnimationFrame(raf)
     }
   }, [])
@@ -193,6 +173,10 @@ function HomePage({ theme, setTheme, lang, setLang }) {
     targets.forEach((el) => observer.observe(el))
     return () => observer.disconnect()
   }, [])
+
+  const goToSection = (i) => {
+    sectionEls.current[i]?.scrollIntoView({ behavior: 'smooth' })
+  }
 
   const langRef = useRef(lang)
   useEffect(() => { langRef.current = lang }, [lang])
@@ -267,13 +251,6 @@ function HomePage({ theme, setTheme, lang, setLang }) {
         </button>
         <MusicPlayer />
       </div>
-      <div
-        className={`scroll-line${lineVisible ? '' : ' is-idle'}`}
-        aria-hidden="true"
-        style={{ '--scroll-progress': scrollProgress }}
-      >
-        <span className="scroll-line-img scroll-line-fill" />
-      </div>
       </header>
 
       {/* Snap-scroll sections */}
@@ -330,6 +307,20 @@ function HomePage({ theme, setTheme, lang, setLang }) {
           <p className="home-follow-text">{t.followText}</p>
         </section>
       </main>
+
+      {/* Section indicator (fixed, left) */}
+      <nav className="scroll-squares" aria-label="Sections">
+        {[0, 1, 2].map((i) => (
+          <button
+            key={i}
+            type="button"
+            className={`scroll-square${activeSection === i ? ' is-active' : ''}`}
+            onClick={() => goToSection(i)}
+            aria-label={`Section ${i + 1}`}
+            aria-current={activeSection === i ? 'true' : undefined}
+          />
+        ))}
+      </nav>
 
       {/* Footer (fixed) */}
       <footer className="footer home-footer">

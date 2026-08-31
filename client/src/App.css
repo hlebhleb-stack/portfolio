@@ -643,41 +643,51 @@ body {
   }
 }
 
-/* Scroll line — hand-drawn rule under the header that fills as you scroll */
-.scroll-line {
-  position: relative;
-  margin-top: 48px;
-  height: 6px;
-  opacity: 1;
-  transition: opacity 0.5s;
-}
-
-.scroll-line.is-idle {
-  opacity: 0;
-}
-
-.scroll-line-img {
-  position: absolute;
-  inset: 0;
+/* Section indicator — three hand-drawn squares down the left, below centre */
+.scroll-squares {
+  position: fixed;
+  top: 76%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   width: 100%;
-  height: 100%;
-  display: block;
+  max-width: 1440px;
+  padding: 0 156px;
+  box-sizing: border-box;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
   pointer-events: none;
 }
 
-.scroll-line-fill {
-  background: #ff0000;
-  mask-image: url('/assets/scroll-line.png');
-  -webkit-mask-image: url('/assets/scroll-line.png');
+.scroll-square {
+  width: 14px;
+  height: 14px;
+  padding: 0;
+  border: none;
+  background: var(--text);
+  mask-image: url('/assets/square-slider.svg');
+  -webkit-mask-image: url('/assets/square-slider.svg');
   mask-size: 100% 100%;
   -webkit-mask-size: 100% 100%;
   mask-repeat: no-repeat;
   -webkit-mask-repeat: no-repeat;
-  clip-path: inset(0 calc(100% - var(--scroll-progress) * 100%) 0 0);
-  transition: clip-path 0.15s linear, background 0.4s;
+  opacity: 0.25;
+  cursor: none;
+  pointer-events: auto;
+  transition: opacity 0.3s, background 0.4s;
 }
 
-.home-page--socials .scroll-line-fill {
+.scroll-square:hover {
+  opacity: 0.55;
+}
+
+.scroll-square.is-active {
+  opacity: 1;
+}
+
+.home-page--socials .scroll-square {
   background: #fff;
 }
 
@@ -1289,6 +1299,7 @@ body {
   .footer-cv,
   .work-folder,
   .home-social,
+  .scroll-square,
   .case-filter-btn {
     cursor: pointer;
   }
@@ -1301,6 +1312,9 @@ body {
   }
   .home-section {
     padding: 120px 60px;
+  }
+  .scroll-squares {
+    padding: 0 60px;
   }
   .home-social img {
     width: 60px;
@@ -1439,9 +1453,12 @@ body {
   .home-section {
     padding: 100px 20px;
   }
-  .scroll-line {
-    margin-top: 28px;
-    height: 4px;
+  .scroll-squares {
+    padding: 0 20px;
+  }
+  .scroll-square {
+    width: 12px;
+    height: 12px;
   }
   .home-social img {
     width: 48px;
