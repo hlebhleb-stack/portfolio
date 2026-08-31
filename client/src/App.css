@@ -643,6 +643,44 @@ body {
   }
 }
 
+/* Scroll line — hand-drawn rule under the header that fills as you scroll */
+.scroll-line {
+  position: relative;
+  margin-top: 48px;
+  height: 6px;
+  opacity: 1;
+  transition: opacity 0.5s;
+}
+
+.scroll-line.is-idle {
+  opacity: 0;
+}
+
+.scroll-line-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+}
+
+.scroll-line-fill {
+  background: #ff0000;
+  mask-image: url('/assets/scroll-line.png');
+  -webkit-mask-image: url('/assets/scroll-line.png');
+  mask-size: 100% 100%;
+  -webkit-mask-size: 100% 100%;
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
+  clip-path: inset(0 calc(100% - var(--scroll-progress) * 100%) 0 0);
+  transition: clip-path 0.15s linear, background 0.4s;
+}
+
+.home-page--socials .scroll-line-fill {
+  background: #fff;
+}
+
 .home-page--socials::before,
 .home-page--socials::after {
   opacity: 0;
@@ -1400,6 +1438,10 @@ body {
   }
   .home-section {
     padding: 100px 20px;
+  }
+  .scroll-line {
+    margin-top: 28px;
+    height: 4px;
   }
   .home-social img {
     width: 48px;

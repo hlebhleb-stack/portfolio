@@ -126,6 +126,9 @@ function HomePage({ theme, setTheme, lang, setLang }) {
     }
   }
 
+  const [scrollProgress, setScrollProgress] = useState(0)
+  // The line only shows while you're moving — it fades out after a short idle.
+  const [lineVisible, setLineVisible] = useState(true)
   useEffect(() => {
     const el = sectionsRef.current
     if (!el) return
@@ -137,31 +140,57 @@ function HomePage({ theme, setTheme, lang, setLang }) {
       el.style.scrollBehavior = prev
     }
     let raf = 0
+    let idle = 0
+    const wake = () => {
+      setLineVisible(true)
+      clearTimeout(idle)
+      idle = setTimeout(() => setLineVisible(false), 2000)
+    }
     const onScroll = () => {
+      wake()
       if (raf) return
       raf = requestAnimationFrame(() => {
         raf = 0
         sessionStorage.setItem('homeScrollY', String(el.scrollTop))
+        const max = el.scrollHeight - el.clientHeight
+        setScrollProgress(max > 0 ? Math.min(1, Math.max(0, el.scrollTop / max)) : 0)
       })
     }
+    onScroll()
     el.addEventListener('scroll', onScroll, { passive: true })
+    el.addEventListener('wheel', wake, { passive: true })
+    el.addEventListener('touchmove', wake, { passive: true })
+    window.addEventListener('keydown', wake)
     return () => {
       el.removeEventListener('scroll', onScroll)
+      el.removeEventListener('wheel', wake)
+      el.removeEventListener('touchmove', wake)
+      window.removeEventListener('keydown', wake)
+      clearTimeout(idle)
       if (raf) cancelAnimationFrame(raf)
     }
   }, [])
 
-  const socialsSectionRef = useRef(null)
-  const [onSocials, setOnSocials] = useState(false)
+  // One observer for all three snap sections: it drives both the socials
+  // colour switch and the scroll dots on the left.
+  const sectionEls = useRef([])
+  const [activeSection, setActiveSection] = useState(0)
+  const onSocials = activeSection === 2
   useEffect(() => {
     const root = sectionsRef.current
-    const target = socialsSectionRef.current
-    if (!root || !target) return
+    const targets = sectionEls.current.filter(Boolean)
+    if (!root || targets.length === 0) return
     const observer = new IntersectionObserver(
-      ([entry]) => setOnSocials(entry.isIntersecting),
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return
+          const i = targets.indexOf(entry.target)
+          if (i !== -1) setActiveSection(i)
+        })
+      },
       { root, threshold: 0.5 }
     )
-    observer.observe(target)
+    targets.forEach((el) => observer.observe(el))
     return () => observer.disconnect()
   }, [])
 
@@ -238,12 +267,19 @@ function HomePage({ theme, setTheme, lang, setLang }) {
         </button>
         <MusicPlayer />
       </div>
+      <div
+        className={`scroll-line${lineVisible ? '' : ' is-idle'}`}
+        aria-hidden="true"
+        style={{ '--scroll-progress': scrollProgress }}
+      >
+        <span className="scroll-line-img scroll-line-fill" />
+      </div>
       </header>
 
       {/* Snap-scroll sections */}
       <main className="home-sections" ref={sectionsRef}>
         {/* Section 1 — hero */}
-        <section className="home-section home-section-photo">
+        <section className="home-section home-section-photo" ref={(el) => { sectionEls.current[0] = el }}>
           <div className="hero">
             <h1 className="hero-title">
               <span className="hero-highlight">{typed}</span>
@@ -263,7 +299,7 @@ function HomePage({ theme, setTheme, lang, setLang }) {
         </section>
 
         {/* Section 2 — works (freely draggable folder icons) */}
-        <section className="home-section home-section-works" id="works">
+        <section className="home-section home-section-works" id="works" ref={(el) => { sectionEls.current[1] = el }}>
           <div className="works-folders" ref={worksContainerRef}>
             {works.map((work, i) => {
               const pos = getWorkPosition(work.slug, i, works.length)
@@ -290,7 +326,7 @@ function HomePage({ theme, setTheme, lang, setLang }) {
         </section>
 
         {/* Section 3 — socials */}
-        <section className="home-section home-section-socials" id="links" ref={socialsSectionRef}>
+        <section className="home-section home-section-socials" id="links" ref={(el) => { sectionEls.current[2] = el }}>
           <p className="home-follow-text">{t.followText}</p>
         </section>
       </main>
