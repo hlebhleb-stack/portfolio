@@ -570,7 +570,7 @@ function CasePage({ theme, setTheme, lang, setLang }) {
         return (
           <ColbCaseBody
             footer={caseNav}
-            sectionIds={['context', 'motion-videos', 'brand-social', 'one-pager', 'gitbook', 'output']}
+            sectionIds={['context', 'motion-videos', 'brand-social', 'one-pager', 'gitbook', 'brand-kit', 'output']}
             navItems={[
               { id: 'context', label: nav.context },
               {
@@ -580,6 +580,7 @@ function CasePage({ theme, setTheme, lang, setLang }) {
                   { id: 'brand-social', label: nav.brandSocial },
                   { id: 'one-pager', label: nav.onePager },
                   { id: 'gitbook', label: nav.gitbook },
+                  { id: 'brand-kit', label: nav.brandKit },
                 ],
               },
               { id: 'output', label: nav.output },
@@ -631,6 +632,19 @@ function CasePage({ theme, setTheme, lang, setLang }) {
                 className="colb-inline-link colb-gitbook-link"
               >
                 {content.gitbookLink}
+              </a>
+            </section>
+
+            <section id="brand-kit" className="colb-section">
+              <p className="colb-section-label">{nav.brandKit}</p>
+              <p className="colb-text">{content.brandKit}</p>
+              <a
+                href="https://colb.notion.site/Brandkit-3bab18b18c1780fc988ed82a2438ce84"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="colb-inline-link colb-gitbook-link"
+              >
+                {content.brandKitLink}
               </a>
             </section>
 

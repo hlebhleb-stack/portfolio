@@ -72,6 +72,7 @@ export const translations = {
           brandSocial: 'Brand & Social',
           onePager: 'One pager',
           gitbook: 'GitBook',
+          brandKit: 'Brand kit',
           output: 'Output',
         },
         content: {
@@ -95,6 +96,9 @@ export const translations = {
           gitbook:
             'Visual system for Colb’s product documentation. Each section needed its own graphic while staying consistent across the whole book. The main challenge was translating technical financial concepts into visuals that actually clarify rather than decorate.',
           gitbookLink: 'docs.colb.finance',
+          brandKit:
+            "A Notion-based brand kit built for partners and contractors who need quick access to Colb's visual identity. Covers logos, typography, and core colours in one structured page. The goal was to make it easy to share and self-serve without needing to contact the design team for every basic asset.",
+          brandKitLink: 'colb.notion.site/Brandkit',
           output:
             '10+ motion launch videos shipped across token listings and partnership integrations. Content reposted by BNB Chain, PancakeSwap, Ethereum, and Concrete official accounts. A consistent visual system across social, editorial, investor materials, and product documentation, built and maintained from scratch.',
         },
@@ -192,6 +196,7 @@ export const translations = {
           brandSocial: 'Бренд и соцсети',
           onePager: 'Ван-пейджер',
           gitbook: 'GitBook',
+          brandKit: 'Бренд-кит',
           output: 'Результат',
         },
         content: {
@@ -215,6 +220,9 @@ export const translations = {
           gitbook:
             'Визуальная система для продуктовой документации Colb. У каждого раздела своя графика при сохранении единства по всей книге. Главный вызов в том, чтобы перевести сложные финансовые концепции в визуал, который проясняет, а не просто украшает.',
           gitbookLink: 'docs.colb.finance',
+          brandKit:
+            'Бренд-кит на Notion для партнёров и подрядчиков, которым нужен быстрый доступ к визуальной идентике Colb. Логотипы, типографика и основные цвета собраны на одной структурированной странице. Цель была в том, чтобы делиться этим было легко и самостоятельно, без обращения к дизайн-команде за каждым базовым активом.',
+          brandKitLink: 'colb.notion.site/Brandkit',
           output:
             '10+ моушн-видео к запускам, выпущенных для листингов токенов и партнёрских интеграций. Контент репостили официальные аккаунты BNB Chain, PancakeSwap, Ethereum и Concrete. Единая визуальная система для соцсетей, редакционных материалов, инвесторских документов и продуктовой документации, выстроенная и поддерживаемая с нуля.',
         },
