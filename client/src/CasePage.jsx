@@ -273,6 +273,7 @@ function ColbSidebar({ navItems, activeId, onNavigate }) {
 function ColbCaseBody({ sectionIds, navItems, children, footer }) {
   const contentRef = useRef(null)
   const spacerRef = useRef(null)
+  const pickedRef = useRef(null)
   const [activeId, setActiveId] = useState(sectionIds[0])
 
   useEffect(() => {
@@ -280,13 +281,17 @@ function ColbCaseBody({ sectionIds, navItems, children, footer }) {
       .map((id) => document.getElementById(id))
       .filter(Boolean)
     if (sections.length === 0) return
-    const lastSection = sections[sections.length - 1]
+    // The final section never needs to reach the top of the viewport: clicking it
+    // just scrolls to the bottom, and the `atBottom` branch below highlights it.
+    // Only the one before it has to be reachable, which needs far less room.
+    const target = sections[sections.length - 2]
+    if (!target) return
     const SCROLL_MARGIN = 140
     const updateSpacer = () => {
       if (!spacerRef.current) return
       spacerRef.current.style.height = '0px'
-      const lastTop = lastSection.getBoundingClientRect().top + window.scrollY
-      const shortfall = lastTop - SCROLL_MARGIN + window.innerHeight - document.documentElement.scrollHeight
+      const targetTop = target.getBoundingClientRect().top + window.scrollY
+      const shortfall = targetTop - SCROLL_MARGIN + window.innerHeight - document.documentElement.scrollHeight
       spacerRef.current.style.height = `${Math.max(0, shortfall)}px`
     }
     updateSpacer()
@@ -304,6 +309,13 @@ function ColbCaseBody({ sectionIds, navItems, children, footer }) {
     let ticking = false
     const update = () => {
       ticking = false
+      // A section picked from the sidebar stays lit until the reader scrolls
+      // themselves: the last two sections share the same bottom scroll position,
+      // so position alone can't tell which one was asked for.
+      if (pickedRef.current) {
+        setActiveId(pickedRef.current)
+        return
+      }
       const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2
       if (atBottom) {
         setActiveId(sections[sections.length - 1].id)
@@ -320,17 +332,30 @@ function ColbCaseBody({ sectionIds, navItems, children, footer }) {
       ticking = true
       requestAnimationFrame(update)
     }
+    const releasePick = () => {
+      if (!pickedRef.current) return
+      pickedRef.current = null
+      onScroll()
+    }
     update()
     window.addEventListener('scroll', onScroll, { passive: true })
     window.addEventListener('resize', onScroll)
+    window.addEventListener('wheel', releasePick, { passive: true })
+    window.addEventListener('touchstart', releasePick, { passive: true })
+    window.addEventListener('keydown', releasePick)
     return () => {
       window.removeEventListener('scroll', onScroll)
       window.removeEventListener('resize', onScroll)
+      window.removeEventListener('wheel', releasePick)
+      window.removeEventListener('touchstart', releasePick)
+      window.removeEventListener('keydown', releasePick)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sectionIds.join(',')])
 
   const handleNavigate = (id) => {
+    pickedRef.current = id
+    setActiveId(id)
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
