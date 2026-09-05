@@ -272,7 +272,28 @@ function ColbSidebar({ navItems, activeId, onNavigate }) {
 
 function ColbCaseBody({ sectionIds, navItems, children, footer }) {
   const contentRef = useRef(null)
+  const spacerRef = useRef(null)
   const [activeId, setActiveId] = useState(sectionIds[0])
+
+  useEffect(() => {
+    const sections = sectionIds
+      .map((id) => document.getElementById(id))
+      .filter(Boolean)
+    if (sections.length === 0) return
+    const lastSection = sections[sections.length - 1]
+    const SCROLL_MARGIN = 140
+    const updateSpacer = () => {
+      if (!spacerRef.current) return
+      spacerRef.current.style.height = '0px'
+      const lastTop = lastSection.getBoundingClientRect().top + window.scrollY
+      const shortfall = lastTop - SCROLL_MARGIN + window.innerHeight - document.documentElement.scrollHeight
+      spacerRef.current.style.height = `${Math.max(0, shortfall)}px`
+    }
+    updateSpacer()
+    window.addEventListener('resize', updateSpacer)
+    return () => window.removeEventListener('resize', updateSpacer)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sectionIds.join(',')])
 
   useEffect(() => {
     const sections = sectionIds
@@ -319,6 +340,7 @@ function ColbCaseBody({ sectionIds, navItems, children, footer }) {
       <div className="colb-content">
         {children}
         {footer}
+        <div ref={spacerRef} aria-hidden="true" />
       </div>
     </div>
   )
