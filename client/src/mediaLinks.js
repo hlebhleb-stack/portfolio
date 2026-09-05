@@ -14,12 +14,9 @@ export default {
   '/assets/works/colb-finance/3.mp4': 'https://x.com/BNBCHAIN/status/2065429957204213949',
   '/assets/works/colb-finance/4.mp4': 'https://x.com/ColbFinance/status/2051318953100681462',
   '/assets/works/colb-finance/5.mp4': 'https://x.com/ColbFinance/status/2036515466529603633',
-  '/assets/works/colb-finance/6.mp4': 'https://x.com/ColbFinance/status/2032525961896313010',
   '/assets/works/colb-finance/7.mp4': 'https://x.com/ColbFinance/status/2021565060641137113',
   '/assets/works/colb-finance/8.mp4': 'https://x.com/plumenetwork/status/1996242365510500667',
-  '/assets/works/colb-finance/9.mp4': 'https://x.com/ColbFinance/status/1970173484304155118',
   '/assets/works/colb-finance/10.mp4': 'https://x.com/ColbFinance/status/2057477929693581500',
-  '/assets/works/colb-finance/11.mp4': 'https://x.com/ColbFinance/status/2026335121935090050',
   '/assets/works/colb-finance/12.mp4': 'https://x.com/ColbFinance/status/2070110593122537925',
   // Colb banners
   '/assets/works/colb-finance/1.png': 'https://x.com/ColbFinance/status/2065817009552581096',

@@ -135,7 +135,11 @@ function VideoItem({ src, alt, priority = false }) {
 }
 
 const COLB_MOTION_MAIN = '/assets/works/colb-finance/1.mp4'
-const COLB_MOTION_REST = Array.from({ length: 11 }, (_, i) => `/assets/works/colb-finance/${i + 2}.mp4`)
+// Numbers are the source files, which keep their original numbering even
+// after some were dropped from the case — the gaps are intentional.
+const COLB_MOTION_REST = [2, 3, 4, 5, 7, 8, 10, 12].map(
+  (n) => `/assets/works/colb-finance/${n}.mp4`
+)
 const COLB_BANNERS = Array.from({ length: 5 }, (_, i) => `/assets/works/colb-finance/${i + 1}.png`)
 const COLB_STORYBOARD = '/assets/works/colb-finance/storyboard-sequence.png'
 const COLB_EXTRA_NEWS = '/assets/works/colb-finance/extra-news-template.png'
