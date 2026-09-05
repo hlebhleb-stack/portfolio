@@ -1086,6 +1086,7 @@ body {
 .colb-content {
   flex: 1;
   min-width: 0;
+  padding-bottom: 50vh;
 }
 
 .colb-section {
