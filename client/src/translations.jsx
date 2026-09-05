@@ -83,8 +83,11 @@ export const translations = {
           ),
           motionVideosP1a:
             'Each video started with a storyboard in Figma before anything touched After Effects.',
-          motionVideosP1b:
-            'Sound design came before the music track, finding the right effects sometimes took as long as the edit itself. Launch videos are fast and energetic by default. I stayed close to the Colb brand guidelines on type, colour and motion language, but the pacing, the cuts and the sound decisions were mine.',
+          motionVideosP1b: (
+            <>
+              Sound design came before the music track, finding the right effects sometimes took as long as the edit itself. Launch videos are fast and energetic by default. I stayed close to the Colb brand guidelines on type, colour and motion language, but the pacing, the cuts and the sound decisions were mine. The rest of the motion videos are on {docLink('https://x.com/ColbFinance', 'Colb')}’s X.
+            </>
+          ),
           motionVideosP2:
             'The CSPX x PancakeSwap video stands out. Instead of a screen recording I rebuilt the swap interface from scratch in After Effects and animated the full transaction flow as a product interaction. Getting the UI details right made the difference between something produced and something that actually communicates how the product works.',
           extraNews:
@@ -207,8 +210,11 @@ export const translations = {
           ),
           motionVideosP1a:
             'Каждое видео начиналось со сториборда в Figma, до того, как открывался After Effects.',
-          motionVideosP1b:
-            'Саунд-дизайн шёл раньше музыкального трека: подобрать нужные эффекты иногда занимало столько же времени, сколько сам монтаж. По умолчанию видео к запускам делались быстрыми и энергичными. Я держался брендбука Colb по шрифтам, цвету и языку движения, но темп, монтаж и звуковые решения были моими.',
+          motionVideosP1b: (
+            <>
+              Саунд-дизайн шёл раньше музыкального трека: подобрать нужные эффекты иногда занимало столько же времени, сколько сам монтаж. По умолчанию видео к запускам делались быстрыми и энергичными. Я держался брендбука Colb по шрифтам, цвету и языку движения, но темп, монтаж и звуковые решения были моими. Остальные моушн-видео можно посмотреть в X у {docLink('https://x.com/ColbFinance', 'Colb')}.
+            </>
+          ),
           motionVideosP2:
             'Отдельно выделяется видео CSPX x PancakeSwap. Вместо записи экрана я с нуля пересобрал интерфейс свопа в After Effects и анимировал весь флоу транзакции как продуктовое взаимодействие. Именно точность деталей интерфейса отделила «просто произведённое» от того, что реально объясняет, как работает продукт.',
           extraNews:
