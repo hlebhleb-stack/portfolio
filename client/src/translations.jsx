@@ -67,6 +67,7 @@ export const translations = {
         nav: {
           root: 'Colb Finance',
           context: 'Context',
+          role: 'Role',
           process: 'Process',
           motionVideos: 'Motion videos',
           brandSocial: 'Brand & Social',
@@ -81,6 +82,7 @@ export const translations = {
               {docLink('https://www.colb.finance/', 'Colb')} is a Swiss-based platform for tokenized pre-IPO investments. I came on as a graphic and motion designer, initially to handle social media visuals, which quickly expanded into motion videos, website prototypes, investor materials, and product documentation.
             </>
           ),
+          role: 'Graphic & Motion Designer, Sep 2025 to Present',
           motionVideosP1a:
             'Each video started with a storyboard in Figma before anything touched After Effects.',
           motionVideosP1b: (
@@ -112,6 +114,7 @@ export const translations = {
         skills: ['Creative Direction', '2D Motion Design', 'Design System', 'Marketing Design'],
         nav: {
           context: 'Context',
+          role: 'Role',
           process: 'Process',
           motionVideos: 'Motion videos',
           banners: 'Banners',
@@ -123,6 +126,7 @@ export const translations = {
               {docLink('https://sova.io/borrow', 'Sova')} is a DeFi platform with cross-chain swaps, BTC vaults, and onchain liquidity. I came on as graphic and motion designer on a freelance basis, producing social content for their X account across product launches and feature updates.
             </>
           ),
+          role: 'Social Media Designer, Jan 2026 to May 2026',
           motionVideos:
             'Each video was built from scratch. The challenge with DeFi content is making something technically accurate without losing the viewer. Cross-chain swaps, vault mechanics, fiat on-ramps, each needed a visual approach that communicated the concept, not just decorated the announcement.',
           banners:
@@ -140,6 +144,7 @@ export const translations = {
         skills: ['Creative Direction', 'Motion Design', '3D Animation', 'Video Production'],
         nav: {
           context: 'Context',
+          role: 'Role',
           process: 'Process',
           motionVideos: 'Motion videos',
           output: 'Output',
@@ -150,6 +155,7 @@ export const translations = {
               {docLink('https://re.xyz/', 'Re')} is a reinsurance protocol bringing institutional reinsurance capital onchain. I came on as motion designer for a short engagement, collaborating with a 3D artist on a series of announcement videos for their X account.
             </>
           ),
+          role: 'Motion Designer, Dec 2025 to Mar 2026',
           motionVideos: (
             <>
               The pipeline was split: 3D visuals handled by a {docLink('https://x.com/puselol', 'dedicated artist')}, everything else by me. Text animation, compositing, sound design and final edit. Five videos total covering milestone announcements, protocol launches, and a year-end recap. Working within someone else’s visual output and making it feel cohesive was the main challenge.
@@ -194,6 +200,7 @@ export const translations = {
         nav: {
           root: 'Colb Finance',
           context: 'Контекст',
+          role: 'Роль',
           process: 'Процесс',
           motionVideos: 'Моушн-видео',
           brandSocial: 'Бренд и соцсети',
@@ -208,6 +215,7 @@ export const translations = {
               {docLink('https://www.colb.finance/', 'Colb')} это швейцарская платформа для токенизированных pre-IPO инвестиций. Я пришёл туда графическим и моушн-дизайнером, сначала вести визуал для соцсетей, но задача быстро выросла в моушн-видео, прототипы сайта, материалы для инвесторов и продуктовую документацию.
             </>
           ),
+          role: 'Графический и моушн-дизайнер, с сентября 2025 по настоящее время',
           motionVideosP1a:
             'Каждое видео начиналось со сториборда в Figma, до того, как открывался After Effects.',
           motionVideosP1b: (
@@ -239,6 +247,7 @@ export const translations = {
         skills: ['Креативное направление', '2D моушн-дизайн', 'Дизайн-система', 'Маркетинговый дизайн'],
         nav: {
           context: 'Контекст',
+          role: 'Роль',
           process: 'Процесс',
           motionVideos: 'Моушн-видео',
           banners: 'Баннеры',
@@ -250,6 +259,7 @@ export const translations = {
               {docLink('https://sova.io/borrow', 'Sova')} это DeFi-платформа с кросс-чейн свопами, BTC-хранилищами и ончейн-ликвидностью. Я пришёл туда графическим и моушн-дизайнером на фрилансе, делал контент для соцсетей их X-аккаунта под запуски продуктов и обновления функций.
             </>
           ),
+          role: 'SMM-дизайнер, с января по май 2026',
           motionVideos:
             'Каждое видео собиралось с нуля. Главная сложность с DeFi-контентом в том, чтобы сделать всё технически точным, не потеряв зрителя. Кросс-чейн свопы, механика хранилищ, фиатные ончейн переходы: каждому нужен был визуальный подход, который объяснял суть, а не просто украшал анонс.',
           banners:
@@ -267,6 +277,7 @@ export const translations = {
         skills: ['Креативное направление', 'Моушн-дизайн', '3D-анимация', 'Видеопродакшн'],
         nav: {
           context: 'Контекст',
+          role: 'Роль',
           process: 'Процесс',
           motionVideos: 'Моушн-видео',
           output: 'Результат',
@@ -277,6 +288,7 @@ export const translations = {
               {docLink('https://re.xyz/', 'Re')} это протокол перестрахования, который переносит институциональный перестраховочный капитал ончейн. Я пришёл туда моушн-дизайнером на короткий проект, работая в паре с 3D-художником над серией анонсных видео для их X-аккаунта.
             </>
           ),
+          role: 'Моушн-дизайнер, с декабря 2025 по март 2026',
           motionVideos: (
             <>
               Пайплайн был разделён: 3D-визуал делал {docLink('https://x.com/puselol', 'выделенный 3D-художник')}, всё остальное делал я. Анимация текста, композитинг, саунд-дизайн и финальный монтаж. Всего пять видео: анонсы вех, запуски протокола и итоговый ролик года. Главный вызов был в том, чтобы работать поверх чужого визуала и сделать всё цельным.

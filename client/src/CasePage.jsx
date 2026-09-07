@@ -621,9 +621,10 @@ function CasePage({ theme, setTheme, lang, setLang }) {
         return (
           <ColbCaseBody
             footer={caseNav}
-            sectionIds={['context', 'motion-videos', 'brand-social', 'one-pager', 'gitbook', 'brand-kit', 'output']}
+            sectionIds={['context', 'role', 'motion-videos', 'brand-social', 'one-pager', 'gitbook', 'brand-kit', 'output']}
             navItems={[
               { id: 'context', label: nav.context },
+              { id: 'role', label: nav.role },
               {
                 label: nav.process,
                 children: [
@@ -640,6 +641,11 @@ function CasePage({ theme, setTheme, lang, setLang }) {
             <section id="context" className="colb-section">
               <ColbLabel>{nav.context}</ColbLabel>
               <p className="colb-text">{content.context}</p>
+            </section>
+
+            <section id="role" className="colb-section">
+              <ColbLabel>{nav.role}</ColbLabel>
+              <p className="colb-text">{content.role}</p>
             </section>
 
             <ColbLabel className="colb-process-label">{nav.process}</ColbLabel>
@@ -713,9 +719,10 @@ function CasePage({ theme, setTheme, lang, setLang }) {
         return (
           <ColbCaseBody
             footer={caseNav}
-            sectionIds={['context', 'motion-videos', 'output']}
+            sectionIds={['context', 'role', 'motion-videos', 'output']}
             navItems={[
               { id: 'context', label: nav.context },
+              { id: 'role', label: nav.role },
               { label: nav.process, children: [{ id: 'motion-videos', label: nav.motionVideos }] },
               { id: 'output', label: nav.output },
             ]}
@@ -723,6 +730,11 @@ function CasePage({ theme, setTheme, lang, setLang }) {
             <section id="context" className="colb-section">
               <ColbLabel>{nav.context}</ColbLabel>
               <p className="colb-text">{content.context}</p>
+            </section>
+
+            <section id="role" className="colb-section">
+              <ColbLabel>{nav.role}</ColbLabel>
+              <p className="colb-text">{content.role}</p>
             </section>
 
             <ColbLabel className="colb-process-label">{nav.process}</ColbLabel>
@@ -749,9 +761,10 @@ function CasePage({ theme, setTheme, lang, setLang }) {
         return (
           <ColbCaseBody
             footer={caseNav}
-            sectionIds={['context', 'motion-videos', 'banners', 'output']}
+            sectionIds={['context', 'role', 'motion-videos', 'banners', 'output']}
             navItems={[
               { id: 'context', label: nav.context },
+              { id: 'role', label: nav.role },
               {
                 label: nav.process,
                 children: [
@@ -765,6 +778,11 @@ function CasePage({ theme, setTheme, lang, setLang }) {
             <section id="context" className="colb-section">
               <ColbLabel>{nav.context}</ColbLabel>
               <p className="colb-text">{content.context}</p>
+            </section>
+
+            <section id="role" className="colb-section">
+              <ColbLabel>{nav.role}</ColbLabel>
+              <p className="colb-text">{content.role}</p>
             </section>
 
             <ColbLabel className="colb-process-label">{nav.process}</ColbLabel>
