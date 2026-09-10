@@ -3,6 +3,7 @@ import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import { translations, LANGS } from './translations.jsx'
 import columnOverrides from './caseItemsColumns.js'
 import mediaSizes from './mediaSizes.generated.json'
+import useFastScroll from './fastScroll.js'
 import mediaLinks from './mediaLinks.js'
 import { DOT_PATH_D, DOT_VIEWBOX } from './dotPath.js'
 import MusicPlayer from './MusicPlayer.jsx'
@@ -15,6 +16,7 @@ function VideoItem({ src, alt, priority = false }) {
   // first paint instead of waiting for the IntersectionObserver tick.
   const [hasMounted, setHasMounted] = useState(priority || typeof IntersectionObserver === 'undefined')
   const [inPlayZone, setInPlayZone] = useState(priority)
+  const scrollingFast = useFastScroll()
 
   // Mounting and playing are deliberately on different thresholds. Mounting
   // early is what keeps a video from appearing as an empty box, so that
@@ -54,9 +56,20 @@ function VideoItem({ src, alt, priority = false }) {
   // is already paused, so the guard skipped pause(), the browser's can-autoplay
   // flag stayed set, and it started playing 800px off-screen regardless.
   useEffect(() => {
-    if (priority) return
     const v = videoRef.current
     if (!v) return
+    // The priority video opts out of the visibility logic but not out of this:
+    // it sits at the top of the page, so it is decoding during exactly the
+    // scroll that carries the reader away from it.
+    if (scrollingFast) {
+      v.pause()
+      return
+    }
+    if (priority) {
+      const p = v.play()
+      if (p && typeof p.catch === 'function') p.catch(() => {})
+      return
+    }
     if (inPlayZone) {
       if (v.paused) {
         const p = v.play()
@@ -65,7 +78,7 @@ function VideoItem({ src, alt, priority = false }) {
     } else {
       v.pause()
     }
-  }, [inPlayZone, hasMounted, priority])
+  }, [inPlayZone, hasMounted, priority, scrollingFast])
 
   useEffect(() => {
     const onOtherUnmuted = (e) => {
