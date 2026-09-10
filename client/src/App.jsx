@@ -352,7 +352,10 @@ function App() {
     if ('scrollRestoration' in window.history) {
       window.history.scrollRestoration = 'manual'
     }
-    window.scrollTo(0, 0)
+    // Explicitly instant: html carries scroll-behavior: smooth, which would
+    // otherwise animate this reset and make a case-to-case navigation look
+    // like the reader scrolled there themselves.
+    window.scrollTo({ top: 0, behavior: 'instant' })
   }, [location.pathname])
 
   useEffect(() => {

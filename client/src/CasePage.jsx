@@ -13,33 +13,55 @@ function VideoItem({ src, alt, priority = false }) {
   // Priority videos mount immediately so they start downloading on the
   // first paint instead of waiting for the IntersectionObserver tick.
   const [hasMounted, setHasMounted] = useState(priority || typeof IntersectionObserver === 'undefined')
+  const [inPlayZone, setInPlayZone] = useState(priority)
 
+  // Mounting and playing are deliberately on different thresholds. Mounting
+  // early is what keeps a video from appearing as an empty box, so that
+  // stays generous. Playing early buys nothing — a video 800px below the
+  // fold decodes frames nobody is looking at — and on the Colb case, where
+  // nine videos sit in a two-column grid, that had half a dozen of them
+  // decoding at once and made scrolling stutter on weaker GPUs.
   useEffect(() => {
-    // Priority videos opt out of the observer — they are always mounted
-    // and the browser handles pause/play via the autoplay/visibility
-    // policy on its own.
     if (priority) return
     if (typeof IntersectionObserver === 'undefined') return
     const parent = sentinelRef.current?.parentElement
     if (!parent) return
-    const io = new IntersectionObserver(
+    const mountIo = new IntersectionObserver(
       ([entry]) => {
-        const v = videoRef.current
-        if (entry.isIntersecting) {
-          setHasMounted(true)
-          if (v && v.paused) {
-            const p = v.play()
-            if (p && typeof p.catch === 'function') p.catch(() => {})
-          }
-        } else if (v) {
-          v.pause()
-        }
+        if (entry.isIntersecting) setHasMounted(true)
       },
       { rootMargin: '800px 0px' }
     )
-    io.observe(parent)
-    return () => io.disconnect()
+    const playIo = new IntersectionObserver(
+      ([entry]) => setInPlayZone(entry.isIntersecting),
+      { rootMargin: '100px 0px' }
+    )
+    mountIo.observe(parent)
+    playIo.observe(parent)
+    return () => {
+      mountIo.disconnect()
+      playIo.disconnect()
+    }
   }, [priority])
+
+  // Driven from state rather than from inside the observer callback, because
+  // the element does not exist yet on the tick that first reports it visible.
+  // autoPlay stays on the element so the browser decodes a first frame to
+  // show instead of a black box; this effect then parks it until the video
+  // is actually close to the viewport.
+  useEffect(() => {
+    if (priority) return
+    const v = videoRef.current
+    if (!v) return
+    if (inPlayZone) {
+      if (v.paused) {
+        const p = v.play()
+        if (p && typeof p.catch === 'function') p.catch(() => {})
+      }
+    } else if (!v.paused) {
+      v.pause()
+    }
+  }, [inPlayZone, hasMounted, priority])
 
   useEffect(() => {
     const onOtherUnmuted = (e) => {
