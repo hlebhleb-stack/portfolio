@@ -6,10 +6,24 @@
   font-display: swap;
 }
 
+/* Declared as a range so both `font-weight: 500` (.colb-section-label) and
+   `font-weight: 550` (headings) resolve to Medium. With a bare 550 descriptor
+   a request for 500 falls back to Roman, since CSS weight matching searches
+   downwards first. */
 @font-face {
   font-family: 'HelveticaNeueCyr';
   src: url('/fonts/HelveticaNeueCyr-Medium.woff2') format('woff2');
-  font-weight: 550;
+  font-weight: 500 550;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* .hero-title asks for 700. Without a real Bold face it would resolve to
+   Medium, and the largest line on the site would render a step too light. */
+@font-face {
+  font-family: 'HelveticaNeueCyr';
+  src: url('/fonts/HelveticaNeueCyr-Bold.woff2') format('woff2');
+  font-weight: 700;
   font-style: normal;
   font-display: swap;
 }
