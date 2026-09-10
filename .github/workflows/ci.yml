@@ -6,6 +6,13 @@ on:
   pull_request:
     branches: [main]
 
+# The image job commits back to main, so two runs must never overlap. Queued
+# rather than cancelled: cancelling could kill a run between its commit and its
+# push.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   lint:
     name: Lint Code
@@ -74,9 +81,40 @@ jobs:
       run:
         working-directory: client
     steps:
+      # Two commits is enough to diff this push against its parent, which is
+      # all the "what changed" step needs.
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Find images changed in this push
+        id: changed
+        working-directory: .
+        run: |
+          BEFORE="${{ github.event.before }}"
+          # All-zero before means a new branch or a force push, where there is
+          # no usable parent to diff against — fall back to checking everything.
+          if [ -z "$BEFORE" ] || [ "$BEFORE" = "0000000000000000000000000000000000000000" ] \
+             || ! git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
+            echo "No usable parent commit; will check every image."
+            echo "files=ALL" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          FILES=$(git diff --name-only --diff-filter=ACMR "$BEFORE" "${{ github.sha }}" \
+                  -- 'client/public/assets/**' \
+                  | grep -Ei '\.(png|jpe?g)$' \
+                  | sed 's|^client/||' \
+                  | tr '\n' ' ')
+          if [ -z "$FILES" ]; then
+            echo "No images changed in this push."
+            echo "files=" >> $GITHUB_OUTPUT
+          else
+            echo "Changed: $FILES"
+            echo "files=$FILES" >> $GITHUB_OUTPUT
+          fi
 
       - name: Setup Node.js
+        if: steps.changed.outputs.files != ''
         uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -84,65 +122,33 @@ jobs:
           cache-dependency-path: client/package-lock.json
 
       - name: Install dependencies
+        if: steps.changed.outputs.files != ''
         run: npm ci
 
-      - name: Optimize PNG and JPG images
+      - name: Optimize
+        if: steps.changed.outputs.files != ''
         run: |
-          node -e "
-          const sharp = require('sharp');
-          const fs = require('fs');
-          const path = require('path');
-
-          const ASSETS = 'public/assets';
-          let optimized = 0;
-
-          function walkDir(dir) {
-            const entries = fs.readdirSync(dir, { withFileTypes: true });
-            let files = [];
-            for (const entry of entries) {
-              const full = path.join(dir, entry.name);
-              if (entry.isDirectory()) files.push(...walkDir(full));
-              else files.push(full);
-            }
-            return files;
-          }
-
-          async function run() {
-            const files = walkDir(ASSETS);
-            for (const file of files) {
-              const ext = path.extname(file).toLowerCase();
-              if (ext === '.png') {
-                const before = fs.statSync(file).size;
-                // Lossless DEFLATE only — no quality/palette reduction that
-                // would degrade banner artwork.
-                const buf = await sharp(file).png({ compressionLevel: 9 }).toBuffer();
-                if (buf.length < before) {
-                  fs.writeFileSync(file, buf);
-                  const saved = ((1 - buf.length / before) * 100).toFixed(1);
-                  console.log('Optimized ' + file + ' — saved ' + saved + '%');
-                  optimized++;
-                }
-              } else if (ext === '.jpg' || ext === '.jpeg') {
-                const before = fs.statSync(file).size;
-                const buf = await sharp(file).jpeg({ quality: 85 }).toBuffer();
-                if (buf.length < before) {
-                  fs.writeFileSync(file, buf);
-                  const saved = ((1 - buf.length / before) * 100).toFixed(1);
-                  console.log('Optimized ' + file + ' — saved ' + saved + '%');
-                  optimized++;
-                }
-              }
-            }
-            console.log('Total optimized: ' + optimized + ' files');
-          }
-          run();
-          "
+          if [ "${{ steps.changed.outputs.files }}" = "ALL" ]; then
+            node scripts/optimize-images.mjs
+          else
+            node scripts/optimize-images.mjs ${{ steps.changed.outputs.files }}
+          fi
 
       - name: Commit optimized images
+        if: steps.changed.outputs.files != ''
+        working-directory: .
         run: |
-          cd ..
+          # Scoped to the asset folder on purpose: this job has write access to
+          # the default branch, and `git add -A` would hand it anything else
+          # that happened to be dirty in the runner.
+          git add -- client/public/assets
+          if git diff --cached --quiet; then
+            echo "Nothing to commit."
+            exit 0
+          fi
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -A
-          git diff --cached --quiet || git commit -m "ci: optimize images [skip ci]"
-          git push || true
+          git commit -m "ci: optimize images [skip ci]"
+          # Not `|| true`: a failed push means the optimization is silently
+          # lost, and the run should say so rather than report success.
+          git push
