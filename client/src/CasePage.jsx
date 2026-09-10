@@ -46,9 +46,12 @@ function VideoItem({ src, alt, priority = false }) {
 
   // Driven from state rather than from inside the observer callback, because
   // the element does not exist yet on the tick that first reports it visible.
-  // autoPlay stays on the element so the browser decodes a first frame to
-  // show instead of a black box; this effect then parks it until the video
-  // is actually close to the viewport.
+  //
+  // Non-priority videos carry no autoplay attribute, so this is the only thing
+  // that ever starts them. An earlier attempt left autoplay on and tried to
+  // park the video here, which silently did nothing: a freshly mounted video
+  // is already paused, so the guard skipped pause(), the browser's can-autoplay
+  // flag stayed set, and it started playing 800px off-screen regardless.
   useEffect(() => {
     if (priority) return
     const v = videoRef.current
@@ -58,7 +61,7 @@ function VideoItem({ src, alt, priority = false }) {
         const p = v.play()
         if (p && typeof p.catch === 'function') p.catch(() => {})
       }
-    } else if (!v.paused) {
+    } else {
       v.pause()
     }
   }, [inPlayZone, hasMounted, priority])
@@ -116,15 +119,20 @@ function VideoItem({ src, alt, priority = false }) {
   return (
     <>
       <span ref={sentinelRef} style={{ display: 'none' }} aria-hidden="true" />
+      {/* preload is "auto" rather than "metadata" because a video only mounts
+          once it is within 800px, and buffering it there is the whole point.
+          With "metadata" the real download started at the moment the video
+          scrolled into view, putting a fetch and a decode on the very frames
+          being scrolled — a stutter as each video arrived, smooth in between. */}
       {hasMounted && (
         <video
           ref={videoRef}
           src={src}
-          autoPlay
+          autoPlay={priority}
           muted
           loop
           playsInline
-          preload={priority ? "auto" : "metadata"}
+          preload="auto"
           aria-label={alt}
           onLoadedData={(e) => e.target.parentElement.classList.add('loaded')}
           onLoadedMetadata={(e) => e.target.parentElement.classList.add('loaded')}
