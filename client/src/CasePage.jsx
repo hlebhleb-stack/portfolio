@@ -3,7 +3,6 @@ import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import { translations, LANGS } from './translations.jsx'
 import columnOverrides from './caseItemsColumns.js'
 import mediaSizes from './mediaSizes.generated.json'
-import useFastScroll from './fastScroll.js'
 import mediaLinks from './mediaLinks.js'
 import { DOT_PATH_D, DOT_VIEWBOX } from './dotPath.js'
 import MusicPlayer from './MusicPlayer.jsx'
@@ -15,70 +14,33 @@ function VideoItem({ src, alt, priority = false }) {
   // Priority videos mount immediately so they start downloading on the
   // first paint instead of waiting for the IntersectionObserver tick.
   const [hasMounted, setHasMounted] = useState(priority || typeof IntersectionObserver === 'undefined')
-  const [inPlayZone, setInPlayZone] = useState(priority)
-  const scrollingFast = useFastScroll()
 
-  // Mounting and playing are deliberately on different thresholds. Mounting
-  // early is what keeps a video from appearing as an empty box, so that
-  // stays generous. Playing early buys nothing — a video 800px below the
-  // fold decodes frames nobody is looking at — and on the Colb case, where
-  // nine videos sit in a two-column grid, that had half a dozen of them
-  // decoding at once and made scrolling stutter on weaker GPUs.
   useEffect(() => {
+    // Priority videos opt out of the observer — they are always mounted
+    // and the browser handles pause/play via the autoplay/visibility
+    // policy on its own.
     if (priority) return
     if (typeof IntersectionObserver === 'undefined') return
     const parent = sentinelRef.current?.parentElement
     if (!parent) return
-    const mountIo = new IntersectionObserver(
+    const io = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) setHasMounted(true)
+        const v = videoRef.current
+        if (entry.isIntersecting) {
+          setHasMounted(true)
+          if (v && v.paused) {
+            const p = v.play()
+            if (p && typeof p.catch === 'function') p.catch(() => {})
+          }
+        } else if (v) {
+          v.pause()
+        }
       },
       { rootMargin: '800px 0px' }
     )
-    const playIo = new IntersectionObserver(
-      ([entry]) => setInPlayZone(entry.isIntersecting),
-      { rootMargin: '100px 0px' }
-    )
-    mountIo.observe(parent)
-    playIo.observe(parent)
-    return () => {
-      mountIo.disconnect()
-      playIo.disconnect()
-    }
+    io.observe(parent)
+    return () => io.disconnect()
   }, [priority])
-
-  // Driven from state rather than from inside the observer callback, because
-  // the element does not exist yet on the tick that first reports it visible.
-  //
-  // Non-priority videos carry no autoplay attribute, so this is the only thing
-  // that ever starts them. An earlier attempt left autoplay on and tried to
-  // park the video here, which silently did nothing: a freshly mounted video
-  // is already paused, so the guard skipped pause(), the browser's can-autoplay
-  // flag stayed set, and it started playing 800px off-screen regardless.
-  useEffect(() => {
-    const v = videoRef.current
-    if (!v) return
-    // The priority video opts out of the visibility logic but not out of this:
-    // it sits at the top of the page, so it is decoding during exactly the
-    // scroll that carries the reader away from it.
-    if (scrollingFast) {
-      v.pause()
-      return
-    }
-    if (priority) {
-      const p = v.play()
-      if (p && typeof p.catch === 'function') p.catch(() => {})
-      return
-    }
-    if (inPlayZone) {
-      if (v.paused) {
-        const p = v.play()
-        if (p && typeof p.catch === 'function') p.catch(() => {})
-      }
-    } else {
-      v.pause()
-    }
-  }, [inPlayZone, hasMounted, priority, scrollingFast])
 
   useEffect(() => {
     const onOtherUnmuted = (e) => {
@@ -133,20 +95,15 @@ function VideoItem({ src, alt, priority = false }) {
   return (
     <>
       <span ref={sentinelRef} style={{ display: 'none' }} aria-hidden="true" />
-      {/* preload is "auto" rather than "metadata" because a video only mounts
-          once it is within 800px, and buffering it there is the whole point.
-          With "metadata" the real download started at the moment the video
-          scrolled into view, putting a fetch and a decode on the very frames
-          being scrolled — a stutter as each video arrived, smooth in between. */}
       {hasMounted && (
         <video
           ref={videoRef}
           src={src}
-          autoPlay={priority}
+          autoPlay
           muted
           loop
           playsInline
-          preload="auto"
+          preload={priority ? "auto" : "metadata"}
           aria-label={alt}
           onLoadedData={(e) => e.target.parentElement.classList.add('loaded')}
           onLoadedMetadata={(e) => e.target.parentElement.classList.add('loaded')}
