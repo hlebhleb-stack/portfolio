@@ -1,16 +1,5 @@
 import React from 'react'
 
-const threeDLink = (label) => (
-  <a
-    href="https://x.com/puselol"
-    target="_blank"
-    rel="noopener noreferrer"
-    className="case-description-link"
-  >
-    {label}
-  </a>
-)
-
 const docLink = (href, label) => (
   <a
     href={href}
@@ -35,35 +24,15 @@ const socialLink = (href, label) => (
 
 export const translations = {
   en: {
-    fullName: 'Gleb Dihtievsky',
-    heroRole: 'Graphic Designer',
     heroText: 'Designing for brands that move fast. Motion, graphics, and everything in between.',
     followText: (
       <>
         Follow me on {socialLink('https://x.com/glebaagleb', 'X')}, {socialLink('https://t.me/glebaagleb', 'Telegram')}, {socialLink('https://www.behance.net/gleb_diht', 'Behance')}, and {socialLink('https://www.linkedin.com/in/gleb-dihtievsky/', 'LinkedIn')}.
       </>
     ),
-    experience: 'Experience',
-    workRoles: {
-      'colb-finance': 'Full Time',
-      'sova-labs': 'Freelance',
-      're-protocol': 'Freelance',
-    },
     cv: 'CV',
-    theme: { light: 'Light', dark: 'Dark' },
-    copy: '© 2026 Gleb Dihtievsky. All rights reserved.',
-    filter: { all: 'All', videos: 'Videos', banners: 'Banners' },
-    notFound: 'Case not found',
-    periods: {
-      'colb-finance': 'Sep 2025 – Present',
-      'sova-labs': 'Jan 2026 – May 2026',
-      're-protocol': 'Dec 2025 – Jan 2026',
-    },
     cases: {
       'colb-finance': {
-        description:
-          'X content design for a Swiss fintech project. Built a consistent visual language out of motion graphics, infographics, and announcement assets – translating dense financial mechanics into clear, focused posts.',
-        skills: ['UX/UI', 'Web Prototyping', 'Brand Identity', 'Motion Design'],
         nav: {
           root: 'Colb Finance',
           context: 'Context',
@@ -109,9 +78,6 @@ export const translations = {
         },
       },
       'sova-labs': {
-        description:
-          'Spearheaded the end-to-end creative direction, including 2D motion design and high-impact marketing graphics. Developed a comprehensive system of reusable design templates to streamline future content production and ensure long-term brand consistency.',
-        skills: ['Creative Direction', '2D Motion Design', 'Design System', 'Marketing Design'],
         nav: {
           context: 'Context',
           role: 'Role',
@@ -136,12 +102,6 @@ export const translations = {
         },
       },
       're-protocol': {
-        description: (
-          <>
-            Partnered with a {threeDLink('3D designer')} to produce high-end explainer and promotional animations for the official X account. Managed the full cycle of video creation to enhance brand presence and community engagement.
-          </>
-        ),
-        skills: ['Creative Direction', 'Motion Design', '3D Animation', 'Video Production'],
         nav: {
           context: 'Context',
           role: 'Role',
@@ -168,35 +128,15 @@ export const translations = {
     },
   },
   ru: {
-    fullName: 'Глеб Дихтиевский',
-    heroRole: 'Графический дизайнер',
     heroText: 'Дизайн для брендов, которые двигаются быстро. Моушн, графика и всё, что между ними.',
     followText: (
       <>
         Следите за мной в {socialLink('https://x.com/glebaagleb', 'X')}, {socialLink('https://t.me/glebaagleb', 'Telegram')}, {socialLink('https://www.behance.net/gleb_diht', 'Behance')} и {socialLink('https://www.linkedin.com/in/gleb-dihtievsky/', 'LinkedIn')}.
       </>
     ),
-    experience: 'Опыт работы',
-    workRoles: {
-      'colb-finance': 'Фуллтайм',
-      'sova-labs': 'Фриланс',
-      're-protocol': 'Фриланс',
-    },
     cv: 'Резюме',
-    theme: { light: 'Светлая', dark: 'Тёмная' },
-    copy: '© 2026 Глеб Дихтиевский. Все права защищены.',
-    filter: { all: 'Все', videos: 'Видео', banners: 'Баннеры' },
-    notFound: 'Кейс не найден',
-    periods: {
-      'colb-finance': 'Сен 2025 – наст. время',
-      'sova-labs': 'Янв 2026 – Май 2026',
-      're-protocol': 'Дек 2025 – Янв 2026',
-    },
     cases: {
       'colb-finance': {
-        description:
-          'Дизайн контента для X швейцарского финтех-проекта. Собрал единый визуальный язык из моушн-графики, инфографики и анонсов, который переводит сложную финансовую механику в понятные посты.',
-        skills: ['UX/UI', 'Веб-прототипирование', 'Айдентика', 'Моушн-дизайн'],
         nav: {
           root: 'Colb Finance',
           context: 'Контекст',
@@ -242,9 +182,6 @@ export const translations = {
         },
       },
       'sova-labs': {
-        description:
-          'Вёл креативное направление от начала и до конца: 2D моушн-дизайн и эффектная маркетинговая графика. Разработал систему переиспользуемых шаблонов, чтобы ускорить производство контента и сохранять единство бренда.',
-        skills: ['Креативное направление', '2D моушн-дизайн', 'Дизайн-система', 'Маркетинговый дизайн'],
         nav: {
           context: 'Контекст',
           role: 'Роль',
@@ -269,12 +206,6 @@ export const translations = {
         },
       },
       're-protocol': {
-        description: (
-          <>
-            В паре с {threeDLink('3D-дизайнером')} делали объясняющие и промо-анимации для официального X-аккаунта. Вёл весь цикл производства видео: от идеи до финального монтажа.
-          </>
-        ),
-        skills: ['Креативное направление', 'Моушн-дизайн', '3D-анимация', 'Видеопродакшн'],
         nav: {
           context: 'Контекст',
           role: 'Роль',

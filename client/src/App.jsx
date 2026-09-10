@@ -1,7 +1,6 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom'
 import CasePage from './CasePage.jsx'
-import useFadeIn from './useFadeIn.js'
 import useDocumentMeta from './useDocumentMeta.js'
 import { translations, LANGS } from './translations.jsx'
 import { SIGNATURE_PATH_D, SIGNATURE_VIEWBOX } from './signaturePath.js'
@@ -50,7 +49,6 @@ function defaultWorkPosition(i, count) {
 }
 
 function HomePage({ theme, setTheme, lang, setLang }) {
-  const pageRef = useFadeIn()
   const sectionsRef = useRef(null)
   const location = useLocation()
   const navigate = useNavigate()
@@ -218,7 +216,7 @@ function HomePage({ theme, setTheme, lang, setLang }) {
   ]
 
   return (
-    <div className={`home-page${onSocials ? ' home-page--socials' : ''}`} ref={pageRef}>
+    <div className={`home-page${onSocials ? ' home-page--socials' : ''}`}>
       {/* Header (fixed) */}
       <header className="header home-header">
       <div className="header-row">
