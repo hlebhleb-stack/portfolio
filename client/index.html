@@ -3,13 +3,47 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32-v2.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16-v2.png" />
     <link rel="apple-touch-icon" sizes="256x256" href="/favicon-v2.png" />
-    <link rel="preload" as="image" href="/assets/radiohead-glasshouse.png" />
-    <link rel="preload" as="image" href="/assets/radiohead-exitmusic.png" />
-    <link rel="preload" as="image" href="/assets/nirvana-dumb.png" />
-    <title>Gleb Dihtievsky</title>
+
+    <!-- Roman carries the body copy and Bold the hero title, both above the
+         fold on the first paint. Medium is not preloaded: it only appears in
+         case-page section labels, well below the fold. -->
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/HelveticaNeueCyr-Roman.woff2" crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/HelveticaNeueCyr-Bold.woff2" crossorigin />
+
+    <!-- Everything between the seo markers is regenerated per route at build
+         time by vite-plugin-seo.js, which also resolves %SITE_URL%. Link-preview
+         crawlers do not run JS, so this static copy is what X, Telegram and
+         Slack actually read. The tags below are the dev-server defaults. -->
+    <!--seo-->
+    <title>Gleb Dihtievsky, Graphic &amp; Motion Designer</title>
+    <meta name="description" content="Graphic and motion designer working with fintech and crypto brands. Motion videos, social content, brand systems and product documentation for Colb Finance, Sova Labs and Re Protocol." />
+    <link rel="canonical" href="%SITE_URL%/" />
+    <meta name="robots" content="index, follow" />
+    <meta name="author" content="Gleb Dihtievsky" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000000" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Gleb Dihtievsky" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:url" content="%SITE_URL%/" />
+    <meta property="og:title" content="Gleb Dihtievsky, Graphic &amp; Motion Designer" />
+    <meta property="og:description" content="Graphic and motion designer working with fintech and crypto brands. Motion videos, social content, brand systems and product documentation for Colb Finance, Sova Labs and Re Protocol." />
+    <meta property="og:image" content="%SITE_URL%/assets/og/og-default.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Gleb Dihtievsky, Graphic &amp; Motion Designer" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:creator" content="@glebaagleb" />
+    <meta name="twitter:title" content="Gleb Dihtievsky, Graphic &amp; Motion Designer" />
+    <meta name="twitter:description" content="Graphic and motion designer working with fintech and crypto brands. Motion videos, social content, brand systems and product documentation for Colb Finance, Sova Labs and Re Protocol." />
+    <meta name="twitter:image" content="%SITE_URL%/assets/og/og-default.png" />
+    <!--/seo-->
   </head>
   <body>
     <div id="root"></div>

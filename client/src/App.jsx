@@ -2,6 +2,7 @@ import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom'
 import CasePage from './CasePage.jsx'
 import useFadeIn from './useFadeIn.js'
+import useDocumentMeta from './useDocumentMeta.js'
 import { translations, LANGS } from './translations.jsx'
 import { SIGNATURE_PATH_D, SIGNATURE_VIEWBOX } from './signaturePath.js'
 import MusicPlayer from './MusicPlayer.jsx'
@@ -346,6 +347,8 @@ function App() {
     try { window.localStorage.setItem('lang', l) } catch { /* ignore */ }
   }
   const location = useLocation()
+
+  useDocumentMeta(location.pathname, lang)
 
   useLayoutEffect(() => {
     if ('scrollRestoration' in window.history) {
