@@ -282,6 +282,10 @@ body {
 }
 
 .hero-title {
+  /* Deliberately not the brand face. HelveticaNeueCyr's Bold reads badly at
+     46px on macOS and iOS, and its slightly different cap height shifted the
+     .hero-highlight background box off the glyphs it sits behind. */
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-weight: 700;
   font-size: 46px;
   line-height: 1.35;
@@ -444,14 +448,13 @@ body {
   height: 100vh;
   height: 100dvh;
   overflow-y: auto;
-  /* `proximity`, not `mandatory`, and no scroll-behavior here on purpose.
-     A Windows mouse wheel emits discrete ~100px notches with no gesture
-     start or end, so a mandatory container has to run a fresh snap
-     animation per notch and each one interrupts the last. Proximity snaps
-     only when a section is already close, which leaves a wheel spin to
-     scroll normally. The dots still animate: goToSection passes
-     behavior: 'smooth' explicitly. */
-  scroll-snap-type: y proximity;
+  /* One section per gesture, by design: the home page is three screens, not a
+     document, and proximity snapping turned it into something you scroll
+     through rather than step between. Windows wheels handle this less
+     gracefully — see the backdrop-filter and video-decode fixes for the parts
+     of that jank that could be removed without touching the interaction. */
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
@@ -463,6 +466,7 @@ body {
   height: 100vh;
   height: 100dvh;
   scroll-snap-align: start;
+  scroll-snap-stop: always;
   display: flex;
   flex-direction: column;
   align-items: center;
