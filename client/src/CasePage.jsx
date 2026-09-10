@@ -1,10 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useParams, useNavigate, useLocation } from 'react-router-dom'
-import useFadeIn from './useFadeIn.js'
 import { translations, LANGS } from './translations.jsx'
-import generatedItems from './caseItems.generated.json'
 import columnOverrides from './caseItemsColumns.js'
 import mediaLinks from './mediaLinks.js'
+import { DOT_PATH_D, DOT_VIEWBOX } from './dotPath.js'
 import MusicPlayer from './MusicPlayer.jsx'
 
 function VideoItem({ src, alt, priority = false }) {
@@ -151,8 +150,6 @@ const RE_VIDEOS = Array.from({ length: 5 }, (_, i) => `/assets/works/re-protocol
 const SOVA_VIDEOS = Array.from({ length: 5 }, (_, i) => `/assets/works/sova-labs/${i + 1}.mp4`)
 const SOVA_BANNERS = Array.from({ length: 3 }, (_, i) => `/assets/works/sova-labs/${i + 1}.png`)
 
-const DOC_CASE_SLUGS = ['colb-finance', 're-protocol', 'sova-labs']
-
 // Matches the folder order on the home page's works section — left/right
 // case nav follows the same sequence, and runs off either end into that
 // section rather than wrapping around.
@@ -229,7 +226,9 @@ function ColbMedia({ items }) {
 function ColbLabel({ children, className = '' }) {
   return (
     <p className={`colb-section-label${className ? ` ${className}` : ''}`}>
-      <img src="/assets/dot.svg" alt="" className="colb-label-dot" aria-hidden="true" />
+      <svg viewBox={DOT_VIEWBOX} className="colb-label-dot" aria-hidden="true" focusable="false">
+        <path d={DOT_PATH_D} />
+      </svg>
       {children}
     </p>
   )
@@ -395,33 +394,13 @@ function MediaLinkOverlay({ href }) {
 
 const API_URL = import.meta.env.VITE_API_URL || ''
 
-const caseMeta = {
-  'colb-finance': { company: 'Colb.finance', url: 'https://x.com/ColbFinance' },
-  'sova-labs':    { company: 'Sova Labs',    url: 'https://x.com/SovaBTC' },
-  're-protocol':  { company: 'Re Protocol',  url: 'https://x.com/re' },
-}
-
-const casesData = Object.fromEntries(
-  Object.entries(caseMeta).map(([slug, meta]) => [
-    slug,
-    { ...meta, items: generatedItems[slug] || [] },
-  ])
-)
-
 function CasePage({ theme, setTheme, lang, setLang }) {
   const { slug } = useParams()
   const navigate = useNavigate()
   const location = useLocation()
-  const caseData = casesData[slug]
   const t = translations[lang]
-  const caseTranslation = caseData ? t.cases[slug] : null
-  const [filter, setFilter] = useState('all')
-  const pageRef = useFadeIn([slug, filter])
-  const [lastSlug, setLastSlug] = useState(slug)
-  if (slug !== lastSlug) {
-    setLastSlug(slug)
-    setFilter('all')
-  }
+  const isKnownCase = CASE_ORDER.includes(slug)
+  const caseTranslation = isKnownCase ? t.cases[slug] : null
   const touchStartX = useRef(0)
   const touchStartY = useRef(0)
   const touchStartTime = useRef(0)
@@ -495,8 +474,6 @@ function CasePage({ theme, setTheme, lang, setLang }) {
       if (Math.abs(dx) < 80) return
       if (Math.abs(dy) > Math.abs(dx) * 0.5) return
       const target = (location.key && location.key !== 'default') ? -1 : '/'
-      const gallery = document.querySelector('.case-gallery')
-      if (gallery) gallery.style.visibility = 'hidden'
       document.querySelectorAll('video').forEach((v) => {
         try {
           v.pause()
@@ -547,7 +524,7 @@ function CasePage({ theme, setTheme, lang, setLang }) {
     </div>
   )
 
-  if (!caseData) {
+  if (!isKnownCase) {
     return (
       <div className="page">
         <div className="case-not-found">
@@ -558,7 +535,7 @@ function CasePage({ theme, setTheme, lang, setLang }) {
   }
 
   return (
-    <div className="page" ref={pageRef}>
+    <div className="page">
       {/* Header */}
       <header className="header">
       <div className="header-row">
@@ -593,27 +570,6 @@ function CasePage({ theme, setTheme, lang, setLang }) {
         <MusicPlayer />
       </div>
       </header>
-
-      {/* Case Hero */}
-      {!DOC_CASE_SLUGS.includes(slug) && (
-        <section className="case-hero">
-          <h1 className="case-title"><a href={caseData.url} target="_blank" rel="noopener noreferrer">{caseData.company}<span className="hero-dot">.</span></a></h1>
-          {caseTranslation?.description && (
-            <p className="case-description">{caseTranslation.description}</p>
-          )}
-          {caseTranslation?.skills && caseTranslation.skills.length > 0 && (
-            <ul className="case-skills">
-              {Array.from({ length: Math.ceil(caseTranslation.skills.length / 2) }, (_, ri) => (
-                <li key={ri} className="case-skills-row">
-                  {caseTranslation.skills.slice(ri * 2, ri * 2 + 2).map((skill) => (
-                    <span key={skill} className="case-skill">{skill}</span>
-                  ))}
-                </li>
-              ))}
-            </ul>
-          )}
-        </section>
-      )}
 
       {slug === 'colb-finance' && caseTranslation?.content && (() => {
         const nav = caseTranslation.nav
@@ -810,105 +766,6 @@ function CasePage({ theme, setTheme, lang, setLang }) {
           </ColbCaseBody>
         )
       })()}
-
-      {/* Filter */}
-      {!DOC_CASE_SLUGS.includes(slug) && (() => {
-        const videoCount = caseData.items.filter((it) => it.type === 'video').length
-        const imageCount = caseData.items.length - videoCount
-        if (videoCount === 0 || imageCount === 0) return null
-        return (
-          <div className="case-filter">
-            <button
-              className={`case-filter-btn${filter === 'all' ? ' active' : ''}`}
-              onClick={() => setFilter('all')}
-              type="button"
-            >
-              {t.filter.all}
-            </button>
-            <button
-              className={`case-filter-btn${filter === 'video' ? ' active' : ''}`}
-              onClick={() => setFilter('video')}
-              type="button"
-            >
-              {t.filter.videos}
-            </button>
-            <button
-              className={`case-filter-btn${filter === 'image' ? ' active' : ''}`}
-              onClick={() => setFilter('image')}
-              type="button"
-            >
-              {t.filter.banners}
-            </button>
-          </div>
-        )
-      })()}
-
-      {/* Gallery — two-column masonry. For each item:
-            – if its src is listed in caseItemsColumns.js, force that
-              column (1 = left, 2 = right);
-            – otherwise place it in whichever column currently has
-              fewer items so far.
-          CSS `order` preserves source order both within each column
-          (where they happen to render in render order anyway) and
-          when the layout collapses to one column on narrow phones. */}
-      {!DOC_CASE_SLUGS.includes(slug) && (() => {
-        const visibleItems = caseData.items.filter(
-          (item) => filter === 'all' || item.type === filter
-        )
-        const renderItem = (item, originalIndex) => {
-          const linkUrl = mediaLinks[item.src]
-          return (
-            <div
-              key={`${filter}-${item.src}`}
-              className="case-gallery-item"
-              style={{ order: originalIndex }}
-            >
-              {item.type === 'video' ? (
-                <VideoItem
-                  src={item.src}
-                  alt={`${caseData.company} work ${originalIndex + 1}`}
-                  priority={originalIndex < 2}
-                />
-              ) : (
-                <img
-                  src={item.src}
-                  alt={`${caseData.company} work ${originalIndex + 1}`}
-                  decoding="async"
-                  fetchPriority="high"
-                  onLoad={(e) => e.target.parentElement.classList.add('loaded')}
-                />
-              )}
-              {linkUrl && <MediaLinkOverlay href={linkUrl} />}
-            </div>
-          )
-        }
-        const col1 = []
-        const col2 = []
-        visibleItems.forEach((item, index) => {
-          const override = columnOverrides[item.src]
-          let targetCol
-          if (override === 1) targetCol = 0
-          else if (override === 2) targetCol = 1
-          else targetCol = col1.length <= col2.length ? 0 : 1
-          if (targetCol === 0) col1.push({ item, index })
-          else col2.push({ item, index })
-        })
-        return (
-          <div className="case-gallery">
-            <div className="case-gallery-col">
-              {col1.map(({ item, index }) => renderItem(item, index))}
-            </div>
-            <div className="case-gallery-col">
-              {col2.map(({ item, index }) => renderItem(item, index))}
-            </div>
-          </div>
-        )
-      })()}
-
-      {/* Doc-style cases render caseNav inside ColbCaseBody's content column
-          (aligned with it, not spanning back under the sidebar); other case
-          layouts don't have a sidebar to avoid, so it renders here instead. */}
-      {!DOC_CASE_SLUGS.includes(slug) && caseNav}
 
       {/* Footer */}
       <footer className="footer">
