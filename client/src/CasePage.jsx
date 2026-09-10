@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import { translations, LANGS } from './translations.jsx'
 import columnOverrides from './caseItemsColumns.js'
+import mediaSizes from './mediaSizes.generated.json'
 import mediaLinks from './mediaLinks.js'
 import { DOT_PATH_D, DOT_VIEWBOX } from './dotPath.js'
 import MusicPlayer from './MusicPlayer.jsx'
@@ -187,8 +188,16 @@ const CASE_ORDER = ['colb-finance', 'sova-labs', 're-protocol']
 
 function ColbMediaItem({ item, priority, order }) {
   const linkUrl = mediaLinks[item.src]
+  const size = mediaSizes[item.src]
   return (
-    <div className="colb-media-item" style={{ order }}>
+    <div
+      className="colb-media-item"
+      // Reserving the box before the file loads is what keeps the page from
+      // growing under the reader. Without it every item measured zero until
+      // its header arrived, and a fast scroll past nineteen of them meant a
+      // burst of reflows landing on the frames being scrolled.
+      style={{ order, aspectRatio: size ? `${size[0]} / ${size[1]}` : undefined }}
+    >
       {item.type === 'video' ? (
         <VideoItem src={item.src} alt={item.alt} priority={priority} />
       ) : (
@@ -214,17 +223,20 @@ function ColbMedia({ items }) {
       </div>
     )
   }
-  // Two-column masonry: items go into whichever column currently has
-  // less accumulated height, using aspect ratio as a stand-in since real
-  // heights aren't known until media loads. Falls back to a manual
-  // override in caseItemsColumns.js for items with unusual ratios.
+  // Two-column masonry: items go into whichever column currently has less
+  // accumulated height. Both columns are the same width, so height/width is
+  // proportional to rendered height and balances them directly. This used to
+  // read item.ratio, which nothing ever set — every item counted as 1 and the
+  // balancing was really by item count, which is why the Colb banners needed
+  // manual overrides in caseItemsColumns.js to stop one column running long.
   const col1 = []
   const col2 = []
   let h1 = 0
   let h2 = 0
   items.forEach((item, index) => {
     const override = columnOverrides[item.src]
-    const ratio = item.ratio || 1
+    const size = mediaSizes[item.src]
+    const ratio = size ? size[1] / size[0] : 1
     let targetCol
     if (override === 1) targetCol = 0
     else if (override === 2) targetCol = 1

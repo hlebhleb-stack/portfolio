@@ -14,7 +14,7 @@ export default defineConfig({
     react(),
     caseItems({
       rootDir: 'public/assets/works',
-      outFile: 'src/caseItems.generated.json',
+      outFile: 'src/mediaSizes.generated.json',
     }),
     seo(),
   ],
