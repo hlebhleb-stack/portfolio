@@ -57,7 +57,7 @@ jobs:
           echo "## Bundle Size Report" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
-          du -sh dist/assets/* >> $GITHUB_STEP_SUMMARY
+          du -sh dist/build/* >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           TOTAL=$(du -sh dist | cut -f1)
