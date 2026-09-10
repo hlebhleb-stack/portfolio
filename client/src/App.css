@@ -24,18 +24,6 @@ body {
   to { opacity: 1; }
 }
 
-/* ========== Fade-in on scroll ========== */
-.fade-in-up {
-  opacity: 0;
-  transform: translateY(18px);
-  transition: opacity 0.35s ease-out, transform 0.35s ease-out;
-}
-
-.fade-in-up.fade-in-visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
 /* ========== Page ========== */
 .page {
   max-width: 1440px;
@@ -98,11 +86,6 @@ body {
   color: var(--text);
 }
 
-.theme-toggle {
-  display: flex;
-  gap: 24px;
-}
-
 .theme-toggle-btn {
   background: none;
   border: none;
@@ -123,29 +106,6 @@ body {
     padding: 12px;
     margin: -12px;
   }
-}
-
-.theme-btn {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  background: none;
-  border: none;
-  font-family: inherit;
-  font-size: 14px;
-  font-weight: 400;
-  color: var(--text-muted);
-  cursor: none;
-  transition: color 0.3s;
-  padding: 0;
-}
-
-.theme-btn.active {
-  color: var(--text);
-}
-
-.theme-btn:hover {
-  color: var(--text);
 }
 
 .theme-icon {
@@ -302,19 +262,6 @@ body {
   gap: 24px;
 }
 
-.nav-link {
-  font-size: 14px;
-  line-height: normal;
-  font-weight: 400;
-  color: var(--text-muted);
-  cursor: none;
-  transition: color 0.3s;
-}
-
-.nav-link:hover {
-  color: var(--text);
-}
-
 /* ========== Hero ========== */
 .hero {
   text-align: center;
@@ -338,7 +285,6 @@ body {
 }
 
 .hero-title {
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-weight: 700;
   font-size: 46px;
   line-height: 1.35;
@@ -374,18 +320,6 @@ body {
 }
 
 /* ========== Experience Section ========== */
-.experience {
-  margin-top: 160px;
-}
-
-.experience-title {
-  font-size: 26px;
-  font-weight: 550;
-  line-height: normal;
-  color: var(--text);
-  text-align: center;
-  margin: 0 0 50px;
-}
 
 .works-folders {
   position: relative;
@@ -431,7 +365,6 @@ body {
 }
 
 .work-folder-label {
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-weight: 400;
   font-size: 14px;
   text-align: center;
@@ -439,7 +372,6 @@ body {
   touch-action: none;
   pointer-events: none;
 }
-
 
 /* ========== Footer ========== */
 .footer {
@@ -454,42 +386,6 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-}
-
-.footer-copy {
-  margin-top: 40px;
-  text-align: center;
-  font-size: 12px;
-  font-weight: 400;
-  color: var(--text-muted);
-  letter-spacing: 0.02em;
-}
-
-.social-icons {
-  display: flex;
-  gap: 24px;
-  align-items: center;
-}
-
-.social-icon {
-  cursor: none;
-  opacity: 0.4;
-  transition: opacity 0.3s;
-}
-
-.social-icon:hover {
-  opacity: 1;
-}
-
-.social-icon img {
-  width: 38px;
-  height: 38px;
-  display: block;
-  transition: filter 0.3s;
-}
-
-[data-theme="dark"] .social-icon img {
-  filter: invert(1);
 }
 
 .footer-cv {
@@ -605,7 +501,6 @@ body {
 }
 
 .home-follow-text {
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-weight: 400;
   font-size: 16px;
   line-height: 1.6;
@@ -752,153 +647,6 @@ body {
 }
 
 /* ========== Case Page ========== */
-.case-hero {
-  margin-top: 140px;
-  text-align: center;
-}
-
-.case-title {
-  font-size: 26px;
-  font-weight: 550;
-  line-height: normal;
-  color: var(--text);
-  margin: 0;
-}
-
-.case-role {
-  font-size: 14px;
-  font-weight: 400;
-  color: var(--text-muted);
-  margin-top: 8px;
-}
-
-.case-period {
-  font-size: 14px;
-  font-weight: 400;
-  color: var(--text-muted);
-  margin-top: 4px;
-}
-
-.case-description {
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 1.5;
-  color: var(--text);
-  max-width: 640px;
-  margin: 32px auto 0;
-  text-align: center;
-}
-
-.case-description-link {
-  color: inherit;
-  text-decoration: underline;
-  text-decoration-color: var(--text-muted);
-  text-underline-offset: 3px;
-  transition: text-decoration-color 0.2s;
-}
-
-.case-description-link:hover {
-  text-decoration-color: var(--text);
-}
-
-.case-skills {
-  list-style: none;
-  padding: 0;
-  margin: 20px auto 0;
-  display: flex;
-  flex-wrap: nowrap;
-  justify-content: center;
-  gap: 8px;
-}
-
-.case-skills-row {
-  display: contents;
-}
-
-.case-skill {
-  background: #FF8888;
-  color: #fff;
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 1;
-  padding: 8px 14px;
-  white-space: nowrap;
-  text-align: center;
-}
-
-/* Case Filter */
-.case-filter {
-  display: flex;
-  justify-content: center;
-  gap: 24px;
-  margin-top: 40px;
-}
-
-.case-filter-btn {
-  background: none;
-  border: none;
-  font-family: inherit;
-  font-size: 14px;
-  font-weight: 400;
-  color: var(--text-muted);
-  cursor: none;
-  transition: color 0.3s;
-  padding: 0;
-}
-
-.case-filter-btn:hover,
-.case-filter-btn.active {
-  color: var(--text);
-}
-
-/* Case Gallery — true row-major two-column masonry.
-   JSX renders two .case-gallery-col children, each a flex column with
-   alternating items. This guarantees:
-   - the first two items (0 and 1) sit side-by-side at the top
-   - vertical and horizontal gaps are exactly 20px everywhere
-   - columns pack tightly with no empty space below shorter items */
-.case-gallery {
-  margin-top: 80px;
-  display: flex;
-  gap: 20px;
-}
-
-.case-gallery-col {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.case-filter + .case-gallery {
-  margin-top: 40px;
-}
-
-.case-gallery-item {
-  overflow: hidden;
-  background: var(--divider);
-  min-height: 200px;
-  position: relative;
-}
-
-.case-gallery-item.loaded {
-  background: transparent;
-  min-height: 0;
-}
-
-.case-gallery-item img,
-.case-gallery-item video {
-  width: 100%;
-  display: block;
-  opacity: 0;
-  transition: opacity 0.5s ease-out;
-}
-
-.case-gallery-item.loaded img,
-.case-gallery-item.loaded video {
-  opacity: 1;
-}
 
 .video-mute-btn,
 .video-link-btn {
@@ -929,10 +677,7 @@ body {
   bottom: 9px;
   left: 9px;
 }
-
-.case-gallery-item:hover .video-mute-btn,
 .video-mute-btn:focus-visible,
-.case-gallery-item:hover .video-link-btn,
 .video-link-btn:focus-visible {
   opacity: 1;
 }
@@ -942,19 +687,11 @@ body {
   display: block;
 }
 
-.case-gallery-item video {
-  cursor: none;
-}
-
 @media (max-width: 1024px) {
   .video-mute-btn,
   .video-link-btn {
     cursor: pointer;
     opacity: 1;
-  }
-
-  .case-gallery-item video {
-    cursor: pointer;
   }
 }
 
@@ -1108,6 +845,7 @@ body {
   height: auto;
   flex-shrink: 0;
   display: block;
+  fill: #FF0000;
 }
 
 .colb-process-label {
@@ -1260,20 +998,12 @@ body {
     cursor: auto;
   }
   .lang-btn,
-  .theme-btn,
-  .nav-link,
-  .social-icon,
   .footer-email,
   .footer-cv,
   .work-folder,
-  .home-social,
-  .case-filter-btn,
   .theme-toggle-btn,
   .video-mute-btn,
   .video-link-btn {
-    cursor: pointer;
-  }
-  .case-gallery-item video {
     cursor: pointer;
   }
 }
@@ -1292,15 +1022,10 @@ body {
     cursor: auto;
   }
   .lang-btn,
-  .theme-btn,
-  .nav-link,
-  .social-icon,
   .footer-email,
   .footer-cv,
   .work-folder,
-  .home-social,
-  .scroll-square,
-  .case-filter-btn {
+  .scroll-square{
     cursor: pointer;
   }
 
@@ -1315,13 +1040,6 @@ body {
   }
   .scroll-squares {
     padding: 0 60px;
-  }
-  .home-social img {
-    width: 60px;
-    height: 60px;
-  }
-  .home-section-socials .home-socials {
-    gap: 32px;
   }
   .home-page::before,
   .home-page::after {
@@ -1350,14 +1068,6 @@ body {
     gap: 16px;
   }
 
-  .theme-toggle {
-    gap: 16px;
-  }
-
-  .theme-btn {
-    font-size: 13px;
-  }
-
   .lang-btn {
     font-size: 13px;
   }
@@ -1366,21 +1076,8 @@ body {
     gap: 10px;
   }
 
-  .nav-link {
-    font-size: 13px;
-  }
-
   .hero-title {
     font-size: 36px;
-  }
-
-  .experience {
-    margin-top: 120px;
-  }
-
-  .experience-title {
-    font-size: 24px;
-    margin-bottom: 50px;
   }
 
   .work-folder-icon {
@@ -1396,47 +1093,6 @@ body {
   .footer-email,
   .footer-cv {
     font-size: 13px;
-  }
-
-  .social-icon img {
-    width: 32px;
-    height: 32px;
-  }
-
-  .case-hero {
-    margin-top: 100px;
-  }
-
-  .case-title {
-    font-size: 24px;
-  }
-
-  .case-role,
-  .case-period {
-    font-size: 13px;
-  }
-
-  .case-description {
-    font-size: 13px;
-    margin-top: 26px;
-  }
-  .case-skills {
-    margin-top: 16px;
-  }
-  .case-filter {
-    margin-top: 34px;
-  }
-
-  .case-skill {
-    font-size: 13px;
-  }
-
-  .case-filter-btn {
-    font-size: 13px;
-  }
-
-  .case-gallery {
-    margin-top: 60px;
   }
 }
 
@@ -1459,13 +1115,6 @@ body {
   .scroll-square {
     width: 12px;
     height: 12px;
-  }
-  .home-social img {
-    width: 48px;
-    height: 48px;
-  }
-  .home-section-socials .home-socials {
-    gap: 20px;
   }
   .home-follow-text {
     font-size: 14px;
@@ -1503,20 +1152,8 @@ body {
     gap: 8px;
   }
 
-  .theme-toggle {
-    gap: 20px;
-  }
-
-  .theme-btn {
-    font-size: 12px;
-  }
-
   .nav {
     gap: 20px;
-  }
-
-  .nav-link {
-    font-size: 12px;
   }
 
   /* Hero */
@@ -1525,14 +1162,7 @@ body {
   }
 
   /* Experience */
-  .experience {
-    margin-top: 80px;
-  }
-
-  .experience-title {
-    font-size: 22px;
-    margin-bottom: 30px;
-  }
+  
 
   .work-folder:hover {
     opacity: 1;
@@ -1564,74 +1194,13 @@ body {
     gap: 20px;
   }
 
-  .footer-copy {
-    margin-top: 28px;
-    font-size: 11px;
-  }
-
-  .social-icon img {
-    width: 32px;
-    height: 32px;
-  }
-
   .footer-email,
   .footer-cv {
     font-size: 12px;
   }
 
   /* Case page mobile */
-  .case-hero {
-    margin-top: 64px;
-  }
-
-  .case-title {
-    font-size: 22px;
-  }
-
-  .case-role {
-    font-size: 12px;
-  }
-
-  .case-period {
-    font-size: 12px;
-  }
-
-  .case-description {
-    font-size: 12px;
-    margin: 22px auto 0;
-    max-width: 100%;
-  }
-
-  .case-skills {
-    margin-top: 14px;
-    gap: 8px;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .case-skills-row {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-  }
-
-  .case-skill {
-    font-size: 12px;
-    padding: 7px 12px;
-    white-space: nowrap;
-  }
-
-  .case-filter-btn {
-    font-size: 12px;
-  }
-
-  .case-filter {
-    margin-top: 30px;
-  }
-
-  .case-gallery {
-    margin-top: 48px;
-  }
+  
 
   /* On narrow phones the sub-columns flatten into a single column —
      `display: contents` removes the wrapper from layout, and the
@@ -1641,14 +1210,6 @@ body {
 /* ========== Phone-only single-column gallery (≤ 600px) ========== */
 /* Single-column gallery only on narrow portrait phones —
    landscape mobile keeps the 2-column layout. */
-@media (max-width: 600px) and (orientation: portrait) {
-  .case-gallery {
-    flex-direction: column;
-  }
-  .case-gallery-col {
-    display: contents;
-  }
-}
 
 /* ========== Small Mobile (≤ 400px) ========== */
 @media (max-width: 400px) {
@@ -1658,13 +1219,5 @@ body {
 
   .hero-title {
     font-size: 21px;
-  }
-
-  .experience-title {
-    font-size: 20px;
-  }
-
-  .case-title {
-    font-size: 20px;
   }
 }
