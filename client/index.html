@@ -4,6 +4,16 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+    <!-- Set the theme before the first paint so a dark-mode system never
+         flashes the light page while the bundle loads. App.jsx reads it back. -->
+    <script>
+      try {
+        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          document.documentElement.setAttribute('data-theme', 'dark')
+        }
+      } catch (e) { /* stays light */ }
+    </script>
+
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32-v2.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16-v2.png" />
     <link rel="apple-touch-icon" sizes="256x256" href="/favicon-v2.png" />

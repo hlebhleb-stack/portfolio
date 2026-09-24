@@ -32,7 +32,9 @@
 [data-theme="light"] {
   --bg: #ffffff;
   --text: #000000;
-  --text-muted: rgba(0, 0, 0, 0.5);
+  /* 0.54, not 0.5: the lightest black-on-white that still clears the 4.5:1
+     contrast minimum for body-size text (4.6:1; 0.5 was 3.95:1). */
+  --text-muted: rgba(0, 0, 0, 0.54);
   --divider: rgba(0, 0, 0, 0.2);
   --divider-strong: rgba(0, 0, 0, 0.3);
 }
@@ -43,6 +45,13 @@
   --text-muted: rgba(255, 255, 255, 0.5);
   --divider: rgba(255, 255, 255, 0.2);
   --divider-strong: rgba(255, 255, 255, 0.3);
+}
+
+/* Set by App.jsx for the single frame a theme switch happens in. */
+.theme-switching *,
+.theme-switching *::before,
+.theme-switching *::after {
+  transition: none !important;
 }
 
 *,

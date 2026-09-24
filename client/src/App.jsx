@@ -344,7 +344,25 @@ function HomePage({ theme, setTheme, lang, setLang }) {
 
 function App() {
   const cursorRef = useRef(null)
-  const [theme, setTheme] = useState('light')
+  // Starts from the system setting (index.html has already painted it, so
+  // there is no flash) and keeps following it until the visitor picks a theme
+  // with the toggle. That pick is not stored: a reload goes back to the system.
+  const [theme, setThemeState] = useState(() =>
+    document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light'
+  )
+  const themePickedRef = useRef(false)
+  const setTheme = (next) => {
+    themePickedRef.current = true
+    setThemeState(next)
+  }
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-color-scheme: dark)')
+    const onChange = (e) => {
+      if (!themePickedRef.current) setThemeState(e.matches ? 'dark' : 'light')
+    }
+    mq.addEventListener('change', onChange)
+    return () => mq.removeEventListener('change', onChange)
+  }, [])
   const [lang, setLangState] = useState(() => {
     if (typeof window === 'undefined') return 'en'
     const stored = window.localStorage.getItem('lang')
@@ -368,8 +386,18 @@ function App() {
     window.scrollTo({ top: 0, behavior: 'instant' })
   }, [location.pathname])
 
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme)
+  // Every element recolours in the same frame. The colour transitions around
+  // the site run at different speeds (0.15s to 0.4s) and the gradient bands
+  // cannot transition at all, so letting them play made the switch flicker.
+  // Layout effect, so the new icon never paints a frame before its colours.
+  useLayoutEffect(() => {
+    const root = document.documentElement
+    root.classList.add('theme-switching')
+    root.setAttribute('data-theme', theme)
+    // Reading a computed style forces the recolour to happen now, while
+    // transitions are still off; removing the class afterwards animates nothing.
+    void window.getComputedStyle(root).color
+    root.classList.remove('theme-switching')
   }, [theme])
 
   useEffect(() => {
