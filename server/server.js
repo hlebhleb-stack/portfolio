@@ -476,8 +476,39 @@ function sendTelegram(html) {
 }
 
 // ========== Middleware ==========
-app.use(cors());
-app.use(express.json());
+// Only the site itself may call the API from a browser. Anything else (curl,
+// scripts) is not stopped by CORS, which is what the rate limit and the field
+// caps in /api/track are for.
+const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS ||
+  'https://www.glebaagleb.com,https://glebaagleb.com,http://localhost:5173')
+  .split(',').map(o => o.trim()).filter(Boolean);
+app.use(cors({ origin: ALLOWED_ORIGINS }));
+app.use(express.json({ limit: '2kb' }));
+
+// Per-IP fixed window. A real visitor sends one request per page view, so 30
+// a minute never touches a person and still stops a loop from flooding the
+// visit log (every stored visit is written to the Gist forever).
+const RATE_WINDOW_MS = 60000;
+const RATE_MAX = 30;
+const rateHits = new Map(); // ip -> { count, resetAt }
+function rateLimited(ip) {
+  const now = Date.now();
+  const hit = rateHits.get(ip);
+  if (!hit || now >= hit.resetAt) {
+    rateHits.set(ip, { count: 1, resetAt: now + RATE_WINDOW_MS });
+    return false;
+  }
+  hit.count += 1;
+  return hit.count > RATE_MAX;
+}
+setInterval(() => {
+  const now = Date.now();
+  for (const [ip, hit] of rateHits) if (now >= hit.resetAt) rateHits.delete(ip);
+}, RATE_WINDOW_MS).unref();
+
+function capString(v, max) {
+  return typeof v === 'string' ? v.slice(0, max) : '';
+}
 app.use(express.static(path.join(__dirname, '../client/dist')));
 
 // ========== Track ==========
@@ -485,8 +516,17 @@ app.post('/api/track', (req, res) => {
   const ua = req.headers['user-agent'] || '';
   if (BOT_UA.test(ua)) return res.json({ ok: true, ignored: 'bot' });
 
-  const { page, screenWidth, lang, sessionId } = req.body || {};
   const ip = (req.headers['x-forwarded-for'] || req.ip || '').toString().split(',')[0].trim();
+  if (rateLimited(ip)) return res.status(429).json({ ok: false });
+
+  const body = req.body || {};
+  const rawPage = capString(body.page, 200);
+  // Only paths the site actually sends; anything else is not a page view.
+  if (rawPage && !rawPage.startsWith('/')) return res.status(400).json({ ok: false });
+  const page = rawPage;
+  const screenWidth = Math.min(Math.max(Number(body.screenWidth) || 0, 0), 10000);
+  const lang = capString(body.lang, 8);
+  const sessionId = capString(body.sessionId, 64);
   const data = loadData();
 
   // Dedupe: same sessionId+page within DEDUPE_MIN minutes counts once
@@ -501,29 +541,16 @@ app.post('/api/track', (req, res) => {
 
   data.visits.push({
     page: page || '/',
-    screenWidth: Number(screenWidth) || 0,
-    device: (Number(screenWidth) || 0) <= 768 ? 'mobile' : 'desktop',
+    screenWidth,
+    device: screenWidth <= 768 ? 'mobile' : 'desktop',
     lang: lang || '',
     sessionId: sessionId || '',
     ip,
     country: lookupCountry(ip) || '',
-    userAgent: ua,
+    userAgent: ua.slice(0, 300),
     timestamp: new Date().toISOString(),
   });
   saveData(data);
-  res.json({ ok: true });
-});
-
-// ========== Contact ==========
-app.post('/api/contact', (req, res) => {
-  const { name, email, message } = req.body || {};
-  if (!name || !email || !message) return res.status(400).json({ error: 'All fields required' });
-  const data = loadData();
-  data.contacts.push({ name, email, message, timestamp: new Date().toISOString() });
-  saveData(data);
-  sendTelegram(
-    `<b>New message</b>\n<pre>${escapeHtml(`From: ${name} <${email}>\n\n${message}`)}</pre>`
-  );
   res.json({ ok: true });
 });
 
