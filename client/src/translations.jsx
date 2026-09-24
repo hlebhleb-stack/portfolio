@@ -31,6 +31,8 @@ export const translations = {
       </>
     ),
     cv: 'CV',
+    notFound: 'Page not found',
+    backHome: 'Back to home',
     cases: {
       'colb-finance': {
         nav: {
@@ -135,6 +137,8 @@ export const translations = {
       </>
     ),
     cv: 'Резюме',
+    notFound: 'Страница не найдена',
+    backHome: 'На главную',
     cases: {
       'colb-finance': {
         nav: {

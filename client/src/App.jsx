@@ -5,6 +5,7 @@ import useDocumentMeta from './useDocumentMeta.js'
 import { translations, LANGS } from './translations.jsx'
 import { SIGNATURE_PATH_D, SIGNATURE_VIEWBOX } from './signaturePath.js'
 import MusicPlayer from './MusicPlayer.jsx'
+import NotFound from './NotFound.jsx'
 import './App.css'
 
 const API_URL = import.meta.env.VITE_API_URL || ''
@@ -193,20 +194,29 @@ function HomePage({ theme, setTheme, lang, setLang }) {
     const startDelay = 250
     const charInterval = 35
     let i = 0
+    // All three timers are cleared on cleanup: switching language mid-typing
+    // used to leave the old interval running next to the new one, so the two
+    // strings overwrote each other letter by letter.
+    let id = 0
+    let hide = 0
     const start = setTimeout(() => {
       setTyped('')
       setCaretPhase('typing')
-      const id = setInterval(() => {
+      id = setInterval(() => {
         i += 1
         setTyped(heroText.slice(0, i))
         if (i >= heroText.length) {
           clearInterval(id)
           setCaretPhase('blinking')
-          setTimeout(() => setCaretPhase('hidden'), 1500)
+          hide = setTimeout(() => setCaretPhase('hidden'), 1500)
         }
       }, charInterval)
     }, startDelay)
-    return () => clearTimeout(start)
+    return () => {
+      clearTimeout(start)
+      clearInterval(id)
+      clearTimeout(hide)
+    }
   }, [t.heroText])
 
   const works = [
@@ -400,6 +410,15 @@ function App() {
         <Route path="/case/:slug" element={
           <div className="page-transition" key={location.pathname}>
             <CasePage theme={theme} setTheme={setTheme} lang={lang} setLang={setLang} />
+          </div>
+        } />
+        {/* HomePage lives outside <Routes> (it stays mounted behind case
+            pages), so '/' needs an explicit no-op route or the catch-all
+            below would render on top of it. */}
+        <Route path="/" element={null} />
+        <Route path="*" element={
+          <div className="page-transition" key={location.pathname}>
+            <NotFound lang={lang} />
           </div>
         } />
       </Routes>

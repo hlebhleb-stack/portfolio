@@ -6,6 +6,7 @@ import mediaSizes from './mediaSizes.generated.json'
 import mediaLinks from './mediaLinks.js'
 import { DOT_PATH_D, DOT_VIEWBOX } from './dotPath.js'
 import MusicPlayer from './MusicPlayer.jsx'
+import NotFound from './NotFound.jsx'
 
 function VideoItem({ src, alt, priority = false }) {
   const videoRef = useRef(null)
@@ -536,15 +537,7 @@ function CasePage({ theme, setTheme, lang, setLang }) {
     </div>
   )
 
-  if (!isKnownCase) {
-    return (
-      <div className="page">
-        <div className="case-not-found">
-          <h2>{t.notFound}</h2>
-        </div>
-      </div>
-    )
-  }
+  if (!isKnownCase) return <NotFound lang={lang} />
 
   return (
     <div className="page">
