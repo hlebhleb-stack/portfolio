@@ -43,9 +43,9 @@ const DESKTOP_POSITIONS = {
   're-protocol':  { x: 58, y: 58 },
 }
 const MOBILE_POSITIONS = {
-  'sova-labs':    { x: 28, y: 42 },
-  'colb-finance': { x: 52, y: 30 },
-  're-protocol':  { x: 42, y: 65 },
+  'sova-labs':    { x: 35, y: 30 },
+  'colb-finance': { x: 58, y: 22 },
+  're-protocol':  { x: 46, y: 55 },
 }
 const TABLET_POSITIONS = {
   'sova-labs':    { x: 35, y: 30 },
