@@ -38,9 +38,9 @@ function trackPage(page, lang) {
 }
 
 const DESKTOP_POSITIONS = {
-  'sova-labs':    { x: 48, y: 25 },
-  'colb-finance': { x: 35, y: 48 },
-  're-protocol':  { x: 62, y: 55 },
+  'sova-labs':    { x: 46, y: 30 },
+  'colb-finance': { x: 32, y: 48 },
+  're-protocol':  { x: 62, y: 44 },
 }
 const MOBILE_POSITIONS = {
   'sova-labs':    { x: 30, y: 22 },
