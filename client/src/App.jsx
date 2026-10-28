@@ -38,14 +38,14 @@ function trackPage(page, lang) {
 }
 
 const DESKTOP_POSITIONS = {
-  'sova-labs':    { x: 42, y: 28 },
-  'colb-finance': { x: 28, y: 50 },
-  're-protocol':  { x: 58, y: 58 },
+  'sova-labs':    { x: 48, y: 25 },
+  'colb-finance': { x: 35, y: 48 },
+  're-protocol':  { x: 62, y: 55 },
 }
 const MOBILE_POSITIONS = {
-  'sova-labs':    { x: 35, y: 30 },
-  'colb-finance': { x: 58, y: 22 },
-  're-protocol':  { x: 46, y: 55 },
+  'sova-labs':    { x: 30, y: 22 },
+  'colb-finance': { x: 55, y: 35 },
+  're-protocol':  { x: 40, y: 60 },
 }
 const TABLET_POSITIONS = {
   'sova-labs':    { x: 35, y: 30 },
