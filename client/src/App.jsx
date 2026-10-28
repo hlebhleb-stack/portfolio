@@ -37,27 +37,16 @@ function trackPage(page, lang) {
   }).catch(() => {})
 }
 
-const DESKTOP_POSITIONS = {
-  'sova-labs':    { x: 46, y: 30 },
-  'colb-finance': { x: 32, y: 48 },
-  're-protocol':  { x: 62, y: 44 },
-}
-const MOBILE_POSITIONS = {
-  'sova-labs':    { x: 30, y: 22 },
-  'colb-finance': { x: 55, y: 35 },
-  're-protocol':  { x: 40, y: 60 },
-}
-const TABLET_POSITIONS = {
-  'sova-labs':    { x: 35, y: 30 },
-  'colb-finance': { x: 25, y: 52 },
-  're-protocol':  { x: 55, y: 55 },
-}
-
-function defaultWorkPosition(i, _count, slug) {
-  if (typeof window === 'undefined') return { x: 50, y: 50 }
-  const w = window.innerWidth
-  const map = w < 700 ? MOBILE_POSITIONS : w < 1024 ? TABLET_POSITIONS : DESKTOP_POSITIONS
-  return map[slug] || { x: 50, y: 50 }
+function defaultWorkPosition(i, count) {
+  const isNarrow = typeof window !== 'undefined' && window.innerWidth < 700
+  if (isNarrow) {
+    const spacing = 24
+    const offset = (i - (count - 1) / 2) * spacing
+    return { x: 50, y: 50 + offset }
+  }
+  const spacing = 16
+  const offset = (i - (count - 1) / 2) * spacing
+  return { x: 50 + offset, y: 50 }
 }
 
 function HomePage({ theme, setTheme, lang, setLang }) {
@@ -86,7 +75,7 @@ function HomePage({ theme, setTheme, lang, setLang }) {
   const justDraggedRef = useRef(false)
 
   const getWorkPosition = (slug, i, count) =>
-    workPositions[slug] || defaultWorkPosition(i, count, slug)
+    workPositions[slug] || defaultWorkPosition(i, count)
 
   const handleWorkPointerDown = (e, slug, i, count) => {
     const container = worksContainerRef.current
