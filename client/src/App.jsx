@@ -347,22 +347,10 @@ function App() {
   // Starts from the system setting (index.html has already painted it, so
   // there is no flash) and keeps following it until the visitor picks a theme
   // with the toggle. That pick is not stored: a reload goes back to the system.
-  const [theme, setThemeState] = useState(() =>
-    document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light'
-  )
-  const themePickedRef = useRef(false)
+  const [theme, setThemeState] = useState('light')
   const setTheme = (next) => {
-    themePickedRef.current = true
     setThemeState(next)
   }
-  useEffect(() => {
-    const mq = window.matchMedia('(prefers-color-scheme: dark)')
-    const onChange = (e) => {
-      if (!themePickedRef.current) setThemeState(e.matches ? 'dark' : 'light')
-    }
-    mq.addEventListener('change', onChange)
-    return () => mq.removeEventListener('change', onChange)
-  }, [])
   const [lang, setLangState] = useState(() => {
     if (typeof window === 'undefined') return 'en'
     const stored = window.localStorage.getItem('lang')
