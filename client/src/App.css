@@ -971,16 +971,33 @@ body {
   }
 }
 
-.case-not-found {
-  text-align: center;
-  margin-top: 200px;
+.not-found-page {
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  overflow: hidden;
+  z-index: 9999;
 }
 
-.case-not-found h2 {
-  font-size: 26px;
-  font-weight: 550;
+.dvd-face {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 150px;
+  pointer-events: none;
+  will-change: transform;
+  z-index: 1;
+}
+
+.not-found-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 80px;
+  font-weight: 700;
   color: var(--text);
-  margin-bottom: 20px;
+  text-decoration: none;
 }
 
 /* Touch-primary devices (any width/orientation) get the same no-custom-cursor,
